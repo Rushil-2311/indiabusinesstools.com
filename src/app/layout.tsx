@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Indian Business Tools",
   description: "Tools and resources for Indian businesses",
   verification: {
-    google: "gAgsE15eQvK2ffxOSH9kukBRnEz1KZqR4lq0bcKaWv4",
+    google: "dtAsTsMu43DxbdyBaD_bZGhhrzGtC2ulqkT9DLUrcsg",
   },
 };
 export default function RootLayout({
