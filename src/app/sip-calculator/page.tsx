@@ -20,9 +20,6 @@ import {
 } from "@/components/ui/accordion";
 import { faqs } from "@/lib/data";
 import {
-  PieChart,
-  Pie,
-  Cell,
   Tooltip,
   ResponsiveContainer,
   AreaChart,
