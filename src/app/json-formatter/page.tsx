@@ -10,7 +10,6 @@ import {
   AlertCircle,
   Trash2,
 } from "lucide-react";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,7 @@ import { syntaxHighlightJson } from "@/lib/calculators";
 
 export default function JsonFormatter() {
   const [input, setInput] = useState(
-    '{"name":"ToolsKit","status":"active","features":["calculate","format","convert"],"version":1.0}'
+    '{"name":"ToolsKit","status":"active","features":["calculate","format","convert"],"version":1.0}',
   );
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +57,7 @@ export default function JsonFormatter() {
   };
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="JSON Formatter"
         description="Format, validate, beautify, and minify your JSON data."
@@ -72,10 +71,17 @@ export default function JsonFormatter() {
         <div className="bg-card rounded-xl shadow-lg border border-border/50 overflow-hidden flex flex-col h-[700px]">
           <div className="p-3 bg-muted/40 border-b flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Button onClick={formatJson} className="bg-slate-700 hover:bg-slate-800 text-white shadow-sm">
+              <Button
+                onClick={formatJson}
+                className="bg-slate-700 hover:bg-slate-800 text-white shadow-sm"
+              >
                 <Wand2 className="w-4 h-4 mr-2" /> Format
               </Button>
-              <Button onClick={minifyJson} variant="outline" className="bg-background">
+              <Button
+                onClick={minifyJson}
+                variant="outline"
+                className="bg-background"
+              >
                 <Minimize2 className="w-4 h-4 mr-2" /> Minify
               </Button>
               <select
@@ -107,7 +113,11 @@ export default function JsonFormatter() {
                 size="sm"
                 onClick={handleCopy}
                 disabled={!output}
-                className={copied ? "text-emerald-600 border-emerald-200 bg-emerald-50" : ""}
+                className={
+                  copied
+                    ? "text-emerald-600 border-emerald-200 bg-emerald-50"
+                    : ""
+                }
               >
                 {copied ? (
                   <>
@@ -129,7 +139,7 @@ export default function JsonFormatter() {
             </div>
           )}
 
-          <div className="flex flex-col md:flex-row flex-grow overflow-hidden">
+          <div className="flex flex-col md:flex-row grow overflow-hidden">
             <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-border/50 relative flex">
               <textarea
                 className="w-full h-full p-4 font-mono text-sm resize-none bg-background focus:outline-none"
@@ -143,7 +153,9 @@ export default function JsonFormatter() {
               {output ? (
                 <pre
                   className="w-full p-4 font-mono text-sm m-0 overflow-auto"
-                  dangerouslySetInnerHTML={{ __html: syntaxHighlightJson(output) }}
+                  dangerouslySetInnerHTML={{
+                    __html: syntaxHighlightJson(output),
+                  }}
                 />
               ) : (
                 <div className="flex items-center justify-center w-full h-full text-muted-foreground text-sm font-mono opacity-50">
@@ -154,6 +166,6 @@ export default function JsonFormatter() {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </>
   );
 }

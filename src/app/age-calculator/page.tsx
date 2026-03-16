@@ -12,7 +12,6 @@ import {
   addYears,
   isAfter,
 } from "date-fns";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Card, CardContent } from "@/components/ui/card";
@@ -88,7 +87,7 @@ export default function AgeCalculator() {
   }, [dob, asOf]);
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="Age Calculator"
         description="Find out your exact age in years, months, and days down to the hour."
@@ -208,6 +207,6 @@ export default function AgeCalculator() {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </>
   );
 }

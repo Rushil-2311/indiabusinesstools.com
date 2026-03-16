@@ -1,9 +1,8 @@
-import { PageLayout } from "@/components/layout/PageLayout";
 import { Wrench } from "lucide-react";
 
 export default function About() {
   return (
-    <PageLayout>
+    <>
       <div className="bg-background py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
           <div className="flex justify-center mb-8">
@@ -47,6 +46,6 @@ export default function About() {
           </p>
         </div>
       </div>
-    </PageLayout>
+    </>
   );
 }

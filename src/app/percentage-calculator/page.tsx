@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Percent } from "lucide-react";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,7 +31,7 @@ export default function PercentageCalculator() {
       : parseFloat(t4X) / (1 - parseFloat(t4Y) / 100);
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="Percentage Calculator"
         description="Solve complex percentage math instantly without formulas."
@@ -208,6 +207,6 @@ export default function PercentageCalculator() {
           </CardContent>
         </Card>
       </div>
-    </PageLayout>
+    </>
   );
 }

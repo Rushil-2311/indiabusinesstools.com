@@ -1,8 +1,6 @@
-import { PageLayout } from "@/components/layout/PageLayout";
-
 export default function Disclaimer() {
   return (
-    <PageLayout>
+    <>
       <div className="mx-auto max-w-3xl px-4 sm:px-6 py-16 mb-16">
         <h1 className="text-4xl font-display font-bold mb-8 tracking-tight">Disclaimer</h1>
 
@@ -42,6 +40,6 @@ export default function Disclaimer() {
           </p>
         </div>
       </div>
-    </PageLayout>
+    </>
   );
 }
