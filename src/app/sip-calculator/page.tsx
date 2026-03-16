@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, lazy, Suspense, type ComponentType } from "react";
+import { useState, Suspense } from "react";
 import { TrendingUp } from "lucide-react";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -19,28 +19,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { faqs } from "@/lib/data";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-// Lazy load recharts
-const AreaChart = lazy(() =>
-  import("recharts").then((mod) => ({
-    default: mod.AreaChart as unknown as ComponentType<any>,
-  })),
-);
-const Area = lazy(() =>
-  import("recharts").then((mod) => ({
-    default: mod.Area as unknown as ComponentType<any>,
-  })),
-);
-const XAxis = lazy(() =>
-  import("recharts").then((mod) => ({
-    default: mod.XAxis as unknown as ComponentType<any>,
-  })),
-);
-const YAxis = lazy(() =>
-  import("recharts").then((mod) => ({
-    default: mod.YAxis as unknown as ComponentType<any>,
-  })),
-);
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export default function SipCalculator() {
   const [mode, setMode] = useState<"sip" | "lumpsum">("sip");
