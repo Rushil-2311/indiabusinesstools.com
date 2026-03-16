@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Receipt } from "lucide-react";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,7 +38,7 @@ export default function GstCalculator() {
   const standardRates = [5, 12, 18, 28];
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="GST Calculator"
         description="Quickly calculate Goods and Services Tax with standard Indian tax slabs."
@@ -137,6 +136,6 @@ export default function GstCalculator() {
           </div>
         </Card>
       </div>
-    </PageLayout>
+    </>
   );
 }

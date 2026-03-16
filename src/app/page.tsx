@@ -4,13 +4,12 @@ import Link from "next/link";
 import { ArrowRight, Zap, Shield, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { toolsData } from "@/lib/data";
 
 export default function Home() {
   return (
-    <PageLayout>
+    <>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-background pt-24 pb-32">
         <div className="absolute inset-0 z-0 opacity-40">
@@ -79,7 +78,7 @@ export default function Home() {
                   <h3 className="text-xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
                     {tool.name}
                   </h3>
-                  <p className="text-muted-foreground text-sm flex-grow mb-6 leading-relaxed">
+                  <p className="text-muted-foreground text-sm grow mb-6 leading-relaxed">
                     {tool.description}
                   </p>
 
@@ -120,6 +119,6 @@ export default function Home() {
       </section>
 
       <AdSlot type="leaderboard" className="my-12" />
-    </PageLayout>
+    </>
   );
 }

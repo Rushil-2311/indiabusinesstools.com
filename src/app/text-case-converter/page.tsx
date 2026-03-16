@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { CaseSensitive, Copy, Check } from "lucide-react";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Card } from "@/components/ui/card";
@@ -90,7 +89,7 @@ export default function TextCaseConverter() {
   ];
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="Text Case Converter"
         description="Convert your text to uppercase, lowercase, title case, and programming cases."
@@ -165,6 +164,6 @@ export default function TextCaseConverter() {
           </div>
         </Card>
       </div>
-    </PageLayout>
+    </>
   );
 }

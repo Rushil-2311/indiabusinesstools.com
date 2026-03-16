@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BookOpen, Clock, ArrowRight } from "lucide-react";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Badge } from "@/components/ui/badge";
 
@@ -39,7 +38,7 @@ const blogPosts = [
 
 export default function Blog() {
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="ToolsKit Blog"
         description="Guides, tutorials, and financial insights to help you make the most of our tools."
@@ -65,7 +64,7 @@ export default function Blog() {
                   {post.category}
                 </Badge>
               </div>
-              <div className="p-6 flex flex-col flex-grow">
+              <div className="p-6 flex flex-col grow">
                 <div className="flex items-center text-xs text-muted-foreground mb-3 gap-3">
                   <span>{post.date}</span>
                   <span className="flex items-center">
@@ -75,7 +74,7 @@ export default function Blog() {
                 <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">
                   {post.title}
                 </h3>
-                <p className="text-muted-foreground text-sm mb-6 flex-grow line-clamp-3">
+                <p className="text-muted-foreground text-sm mb-6 grow line-clamp-3">
                   {post.excerpt}
                 </p>
                 <Link
@@ -89,6 +88,6 @@ export default function Blog() {
           ))}
         </div>
       </div>
-    </PageLayout>
+    </>
   );
 }

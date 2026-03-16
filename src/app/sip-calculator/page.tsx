@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, lazy, Suspense, type ComponentType } from "react";
+import { Suspense, useState } from "react";
 import { TrendingUp } from "lucide-react";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Slider } from "@/components/ui/slider";
@@ -19,28 +18,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { faqs } from "@/lib/data";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-// Lazy load recharts
-const AreaChart = lazy(() =>
-  import("recharts").then((mod) => ({
-    default: mod.AreaChart as unknown as ComponentType<any>,
-  })),
-);
-const Area = lazy(() =>
-  import("recharts").then((mod) => ({
-    default: mod.Area as unknown as ComponentType<any>,
-  })),
-);
-const XAxis = lazy(() =>
-  import("recharts").then((mod) => ({
-    default: mod.XAxis as unknown as ComponentType<any>,
-  })),
-);
-const YAxis = lazy(() =>
-  import("recharts").then((mod) => ({
-    default: mod.YAxis as unknown as ComponentType<any>,
-  })),
-);
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export default function SipCalculator() {
   const [mode, setMode] = useState<"sip" | "lumpsum">("sip");
@@ -76,7 +64,7 @@ export default function SipCalculator() {
   ];
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="SIP Calculator"
         description="Calculate the future value of your systematic investment plan with step-up options."
@@ -252,96 +240,97 @@ export default function SipCalculator() {
                       <div className="w-full h-full flex items-center justify-center bg-muted/20 animate-pulse rounded-xl" />
                     }
                   >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={result.schedule}
-                        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                      >
-                        <defs>
-                          <linearGradient
-                            id="colorTotal"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="hsl(var(--chart-2))"
-                              stopOpacity={0.3}
-                            />
-                            <stop
-                              offset="95%"
-                              stopColor="hsl(var(--chart-2))"
-                              stopOpacity={0}
-                            />
-                          </linearGradient>
-                          <linearGradient
-                            id="colorInvested"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="hsl(var(--chart-1))"
-                              stopOpacity={0.3}
-                            />
-                            <stop
-                              offset="95%"
-                              stopColor="hsl(var(--chart-1))"
-                              stopOpacity={0}
-                            />
-                          </linearGradient>
-                        </defs>
-                        <XAxis
-                          dataKey="year"
-                          tickFormatter={(v: number) => `${v}Y`}
-                          stroke="hsl(var(--muted-foreground))"
-                          fontSize={12}
-                          tickLine={false}
-                          axisLine={false}
-                        />
-                        <YAxis
-                          tickFormatter={(v: number) =>
-                            `₹${(v / 100000).toFixed(0)}L`
-                          }
-                          stroke="hsl(var(--muted-foreground))"
-                          fontSize={12}
-                          tickLine={false}
-                          axisLine={false}
-                        />
-                        <Tooltip
-                          formatter={(value: number) => formatCurrency(value)}
-                          labelFormatter={(label) => `Year ${label}`}
-                          contentStyle={{
-                            borderRadius: "12px",
-                            border: "1px solid hsl(var(--border))",
-                            boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
-                          }}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="total"
-                          name="Total Value"
-                          stroke="hsl(var(--chart-2))"
-                          strokeWidth={3}
-                          fillOpacity={1}
-                          fill="url(#colorTotal)"
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="invested"
-                          name="Invested"
-                          stroke="hsl(var(--chart-1))"
-                          strokeWidth={3}
-                          fillOpacity={1}
-                          fill="url(#colorInvested)"
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={result.schedule}
+                      margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="colorTotal"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="hsl(var(--chart-2))"
+                            stopOpacity={0.3}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="hsl(var(--chart-2))"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="colorInvested"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="hsl(var(--chart-1))"
+                            stopOpacity={0.3}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="hsl(var(--chart-1))"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <XAxis
+                        dataKey="year"
+                        tickFormatter={(v: number) => `${v}Y`}
+                        stroke="hsl(var(--muted-foreground))"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        tickFormatter={(v: number) =>
+                          `₹${(v / 100000).toFixed(0)}L`
+                        }
+                        stroke="hsl(var(--muted-foreground))"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        formatter={(value: number) => formatCurrency(value)}
+                        labelFormatter={(label) => `Year ${label}`}
+                        contentStyle={{
+                          borderRadius: "12px",
+                          border: "1px solid hsl(var(--border))",
+                          boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
+                        }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="total"
+                        name="Total Value"
+                        stroke="hsl(var(--chart-2))"
+                        strokeWidth={3}
+                        fillOpacity={1}
+                        fill="url(#colorTotal)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="invested"
+                        name="Invested"
+                        stroke="hsl(var(--chart-1))"
+                        strokeWidth={3}
+                        fillOpacity={1}
+                        fill="url(#colorInvested)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                   </Suspense>
+
                 </div>
               </CardContent>
             </Card>
@@ -371,6 +360,6 @@ export default function SipCalculator() {
           </Accordion>
         </div>
       </div>
-    </PageLayout>
+    </>
   );
 }

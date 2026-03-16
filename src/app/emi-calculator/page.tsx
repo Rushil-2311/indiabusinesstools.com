@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, lazy, Suspense } from "react";
-import dynamic from "next/dynamic";
+import { useState, Suspense } from "react";
 import { Landmark } from "lucide-react";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Slider } from "@/components/ui/slider";
@@ -12,7 +10,18 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { calculateEmi } from "@/lib/calculators";
 import { formatCurrency } from "@/lib/formatters";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from "recharts";
 import {
   Accordion,
   AccordionContent,
@@ -38,7 +47,7 @@ export default function EmiCalculator() {
   ];
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="EMI Calculator"
         description="Calculate your Equated Monthly Installment for home, car, or personal loans."
@@ -108,6 +117,51 @@ export default function EmiCalculator() {
                   className="py-2"
                 />
               </div>
+
+              <div className="pt-2">
+                <h4 className="font-semibold mb-4">Outstanding Balance Over Time</h4>
+                <div className="h-[220px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={result.yearlySchedule}
+                      margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="hsl(var(--border))"
+                        opacity={0.5}
+                      />
+                      <XAxis
+                        dataKey="year"
+                        tickFormatter={(v: number) => `${v}Y`}
+                        stroke="hsl(var(--muted-foreground))"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        tickFormatter={(v: number) => `₹${(v / 100000).toFixed(0)}L`}
+                        stroke="hsl(var(--muted-foreground))"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                      <Line
+                        type="monotone"
+                        dataKey="balance"
+                        name="Remaining Balance"
+                        stroke="hsl(var(--chart-2))"
+                        strokeWidth={3}
+                        dot={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  Shows how your loan balance reduces year-by-year based on your EMI.
+                </p>
+              </div>
             </CardContent>
           </Card>
 
@@ -117,7 +171,7 @@ export default function EmiCalculator() {
                 <p className="text-emerald-100 font-medium mb-2 uppercase tracking-wide">
                   Your Monthly EMI
                 </p>
-                <h3 className="text-5xl font-black mb-6">
+                <h3 className="text-5xl text-white mb-6">
                   {formatCurrency(result.emi)}
                 </h3>
                 <div className="grid grid-cols-2 gap-4 border-t border-emerald-400/30 pt-6">
@@ -282,6 +336,6 @@ export default function EmiCalculator() {
           </Accordion>
         </div>
       </div>
-    </PageLayout>
+    </>
   );
 }
