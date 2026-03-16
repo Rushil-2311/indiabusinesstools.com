@@ -1,5 +1,3 @@
-'use client';
-
 import Link from "next/link";
 import { ArrowRight, Zap, Shield, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { toolsData } from "@/lib/data";
+import Image from 'next/image'
+
 
 export default function Home() {
   return (
@@ -14,10 +14,14 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-background pt-24 pb-32">
         <div className="absolute inset-0 z-0 opacity-40">
-          <img
+          <Image
             src={`/images/hero-bg.png`}
-            alt="Background"
+            alt="Every Tool You Need"
             className="w-full h-full object-cover"
+            width={800}
+            height={600}
+            priority
+            quality={85}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
         </div>
@@ -37,11 +41,11 @@ export default function Home() {
             Financial planning, daily math, or developer tasks — we've got you covered.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" className="rounded-full px-8 h-14 text-base font-semibold shadow-xl shadow-primary/20 hover:shadow-primary/30 w-full sm:w-auto" onClick={() => {
-              document.getElementById('tools-grid')?.scrollIntoView({ behavior: 'smooth' });
-            }}>
-              Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <Link href="#tools">
+              <Button size="lg" className="rounded-full px-8 h-14 text-base font-semibold shadow-xl shadow-primary/20 hover:shadow-primary/30 w-full sm:w-auto">
+                Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
             <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-base font-semibold w-full sm:w-auto bg-background/50 backdrop-blur-sm">
               Bookmark Site
             </Button>
@@ -52,7 +56,7 @@ export default function Home() {
       <AdSlot type="leaderboard" className="mb-12" />
 
       {/* Tools Grid Section */}
-      <section id="tools-grid" className="py-16 bg-muted/30">
+      <section id="tools" className="py-16 bg-muted/30">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-display font-bold mb-4">Our Utility Kit</h2>
