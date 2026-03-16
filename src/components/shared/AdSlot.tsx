@@ -8,6 +8,7 @@ interface AdSlotProps {
 export function AdSlot({ type = "leaderboard", className }: AdSlotProps) {
   const isLeaderboard = type === "leaderboard";
   
+  return <></>; // will be implemented in the future when we have a better ad strategy in place
   return (
     <div className={cn(
       "w-full flex justify-center py-6", 
