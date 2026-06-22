@@ -1,5 +1,5 @@
 import  Link  from "next/link";
-import { Wrench, Mail, Twitter, Github } from "lucide-react";
+import { Mail, Twitter, Github } from "lucide-react";
 import { toolsData } from "@/lib/data";
 
 export function Footer() {
@@ -9,11 +9,23 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           
           <div className="md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4 group inline-flex">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
-                <Wrench className="h-4 w-4" />
+            <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group">
+              <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="ibt-footer" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FF6200"/>
+                    <stop offset="1" stopColor="#138808"/>
+                  </linearGradient>
+                </defs>
+                <rect width="40" height="40" rx="10" fill="url(#ibt-footer)"/>
+                <rect x="0" y="13" width="40" height="2.5" fill="white" fillOpacity="0.25"/>
+                <rect x="0" y="24.5" width="40" height="2.5" fill="white" fillOpacity="0.25"/>
+                <text x="20" y="28" fontSize="20" fontFamily="system-ui, Arial, sans-serif" fontWeight="700" fill="white" textAnchor="middle">&#8377;</text>
+              </svg>
+              <div className="flex flex-col leading-none">
+                <span className="font-display text-sm font-bold text-foreground tracking-tight">Indian</span>
+                <span className="font-display text-sm font-bold tracking-tight bg-linear-to-r from-orange-600 to-green-700 bg-clip-text text-transparent">BusinessTools</span>
               </div>
-              <span className="font-display text-xl font-bold">ToolsKit</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
               Every Tool You Need. One Place. Free Forever. Designed to make your daily calculations and formatting tasks effortless.
@@ -79,7 +91,7 @@ export function Footer() {
 
         <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ToolsKit. All rights reserved.
+            © {new Date().getFullYear()} IndianBusinessTools. All rights reserved.
           </p>
           <div className="text-sm text-muted-foreground">
             Built with ❤️ for the community.

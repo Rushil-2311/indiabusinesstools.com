@@ -1,11 +1,16 @@
-import { 
-  TrendingUp, 
-  Landmark, 
-  Receipt, 
-  Percent, 
-  CalendarDays, 
-  CaseSensitive, 
-  Braces 
+import {
+  TrendingUp,
+  Landmark,
+  Receipt,
+  Percent,
+  CalendarDays,
+  CaseSensitive,
+  Braces,
+  ImageIcon,
+  FileText,
+  QrCode,
+  AlignLeft,
+  Binary,
 } from "lucide-react";
 
 export const toolsData = [
@@ -64,7 +69,47 @@ export const toolsData = [
     gradient: "from-slate-600 to-gray-800",
     badge: null,
     icon: Braces
-  }
+  },
+  {
+    name: "Image Converter",
+    slug: "image-converter",
+    description: "Convert images between PNG, JPG, and WebP. Resize quality, download instantly.",
+    gradient: "from-pink-500 to-rose-600",
+    badge: "New",
+    icon: ImageIcon
+  },
+  {
+    name: "Markdown Converter",
+    slug: "markdown-converter",
+    description: "Write Markdown and export to PDF, Word DOC, or HTML with live preview.",
+    gradient: "from-violet-500 to-purple-700",
+    badge: "New",
+    icon: FileText
+  },
+  {
+    name: "QR Code Generator",
+    slug: "qr-code-generator",
+    description: "Generate QR codes for URLs, UPI IDs, phones, and more. Download as PNG.",
+    gradient: "from-teal-500 to-emerald-600",
+    badge: "New",
+    icon: QrCode
+  },
+  {
+    name: "Word Counter",
+    slug: "word-counter",
+    description: "Count words, characters, sentences. Get reading time and top keyword analysis.",
+    gradient: "from-orange-500 to-amber-600",
+    badge: "New",
+    icon: AlignLeft
+  },
+  {
+    name: "Base64 Tool",
+    slug: "base64-tool",
+    description: "Encode text or files to Base64, or decode Base64 strings back to plain text.",
+    gradient: "from-slate-500 to-zinc-700",
+    badge: "New",
+    icon: Binary
+  },
 ];
 
 export const faqs = {

@@ -8,7 +8,7 @@ export default function Privacy() {
           <p className="lead text-foreground">Last updated: October 15, 2023</p>
 
           <p>
-            At ToolsKit, we take your privacy seriously. This policy outlines what data we
+            At IndianBusinessTools, we take your privacy seriously. This policy outlines what data we
             collect (or rather, don't collect) and how we ensure your information remains
             secure.
           </p>

@@ -6,7 +6,7 @@ export default function Disclaimer() {
 
         <div className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground">
           <p>
-            The information and calculators provided on ToolsKit are for general informational
+            The information and calculators provided on IndianBusinessTools are for general informational
             and educational purposes only.
           </p>
 
@@ -34,7 +34,7 @@ export default function Disclaimer() {
           <h2 className="text-foreground font-display">General Utilities</h2>
           <p>
             While we strive for 100% accuracy in all our tools, software bugs can occur.
-            ToolsKit provides these utilities "as is" without warranty of any kind. We are not
+            IndianBusinessTools provides these utilities "as is" without warranty of any kind. We are not
             liable for any damages, data loss, or errors resulting from the use of our text
             converters, JSON formatters, or other utilities.
           </p>

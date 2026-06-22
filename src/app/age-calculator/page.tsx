@@ -143,7 +143,7 @@ export default function AgeCalculator() {
                     </h3>
                     <div className="flex justify-center items-baseline gap-4 md:gap-8">
                       <div className="text-center">
-                        <span className="text-5xl md:text-7xl font-black">{results.years}</span>
+                        <span className="text-4xl md:text-6xl font-bold">{results.years}</span>
                         <p className="text-rose-100 font-medium mt-1">Years</p>
                       </div>
                       <div className="text-center">

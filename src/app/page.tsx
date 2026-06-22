@@ -22,16 +22,13 @@ export default function Home() {
             priority
             quality={85}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
+          <div className="absolute inset-0 bg-linear-to-b from-transparent to-background" />
         </div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <Badge variant="outline" className="mb-6 px-4 py-1.5 border-primary/20 bg-primary/5 text-primary">
-            100% Free & No Sign-up Required
-          </Badge>
-          <h1 className="text-5xl md:text-7xl font-display font-extrabold text-foreground tracking-tight mb-8">
+<h1 className="text-5xl md:text-7xl font-display font-extrabold text-foreground tracking-tight mb-8">
             Every Tool You Need. <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-accent">
               One Place. Free Forever.
             </span>
           </h1>
@@ -45,9 +42,6 @@ export default function Home() {
                 Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-base font-semibold w-full sm:w-auto bg-background/50 backdrop-blur-sm">
-              Bookmark Site
-            </Button>
           </div>
         </div>
       </section>
@@ -66,10 +60,10 @@ export default function Home() {
             {toolsData.map((tool) => (
               <Link key={tool.slug} href={`/${tool.slug}`}>
                 <div className="group bg-card rounded-2xl p-6 shadow-sm border border-border/50 hover:shadow-xl hover:border-primary/20 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col cursor-pointer relative overflow-hidden">
-                  <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${tool.gradient} opacity-5 rounded-bl-[100px] transition-opacity group-hover:opacity-10`} />
+                  <div className={`absolute top-0 right-0 w-32 h-32 bg-linear-to-bl ${tool.gradient} opacity-5 rounded-bl-[100px] transition-opacity group-hover:opacity-10`} />
 
                   <div className="flex justify-between items-start mb-6 relative">
-                    <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${tool.gradient} text-white shadow-lg`}>
+                    <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-linear-to-br ${tool.gradient} text-white shadow-lg`}>
                       <tool.icon className="h-7 w-7" />
                     </div>
                     {tool.badge && (
@@ -100,7 +94,7 @@ export default function Home() {
       <section className="py-24 bg-card border-t">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-display font-bold mb-4">Why use ToolsKit?</h2>
+            <h2 className="text-3xl font-display font-bold mb-4">Why use IndianBusinessTools?</h2>
             <p className="text-muted-foreground">Built for speed, accuracy, and ease of use.</p>
           </div>
 
