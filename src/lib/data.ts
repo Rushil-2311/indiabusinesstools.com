@@ -11,6 +11,13 @@ import {
   QrCode,
   AlignLeft,
   Binary,
+  PiggyBank,
+  Shield,
+  FileSpreadsheet,
+  Briefcase,
+  BarChart3,
+  Ruler,
+  ClipboardList,
 } from "lucide-react";
 
 export const toolsData = [
@@ -109,6 +116,62 @@ export const toolsData = [
     gradient: "from-slate-500 to-zinc-700",
     badge: "New",
     icon: Binary
+  },
+  {
+    name: "FD Calculator",
+    slug: "fd-calculator",
+    description: "Calculate Fixed Deposit maturity & interest with SBI, HDFC, ICICI bank rate presets.",
+    gradient: "from-green-500 to-emerald-700",
+    badge: "New",
+    icon: PiggyBank
+  },
+  {
+    name: "PPF Calculator",
+    slug: "ppf-calculator",
+    description: "Calculate Public Provident Fund returns with year-by-year interest breakdown.",
+    gradient: "from-sky-500 to-cyan-600",
+    badge: "New",
+    icon: Shield
+  },
+  {
+    name: "Income Tax Calculator",
+    slug: "income-tax-calculator",
+    description: "Compare new vs old tax regime and calculate income tax for FY 2025-26.",
+    gradient: "from-red-500 to-rose-700",
+    badge: "New",
+    icon: FileSpreadsheet
+  },
+  {
+    name: "Salary / CTC Calculator",
+    slug: "ctc-calculator",
+    description: "Break down your CTC into in-hand salary with PF, HRA, and gratuity components.",
+    gradient: "from-indigo-600 to-blue-800",
+    badge: "New",
+    icon: Briefcase
+  },
+  {
+    name: "Compound Interest Calculator",
+    slug: "compound-interest-calculator",
+    description: "Calculate compound interest with daily, monthly, quarterly, and yearly compounding.",
+    gradient: "from-purple-600 to-violet-800",
+    badge: "New",
+    icon: BarChart3
+  },
+  {
+    name: "Unit Converter",
+    slug: "unit-converter",
+    description: "Convert weight, length, volume, temperature including Indian units like Tola and Maund.",
+    gradient: "from-amber-400 to-orange-500",
+    badge: "New",
+    icon: Ruler
+  },
+  {
+    name: "Invoice Generator",
+    slug: "invoice-generator",
+    description: "Create GST-ready invoices with CGST/SGST/IGST split and download as PDF.",
+    gradient: "from-gray-700 to-slate-900",
+    badge: "New",
+    icon: ClipboardList
   },
 ];
 

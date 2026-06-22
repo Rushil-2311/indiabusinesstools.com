@@ -27,6 +27,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'qr-code-generator',
     'word-counter',
     'base64-tool',
+    'fd-calculator',
+    'ppf-calculator',
+    'income-tax-calculator',
+    'ctc-calculator',
+    'compound-interest-calculator',
+    'unit-converter',
+    'invoice-generator',
   ].map((slug) => ({
     url: `${BASE_URL}/${slug}`,
     lastModified: now,
