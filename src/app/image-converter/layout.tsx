@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "Image Converter — PNG, JPG, WebP Converter | IndianBusinessTools",
     description:
       "Convert images between PNG, JPG, and WebP instantly in your browser. Adjust quality and compare file sizes.",
-    url: "https://indianbusinesstools.com/image-converter",
+    url: "https://www.indiabusinesstools.com/image-converter",
   },
   alternates: { canonical: "/image-converter" },
 };
@@ -28,7 +28,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Image Converter",
-  url: "https://indianbusinesstools.com/image-converter",
+  url: "https://www.indiabusinesstools.com/image-converter",
   description: "Convert images between PNG, JPG, and WebP formats in your browser.",
   applicationCategory: "MultimediaApplication",
   operatingSystem: "Web Browser",

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "Base64 Encoder & Decoder — Encode & Decode Free | IndianBusinessTools",
     description:
       "Encode text or files to Base64 or decode Base64 strings back to plain text. Free and instant.",
-    url: "https://indianbusinesstools.com/base64-tool",
+    url: "https://www.indiabusinesstools.com/base64-tool",
   },
   alternates: { canonical: "/base64-tool" },
 };
@@ -29,7 +29,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Base64 Encoder & Decoder",
-  url: "https://indianbusinesstools.com/base64-tool",
+  url: "https://www.indiabusinesstools.com/base64-tool",
   description: "Encode text/files to Base64 or decode Base64 strings back to plain text.",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Web Browser",

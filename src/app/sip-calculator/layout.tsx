@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "SIP Calculator — Calculate Mutual Fund Returns | IndianBusinessTools",
     description:
       "Calculate SIP returns instantly. See projected corpus, wealth gained, and growth chart for any monthly investment amount.",
-    url: "https://indianbusinesstools.com/sip-calculator",
+    url: "https://www.indiabusinesstools.com/sip-calculator",
   },
   alternates: { canonical: "/sip-calculator" },
 };
@@ -27,7 +27,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "SIP Calculator",
-  url: "https://indianbusinesstools.com/sip-calculator",
+  url: "https://www.indiabusinesstools.com/sip-calculator",
   description:
     "Calculate SIP returns for mutual fund investments with step-up and inflation adjustment.",
   applicationCategory: "FinanceApplication",

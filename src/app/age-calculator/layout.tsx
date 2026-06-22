@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Age Calculator — Exact Age from Date of Birth | IndianBusinessTools",
     description:
       "Calculate your exact age in years, months, days, and hours from your date of birth.",
-    url: "https://indianbusinesstools.com/age-calculator",
+    url: "https://www.indiabusinesstools.com/age-calculator",
   },
   alternates: { canonical: "/age-calculator" },
 };
@@ -27,7 +27,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Age Calculator",
-  url: "https://indianbusinesstools.com/age-calculator",
+  url: "https://www.indiabusinesstools.com/age-calculator",
   description: "Calculate exact age in years, months, days, and hours from date of birth.",
   applicationCategory: "UtilitiesApplication",
   operatingSystem: "Web Browser",

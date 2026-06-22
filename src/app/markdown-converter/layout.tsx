@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "Markdown Converter — MD to PDF, Word, HTML | IndianBusinessTools",
     description:
       "Write Markdown with live preview and export to PDF, Word DOC, or HTML instantly.",
-    url: "https://indianbusinesstools.com/markdown-converter",
+    url: "https://www.indiabusinesstools.com/markdown-converter",
   },
   alternates: { canonical: "/markdown-converter" },
 };
@@ -28,7 +28,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Markdown Converter",
-  url: "https://indianbusinesstools.com/markdown-converter",
+  url: "https://www.indiabusinesstools.com/markdown-converter",
   description: "Convert Markdown to PDF, Word DOC, and HTML with live preview.",
   applicationCategory: "UtilitiesApplication",
   operatingSystem: "Web Browser",

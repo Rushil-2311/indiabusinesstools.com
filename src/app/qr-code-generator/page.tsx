@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const PRESETS = [
-  { label: "URL", value: "https://indianbusinesstools.com" },
+  { label: "URL", value: "https://www.indiabusinesstools.com" },
   { label: "UPI", value: "upi://pay?pa=yourname@upi&pn=Your+Name&cu=INR" },
   { label: "Email", value: "mailto:hello@example.com" },
   { label: "Phone", value: "tel:+919999999999" },
@@ -15,7 +15,7 @@ const PRESETS = [
 ];
 
 export default function QRCodeGenerator() {
-  const [text, setText] = useState("https://indianbusinesstools.com");
+  const [text, setText] = useState("https://www.indiabusinesstools.com");
   const [size, setSize] = useState(280);
   const [fg, setFg] = useState("#000000");
   const [bg, setBg] = useState("#FFFFFF");

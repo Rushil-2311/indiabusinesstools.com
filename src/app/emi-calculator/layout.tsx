@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "EMI Calculator — Loan EMI & Amortization Schedule | IndianBusinessTools",
     description:
       "Calculate your loan EMI and get a full amortization schedule. Works for home loans, car loans, and personal loans.",
-    url: "https://indianbusinesstools.com/emi-calculator",
+    url: "https://www.indiabusinesstools.com/emi-calculator",
   },
   alternates: { canonical: "/emi-calculator" },
 };
@@ -27,7 +27,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "EMI Calculator",
-  url: "https://indianbusinesstools.com/emi-calculator",
+  url: "https://www.indiabusinesstools.com/emi-calculator",
   description:
     "Calculate loan EMI and get a detailed amortization schedule for home, car, and personal loans.",
   applicationCategory: "FinanceApplication",

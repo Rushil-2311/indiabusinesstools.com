@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "QR Code Generator — Free QR for URL, UPI & More | IndianBusinessTools",
     description:
       "Generate QR codes for URLs, UPI payments, WhatsApp, and phone numbers. Customize colors and download as PNG.",
-    url: "https://indianbusinesstools.com/qr-code-generator",
+    url: "https://www.indiabusinesstools.com/qr-code-generator",
   },
   alternates: { canonical: "/qr-code-generator" },
 };
@@ -28,7 +28,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "QR Code Generator",
-  url: "https://indianbusinesstools.com/qr-code-generator",
+  url: "https://www.indiabusinesstools.com/qr-code-generator",
   description:
     "Generate QR codes for URLs, UPI IDs, WhatsApp, and phone numbers with custom colors.",
   applicationCategory: "UtilitiesApplication",

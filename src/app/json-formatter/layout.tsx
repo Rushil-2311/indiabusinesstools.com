@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "JSON Formatter & Validator — Beautify JSON Online | IndianBusinessTools",
     description:
       "Format, validate, and minify JSON instantly. Syntax highlighting, error detection, and 2/4/8 space indentation.",
-    url: "https://indianbusinesstools.com/json-formatter",
+    url: "https://www.indiabusinesstools.com/json-formatter",
   },
   alternates: { canonical: "/json-formatter" },
 };
@@ -28,7 +28,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "JSON Formatter",
-  url: "https://indianbusinesstools.com/json-formatter",
+  url: "https://www.indiabusinesstools.com/json-formatter",
   description: "Format, validate, beautify, and minify JSON data with syntax highlighting.",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Web Browser",

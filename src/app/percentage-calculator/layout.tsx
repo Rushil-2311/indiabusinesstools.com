@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Percentage Calculator — Solve Any Percentage Problem | IndianBusinessTools",
     description:
       "Instantly solve percentage problems — percentage of a number, change, increase, decrease, and ratio.",
-    url: "https://indianbusinesstools.com/percentage-calculator",
+    url: "https://www.indiabusinesstools.com/percentage-calculator",
   },
   alternates: { canonical: "/percentage-calculator" },
 };
@@ -27,7 +27,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Percentage Calculator",
-  url: "https://indianbusinesstools.com/percentage-calculator",
+  url: "https://www.indiabusinesstools.com/percentage-calculator",
   description: "Solve any percentage problem instantly — change, ratio, increase, and decrease.",
   applicationCategory: "UtilitiesApplication",
   operatingSystem: "Web Browser",

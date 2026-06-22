@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "GST Calculator — Add or Remove GST | IndianBusinessTools",
     description:
       "Instantly calculate GST for 5%, 12%, 18%, 28% slabs. Add GST to a price or remove it. Shows CGST and SGST breakdown.",
-    url: "https://indianbusinesstools.com/gst-calculator",
+    url: "https://www.indiabusinesstools.com/gst-calculator",
   },
   alternates: { canonical: "/gst-calculator" },
 };
@@ -28,7 +28,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "GST Calculator",
-  url: "https://indianbusinesstools.com/gst-calculator",
+  url: "https://www.indiabusinesstools.com/gst-calculator",
   description:
     "Add or remove GST from prices with all Indian tax slabs and CGST/SGST breakdown.",
   applicationCategory: "FinanceApplication",

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Blog — Finance & Business Guides | IndianBusinessTools",
     description:
       "Practical finance guides and business insights for Indian professionals and entrepreneurs.",
-    url: "https://indianbusinesstools.com/blog",
+    url: "https://www.indiabusinesstools.com/blog",
     type: "website",
   },
   alternates: { canonical: "/blog" },
@@ -27,12 +27,12 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "Blog",
   name: "IndianBusinessTools Blog",
-  url: "https://indianbusinesstools.com/blog",
+  url: "https://www.indiabusinesstools.com/blog",
   description: "Finance guides, investment tips, and business insights for Indian professionals.",
   publisher: {
     "@type": "Organization",
     name: "IndianBusinessTools",
-    url: "https://indianbusinesstools.com",
+    url: "https://www.indiabusinesstools.com",
   },
 };
 

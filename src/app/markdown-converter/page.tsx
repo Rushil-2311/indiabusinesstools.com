@@ -14,7 +14,7 @@ Markdown is a lightweight markup language for creating formatted text using a pl
 - **Bold text** and *italic text*
 - Ordered and unordered lists
 - \`inline code\` and code blocks
-- [Links](https://indianbusinesstools.com) and images
+- [Links](https://www.indiabusinesstools.com) and images
 - Tables, blockquotes, and more
 
 ## Code Example

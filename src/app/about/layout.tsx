@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "About IndianBusinessTools",
     description:
       "Our mission is to provide the highest quality free utilities for Indian businesses, with zero ads and complete privacy.",
-    url: "https://indianbusinesstools.com/about",
+    url: "https://www.indiabusinesstools.com/about",
   },
   alternates: { canonical: "/about" },
 };

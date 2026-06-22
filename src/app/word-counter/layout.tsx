@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "Word Counter — Words, Characters & Reading Time | IndianBusinessTools",
     description:
       "Count words, characters, sentences. Get reading time and keyword frequency analysis instantly.",
-    url: "https://indianbusinesstools.com/word-counter",
+    url: "https://www.indiabusinesstools.com/word-counter",
   },
   alternates: { canonical: "/word-counter" },
 };
@@ -29,7 +29,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Word Counter",
-  url: "https://indianbusinesstools.com/word-counter",
+  url: "https://www.indiabusinesstools.com/word-counter",
   description:
     "Count words, characters, sentences. Analyze reading time and keyword frequency.",
   applicationCategory: "UtilitiesApplication",

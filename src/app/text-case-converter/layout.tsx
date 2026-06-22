@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "Text Case Converter — UPPERCASE to lowercase & More | IndianBusinessTools",
     description:
       "Convert text between any case format: UPPERCASE, lowercase, Title Case, camelCase, snake_case, and more.",
-    url: "https://indianbusinesstools.com/text-case-converter",
+    url: "https://www.indiabusinesstools.com/text-case-converter",
   },
   alternates: { canonical: "/text-case-converter" },
 };
@@ -28,7 +28,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Text Case Converter",
-  url: "https://indianbusinesstools.com/text-case-converter",
+  url: "https://www.indiabusinesstools.com/text-case-converter",
   description: "Convert text between UPPERCASE, lowercase, Title Case, camelCase, and more.",
   applicationCategory: "UtilitiesApplication",
   operatingSystem: "Web Browser",
