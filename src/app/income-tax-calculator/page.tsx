@@ -4,6 +4,7 @@ import { FileSpreadsheet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -117,18 +118,14 @@ export default function IncomeTaxCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <div className="bg-linear-to-br from-red-500 to-rose-700 py-14 px-4">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 backdrop-blur mb-4">
-            <FileSpreadsheet className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Income Tax Calculator</h1>
-          <p className="text-white/80 text-lg">New vs Old Regime comparison — FY 2025-26</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Income Tax Calculator"
+        description="New vs Old Regime comparison — FY 2025-26"
+        icon={FileSpreadsheet}
+        gradient="from-red-500 to-rose-700"
+      />
 
-      <div className="mx-auto max-w-5xl px-4 py-10 space-y-6">
+      <div className="mx-auto max-w-5xl px-4 pb-10 space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           {/* Inputs */}
           <div className="space-y-4">

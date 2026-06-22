@@ -4,6 +4,7 @@ import { Shield } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 const PPF_RATE = 7.1;
 
@@ -47,18 +48,14 @@ export default function PPFCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <div className="bg-linear-to-br from-sky-500 to-cyan-600 py-14 px-4">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 backdrop-blur mb-4">
-            <Shield className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">PPF Calculator</h1>
-          <p className="text-white/80 text-lg">Public Provident Fund returns at current 7.1% p.a.</p>
-        </div>
-      </div>
+      <PageHeader
+        title="PPF Calculator"
+        description="Public Provident Fund returns at current 7.1% p.a."
+        icon={Shield}
+        gradient="from-sky-500 to-cyan-600"
+      />
 
-      <div className="mx-auto max-w-5xl px-4 py-10 grid md:grid-cols-2 gap-6">
+      <div className="mx-auto max-w-5xl px-4 pb-10 grid md:grid-cols-2 gap-6">
         {/* Inputs */}
         <Card>
           <CardHeader><CardTitle>PPF Details</CardTitle></CardHeader>

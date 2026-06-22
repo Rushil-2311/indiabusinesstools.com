@@ -1,10 +1,10 @@
 "use client";
 import { useState, useMemo } from "react";
-import { PiggyBank, ChevronDown } from "lucide-react";
+import { PiggyBank } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 const BANK_PRESETS = [
   { name: "Custom", rate: 0 },
@@ -74,18 +74,14 @@ export default function FDCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <div className="bg-linear-to-br from-green-500 to-emerald-700 py-14 px-4">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 backdrop-blur mb-4">
-            <PiggyBank className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">FD Calculator</h1>
-          <p className="text-white/80 text-lg">Calculate Fixed Deposit maturity with bank rate presets</p>
-        </div>
-      </div>
+      <PageHeader
+        title="FD Calculator"
+        description="Calculate Fixed Deposit maturity with bank rate presets"
+        icon={PiggyBank}
+        gradient="from-green-500 to-emerald-700"
+      />
 
-      <div className="mx-auto max-w-5xl px-4 py-10 grid md:grid-cols-2 gap-6">
+      <div className="mx-auto max-w-5xl px-4 pb-10 grid md:grid-cols-2 gap-6">
         {/* Inputs */}
         <Card>
           <CardHeader><CardTitle>FD Details</CardTitle></CardHeader>

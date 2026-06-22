@@ -4,6 +4,7 @@ import { BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -52,18 +53,14 @@ export default function CompoundInterestCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <div className="bg-linear-to-br from-purple-600 to-violet-800 py-14 px-4">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 backdrop-blur mb-4">
-            <BarChart3 className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Compound Interest Calculator</h1>
-          <p className="text-white/80 text-lg">See how compounding grows your money over time</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Compound Interest Calculator"
+        description="See how compounding grows your money over time"
+        icon={BarChart3}
+        gradient="from-purple-600 to-violet-800"
+      />
 
-      <div className="mx-auto max-w-5xl px-4 py-10 grid md:grid-cols-2 gap-6">
+      <div className="mx-auto max-w-5xl px-4 pb-10 grid md:grid-cols-2 gap-6">
         {/* Inputs */}
         <Card>
           <CardHeader><CardTitle>Investment Details</CardTitle></CardHeader>

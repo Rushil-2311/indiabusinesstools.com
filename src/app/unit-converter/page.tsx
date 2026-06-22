@@ -4,6 +4,7 @@ import { Ruler, ArrowLeftRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 type Unit = { label: string; factor: number; note?: string };
 type Category = { name: string; units: Unit[]; convert?: (val: number, from: Unit, to: Unit) => number };
@@ -146,18 +147,14 @@ export default function UnitConverterPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <div className="bg-linear-to-br from-amber-400 to-orange-500 py-14 px-4">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 backdrop-blur mb-4">
-            <Ruler className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Unit Converter</h1>
-          <p className="text-white/80 text-lg">Weight, Length, Area, Volume, Temperature & more</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Unit Converter"
+        description="Weight, Length, Area, Volume, Temperature & more"
+        icon={Ruler}
+        gradient="from-amber-400 to-orange-500"
+      />
 
-      <div className="mx-auto max-w-4xl px-4 py-10 space-y-6">
+      <div className="mx-auto max-w-4xl px-4 pb-10 space-y-6">
         {/* Category tabs */}
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((c, i) => (

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 type LineItem = { description: string; hsn: string; qty: string; rate: string; gst: string };
 
@@ -105,18 +106,16 @@ export default function InvoiceGeneratorPage() {
         }
       `}</style>
 
-      {/* Hero */}
-      <div className="bg-linear-to-br from-gray-700 to-slate-900 py-14 px-4 no-print">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 backdrop-blur mb-4">
-            <ClipboardList className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">GST Invoice Generator</h1>
-          <p className="text-white/80 text-lg">Create professional GST invoices — download as PDF</p>
-        </div>
+      <div className="no-print">
+        <PageHeader
+          title="GST Invoice Generator"
+          description="Create professional GST invoices — download as PDF"
+          icon={ClipboardList}
+          gradient="from-gray-700 to-slate-900"
+        />
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 py-8 grid lg:grid-cols-[400px_1fr] gap-6">
+      <div className="mx-auto max-w-6xl px-4 pb-8 grid lg:grid-cols-[400px_1fr] gap-6">
         {/* Form */}
         <div className="space-y-4 no-print">
           <Card>
