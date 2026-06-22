@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/seo/JsonLd';
 import type { Metadata } from 'next';
 
-const BASE_URL = 'https://indianbusinesstools.com';
+const BASE_URL = 'https://www.indiabusinesstools.com';
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));

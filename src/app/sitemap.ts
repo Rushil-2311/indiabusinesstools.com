@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { blogPosts } from '@/lib/blogData';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://indianbusinesstools.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.indiabusinesstools.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

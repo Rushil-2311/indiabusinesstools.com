@@ -3,7 +3,7 @@
 
 import { MetadataRoute } from 'next'
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://indiabusinesstools.vercel.app'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.indiabusinesstools.com'
 
 export default function robots(): MetadataRoute.Robots {
   return {

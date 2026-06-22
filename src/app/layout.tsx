@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const BASE_URL = "https://indianbusinesstools.com";
+const BASE_URL = "https://www.indiabusinesstools.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
