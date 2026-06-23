@@ -27,7 +27,6 @@ import {
   Database,
   Coffee,
   ImageDown,
-  ScanText,
   FileStack,
   Archive,
 } from "lucide-react";
@@ -272,14 +271,6 @@ export const toolsData = [
     gradient: "from-pink-500 to-rose-600",
     badge: "New",
     icon: ImageDown
-  },
-  {
-    name: "Image to Text (OCR)",
-    slug: "image-to-text",
-    description: "Extract text from images using OCR. Supports English, Hindi, Tamil, Telugu and more Indian languages.",
-    gradient: "from-violet-500 to-purple-700",
-    badge: "New",
-    icon: ScanText
   },
   {
     name: "PDF Tools",

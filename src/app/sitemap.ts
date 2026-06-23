@@ -45,7 +45,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'sql-formatter',
     'java-formatter',
     'image-compressor',
-    'image-to-text',
     'pdf-tools',
     'zip-extractor',
   ].map((slug) => ({

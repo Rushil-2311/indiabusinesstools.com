@@ -47,7 +47,6 @@ const CATEGORIES = [
       "invoice-generator",
       "salary-slip-generator",
       "image-compressor",
-      "image-to-text",
       "pdf-tools",
       "zip-extractor",
     ],
