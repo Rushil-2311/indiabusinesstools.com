@@ -87,11 +87,6 @@ export const metadata: Metadata = {
   verification: {
     google: "dtAsTsMu43DxbdyBaD_bZGhhrzGtC2ulqkT9DLUrcsg",
   },
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
-  },
   category: "business",
 };
 
