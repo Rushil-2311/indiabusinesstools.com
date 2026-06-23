@@ -27,6 +27,14 @@ import {
 
 export const toolsData = [
   {
+    name: "Salary Slip Generator",
+    slug: "salary-slip-generator",
+    description: "Generate professional salary slips with company logo, earnings, deductions and PDF download.",
+    gradient: "from-violet-600 to-indigo-700",
+    badge: "New",
+    icon: ScrollText
+  },
+  {
     name: "SIP Calculator",
     slug: "sip-calculator",
     description: "Calculate mutual fund returns with step-up & inflation adjustment.",
@@ -209,14 +217,6 @@ export const toolsData = [
     gradient: "from-yellow-500 to-orange-500",
     badge: "New",
     icon: Table
-  },
-  {
-    name: "Salary Slip Generator",
-    slug: "salary-slip-generator",
-    description: "Generate professional salary slips with company logo, earnings, deductions and PDF download.",
-    gradient: "from-violet-600 to-indigo-700",
-    badge: "New",
-    icon: ScrollText
   },
 ];
 
