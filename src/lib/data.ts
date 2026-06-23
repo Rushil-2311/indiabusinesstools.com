@@ -18,6 +18,11 @@ import {
   BarChart3,
   Ruler,
   ClipboardList,
+  LineChart,
+  CreditCard,
+  Palette,
+  Table,
+  ScrollText,
 } from "lucide-react";
 
 export const toolsData = [
@@ -172,6 +177,46 @@ export const toolsData = [
     gradient: "from-gray-700 to-slate-900",
     badge: "New",
     icon: ClipboardList
+  },
+  {
+    name: "CAGR Calculator",
+    slug: "cagr-calculator",
+    description: "Calculate Compound Annual Growth Rate for investments or find future value at a given CAGR.",
+    gradient: "from-lime-500 to-emerald-600",
+    badge: "New",
+    icon: LineChart
+  },
+  {
+    name: "Loan Eligibility Calculator",
+    slug: "loan-eligibility-calculator",
+    description: "Find out your maximum loan amount based on salary, existing EMIs, tenure and FOIR.",
+    gradient: "from-cyan-600 to-blue-700",
+    badge: "New",
+    icon: CreditCard
+  },
+  {
+    name: "Color Converter",
+    slug: "color-converter",
+    description: "Convert colors between HEX, RGB and HSL with live preview, palette, and copy buttons.",
+    gradient: "from-fuchsia-500 to-pink-600",
+    badge: "New",
+    icon: Palette
+  },
+  {
+    name: "CSV ↔ JSON Converter",
+    slug: "csv-json-converter",
+    description: "Convert CSV to JSON or JSON to CSV instantly. Supports custom delimiters and preview.",
+    gradient: "from-yellow-500 to-orange-500",
+    badge: "New",
+    icon: Table
+  },
+  {
+    name: "Salary Slip Generator",
+    slug: "salary-slip-generator",
+    description: "Generate professional salary slips with company logo, earnings, deductions and PDF download.",
+    gradient: "from-violet-600 to-indigo-700",
+    badge: "New",
+    icon: ScrollText
   },
 ];
 

@@ -148,7 +148,7 @@ export default function IncomeTaxCalculatorPage() {
                         key={a.val}
                         onClick={() => setAge(a.val as typeof age)}
                         className={`py-2 rounded-lg text-sm font-medium border transition-colors ${
-                          age === a.val ? "bg-red-500 text-white border-red-500" : "border-border text-muted-foreground hover:border-red-400"
+                          age === a.val ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-foreground/40"
                         }`}
                       >
                         {a.label}
@@ -183,10 +183,10 @@ export default function IncomeTaxCalculatorPage() {
           {/* Results */}
           <div className="space-y-4">
             {/* Recommendation */}
-            <Card className={`border-2 ${result.betterRegime === "new" ? "border-green-400" : "border-blue-400"}`}>
+            <Card className="border-2 border-foreground">
               <CardContent className="pt-5 text-center space-y-1">
-                <div className="text-sm text-muted-foreground">Recommended Regime</div>
-                <div className={`text-2xl font-bold ${result.betterRegime === "new" ? "text-green-600" : "text-blue-600"}`}>
+                <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Recommended Regime</div>
+                <div className="text-2xl font-bold">
                   {result.betterRegime === "new" ? "New Regime" : "Old Regime"}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -198,35 +198,41 @@ export default function IncomeTaxCalculatorPage() {
             {/* Side-by-side */}
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "New Regime", color: "green", data: result.new, regime: "new" },
-                { label: "Old Regime", color: "blue", data: result.old, regime: "old" },
-              ].map(({ label, color, data, regime }) => (
-                <Card key={regime} className={result.betterRegime === regime ? `ring-2 ring-${color}-400` : ""}>
-                  <CardContent className="pt-4 space-y-2">
-                    <div className={`text-sm font-semibold text-${color}-600`}>{label}</div>
-                    <div>
-                      <div className="text-xs text-muted-foreground">Taxable Income</div>
-                      <div className="font-bold text-sm">₹{fmt(data.taxable)}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-muted-foreground">Income Tax</div>
-                      <div className="font-bold text-sm">₹{fmt(data.tax)}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-muted-foreground">Cess (4%)</div>
-                      <div className="font-bold text-sm">₹{fmt(data.cess)}</div>
-                    </div>
-                    <div className={`border-t pt-2 mt-2`}>
-                      <div className="text-xs text-muted-foreground">Total Tax</div>
-                      <div className={`text-xl font-bold text-${color}-600`}>₹{fmt(data.total)}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-muted-foreground">Monthly Tax</div>
-                      <div className="font-bold text-sm">₹{fmt(data.total / 12)}</div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                { label: "New Regime", data: result.new, regime: "new" },
+                { label: "Old Regime", data: result.old, regime: "old" },
+              ].map(({ label, data, regime }) => {
+                const isBetter = result.betterRegime === regime;
+                return (
+                  <Card key={regime} className={isBetter ? "ring-2 ring-foreground" : "opacity-80"}>
+                    <CardContent className="pt-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold">{label}</span>
+                        {isBetter && <span className="text-xs bg-foreground text-background px-1.5 py-0.5 rounded font-medium">Best</span>}
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">Taxable Income</div>
+                        <div className="font-bold text-sm">₹{fmt(data.taxable)}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">Income Tax</div>
+                        <div className="font-bold text-sm">₹{fmt(data.tax)}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">Cess (4%)</div>
+                        <div className="font-bold text-sm">₹{fmt(data.cess)}</div>
+                      </div>
+                      <div className="border-t pt-2 mt-2">
+                        <div className="text-xs text-muted-foreground">Total Tax</div>
+                        <div className="text-xl font-bold">₹{fmt(data.total)}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">Monthly Tax</div>
+                        <div className="font-bold text-sm">₹{fmt(data.total / 12)}</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
 
             {/* Slab breakdown — New Regime */}

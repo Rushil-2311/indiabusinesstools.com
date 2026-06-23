@@ -34,6 +34,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'compound-interest-calculator',
     'unit-converter',
     'invoice-generator',
+    'cagr-calculator',
+    'loan-eligibility-calculator',
+    'color-converter',
+    'csv-json-converter',
+    'salary-slip-generator',
   ].map((slug) => ({
     url: `${BASE_URL}/${slug}`,
     lastModified: now,

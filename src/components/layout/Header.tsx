@@ -17,6 +17,8 @@ const CATEGORIES = [
       "income-tax-calculator",
       "ctc-calculator",
       "compound-interest-calculator",
+      "cagr-calculator",
+      "loan-eligibility-calculator",
     ],
   },
   {
@@ -25,11 +27,11 @@ const CATEGORIES = [
   },
   {
     name: "Developer",
-    slugs: ["json-formatter", "image-converter", "qr-code-generator"],
+    slugs: ["json-formatter", "image-converter", "qr-code-generator", "color-converter", "csv-json-converter"],
   },
   {
     name: "Utility",
-    slugs: ["age-calculator", "percentage-calculator", "unit-converter", "invoice-generator"],
+    slugs: ["age-calculator", "percentage-calculator", "unit-converter", "invoice-generator", "salary-slip-generator"],
   },
 ];
 
