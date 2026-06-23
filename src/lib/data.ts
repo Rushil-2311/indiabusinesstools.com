@@ -23,6 +23,13 @@ import {
   Palette,
   Table,
   ScrollText,
+  FileCode,
+  Database,
+  Coffee,
+  ImageDown,
+  ScanText,
+  FileStack,
+  Archive,
 } from "lucide-react";
 
 export const toolsData = [
@@ -213,10 +220,82 @@ export const toolsData = [
   {
     name: "CSV ↔ JSON Converter",
     slug: "csv-json-converter",
-    description: "Convert CSV to JSON or JSON to CSV instantly. Supports custom delimiters and preview.",
+    description: "Convert CSV to JSON or JSON to CSV instantly. Supports custom delimiters, file upload and preview.",
     gradient: "from-yellow-500 to-orange-500",
     badge: "New",
     icon: Table
+  },
+  {
+    name: "XML ↔ JSON Converter",
+    slug: "xml-json-converter",
+    description: "Convert XML to JSON or JSON to XML instantly. Upload a file or paste your data.",
+    gradient: "from-cyan-500 to-blue-600",
+    badge: "New",
+    icon: FileCode
+  },
+  {
+    name: "XML ↔ CSV Converter",
+    slug: "xml-csv-converter",
+    description: "Convert XML to CSV or CSV to XML with file upload support and table preview.",
+    gradient: "from-emerald-500 to-teal-600",
+    badge: "New",
+    icon: FileSpreadsheet
+  },
+  {
+    name: "XML Formatter",
+    slug: "xml-formatter",
+    description: "Beautify, format and minify XML. Validate structure and pretty-print with custom indentation.",
+    gradient: "from-orange-500 to-red-500",
+    badge: "New",
+    icon: FileCode
+  },
+  {
+    name: "SQL Formatter",
+    slug: "sql-formatter",
+    description: "Format SQL queries for MySQL, PostgreSQL, SQLite and more. Supports uppercase keywords.",
+    gradient: "from-blue-600 to-indigo-700",
+    badge: "New",
+    icon: Database
+  },
+  {
+    name: "Java Formatter",
+    slug: "java-formatter",
+    description: "Beautify and format Java source code — auto-indent, clean spacing, file upload support.",
+    gradient: "from-amber-600 to-orange-700",
+    badge: "New",
+    icon: Coffee
+  },
+  {
+    name: "Image Compressor",
+    slug: "image-compressor",
+    description: "Compress and resize images in your browser. Adjust quality, set max dimensions, convert format.",
+    gradient: "from-pink-500 to-rose-600",
+    badge: "New",
+    icon: ImageDown
+  },
+  {
+    name: "Image to Text (OCR)",
+    slug: "image-to-text",
+    description: "Extract text from images using OCR. Supports English, Hindi, Tamil, Telugu and more Indian languages.",
+    gradient: "from-violet-500 to-purple-700",
+    badge: "New",
+    icon: ScanText
+  },
+  {
+    name: "PDF Tools",
+    slug: "pdf-tools",
+    description: "Merge multiple PDFs, split PDF by page range, and compress PDF size — all in your browser.",
+    gradient: "from-red-600 to-rose-700",
+    badge: "New",
+    icon: FileStack
+  },
+  {
+    name: "ZIP Extractor",
+    slug: "zip-extractor",
+    description: "Extract and download files from ZIP archives online. Preview contents and download individually.",
+    gradient: "from-slate-600 to-gray-800",
+    badge: "New",
+    icon: Archive
   },
 ];
 

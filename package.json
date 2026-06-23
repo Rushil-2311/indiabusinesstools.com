@@ -11,13 +11,17 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "framer-motion": "^12.36.0",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.577.0",
     "marked": "^18.0.5",
     "next": "^16.2.9",
+    "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "tailwind-merge": "^3.5.0"
+    "sql-formatter": "^15.8.2",
+    "tailwind-merge": "^3.5.0",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -1,6 +1,6 @@
 "use client";
-import { useState, useMemo } from "react";
-import { Table, Copy, Check, Download, ArrowLeftRight } from "lucide-react";
+import { useState, useMemo, useRef } from "react";
+import { Table, Copy, Check, Download, ArrowLeftRight, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -73,7 +73,7 @@ export default function CSVJSONConverterPage() {
   const [input, setInput] = useState(SAMPLE_CSV);
   const [delimiter, setDelimiter] = useState(",");
   const [copied, setCopied] = useState(false);
-  const [indent, setIndent] = useState(2);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const output = useMemo(() => {
     if (!input.trim()) return "";
@@ -95,6 +95,15 @@ export default function CSVJSONConverterPage() {
   function swap() {
     setInput(output);
     setMode(mode === "csv2json" ? "json2csv" : "csv2json");
+  }
+
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setInput(reader.result as string);
+    reader.readAsText(file);
+    e.target.value = "";
   }
 
   return (
@@ -127,6 +136,11 @@ export default function CSVJSONConverterPage() {
           <button onClick={swap} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm text-muted-foreground hover:bg-muted transition-colors">
             <ArrowLeftRight className="h-4 w-4" /> Swap
           </button>
+
+          <button onClick={() => fileRef.current?.click()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm text-muted-foreground hover:bg-muted transition-colors">
+            <Upload className="h-4 w-4" /> Upload {mode === "csv2json" ? "CSV" : "JSON"}
+          </button>
+          <input ref={fileRef} type="file" accept={mode === "csv2json" ? ".csv,text/csv" : ".json,application/json"} className="hidden" onChange={handleFile} />
         </div>
 
         {/* Editor panels */}

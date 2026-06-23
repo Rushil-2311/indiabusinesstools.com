@@ -22,16 +22,35 @@ const CATEGORIES = [
     ],
   },
   {
-    name: "Text",
-    slugs: ["word-counter", "text-case-converter", "base64-tool", "markdown-converter"],
+    name: "Converters",
+    slugs: [
+      "csv-json-converter",
+      "xml-json-converter",
+      "xml-csv-converter",
+      "xml-formatter",
+      "sql-formatter",
+      "java-formatter",
+    ],
   },
   {
     name: "Developer",
-    slugs: ["json-formatter", "image-converter", "qr-code-generator", "color-converter", "csv-json-converter"],
+    slugs: ["json-formatter", "image-converter", "qr-code-generator", "color-converter", "base64-tool", "markdown-converter"],
   },
   {
     name: "Utility",
-    slugs: ["age-calculator", "percentage-calculator", "unit-converter", "invoice-generator", "salary-slip-generator"],
+    slugs: [
+      "age-calculator",
+      "percentage-calculator",
+      "unit-converter",
+      "word-counter",
+      "text-case-converter",
+      "invoice-generator",
+      "salary-slip-generator",
+      "image-compressor",
+      "image-to-text",
+      "pdf-tools",
+      "zip-extractor",
+    ],
   },
 ];
 
