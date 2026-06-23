@@ -43,6 +43,7 @@ const FOOTER_CATEGORIES = [
       { name: "Image Compressor", slug: "image-compressor" },
 { name: "QR Code Generator", slug: "qr-code-generator" },
       { name: "PDF Tools", slug: "pdf-tools" },
+      { name: "PDF Editor", slug: "pdf-editor" },
       { name: "ZIP Extractor", slug: "zip-extractor" },
       { name: "Color Converter", slug: "color-converter" },
       { name: "Base64 Tool", slug: "base64-tool" },

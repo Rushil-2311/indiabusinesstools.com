@@ -48,6 +48,7 @@ const CATEGORIES = [
       "salary-slip-generator",
       "image-compressor",
       "pdf-tools",
+      "pdf-editor",
       "zip-extractor",
     ],
   },

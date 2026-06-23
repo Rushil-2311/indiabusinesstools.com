@@ -47,6 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'image-compressor',
     'pdf-tools',
     'zip-extractor',
+    'pdf-editor',
   ].map((slug) => ({
     url: `${BASE_URL}/${slug}`,
     lastModified: now,

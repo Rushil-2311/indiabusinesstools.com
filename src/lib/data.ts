@@ -29,6 +29,7 @@ import {
   ImageDown,
   FileStack,
   Archive,
+  FilePen,
 } from "lucide-react";
 
 export const toolsData = [
@@ -287,6 +288,14 @@ export const toolsData = [
     gradient: "from-slate-600 to-gray-800",
     badge: "New",
     icon: Archive
+  },
+  {
+    name: "PDF Editor",
+    slug: "pdf-editor",
+    description: "Draw, annotate, add text, erase content, watermark and fill form fields — 100% in your browser.",
+    gradient: "from-orange-600 to-red-700",
+    badge: "New",
+    icon: FilePen
   },
 ];
 
