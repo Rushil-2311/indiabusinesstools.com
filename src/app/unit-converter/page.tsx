@@ -154,7 +154,7 @@ export default function UnitConverterPage() {
         gradient="from-amber-400 to-orange-500"
       />
 
-      <div className="mx-auto max-w-4xl px-4 pb-10 space-y-6">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">
         {/* Category tabs */}
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((c, i) => (

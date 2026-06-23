@@ -81,7 +81,7 @@ export default function FDCalculatorPage() {
         gradient="from-green-500 to-emerald-700"
       />
 
-      <div className="mx-auto max-w-5xl px-4 pb-10 grid md:grid-cols-2 gap-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
         {/* Inputs */}
         <Card>
           <CardHeader><CardTitle>FD Details</CardTitle></CardHeader>

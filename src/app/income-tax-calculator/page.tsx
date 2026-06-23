@@ -125,7 +125,7 @@ export default function IncomeTaxCalculatorPage() {
         gradient="from-red-500 to-rose-700"
       />
 
-      <div className="mx-auto max-w-5xl px-4 pb-10 space-y-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           {/* Inputs */}
           <div className="space-y-4">

@@ -62,7 +62,7 @@ export default function CAGRCalculatorPage() {
     <div className="min-h-screen bg-background">
       <PageHeader title="CAGR Calculator" description="Compound Annual Growth Rate for investments" icon={LineChart} gradient="from-lime-500 to-emerald-600" />
 
-      <div className="mx-auto max-w-5xl px-4 pb-10 space-y-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">
         {/* Mode toggle */}
         <div className="flex rounded-xl border overflow-hidden w-fit">
           {[{ val: "cagr", label: "Calculate CAGR" }, { val: "future", label: "Calculate Future Value" }].map((m) => (

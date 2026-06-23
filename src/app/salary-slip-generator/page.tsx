@@ -176,7 +176,7 @@ export default function SalarySlipGeneratorPage() {
         <PageHeader title="Salary Slip Generator" description="Professional payslip with company logo — download as PDF" icon={ScrollText} gradient="from-violet-600 to-indigo-700" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 pb-10 grid lg:grid-cols-[400px_1fr] gap-6 items-start">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 grid lg:grid-cols-[400px_1fr] gap-6 items-start">
 
         {/* ── Form Panel ─────────────────────────────── */}
         <div className="space-y-4 no-print">
@@ -305,8 +305,8 @@ export default function SalarySlipGeneratorPage() {
         </div>
 
         {/* ── Salary Slip Preview ─────────────────────── */}
-        <div id="slip-preview">
-          <div style={{ ...sl, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: 32, maxWidth: 700, margin: "0 auto" }}>
+        <div id="slip-preview" className="overflow-x-auto">
+          <div style={{ ...sl, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: 32, minWidth: 560, maxWidth: 700, margin: "0 auto" }}>
 
             {/* Top: PAYSLIP heading + month */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>

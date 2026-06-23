@@ -101,7 +101,7 @@ export default function CSVJSONConverterPage() {
     <div className="min-h-screen bg-background">
       <PageHeader title="CSV ↔ JSON Converter" description="Convert between CSV and JSON instantly with table preview" icon={Table} gradient="from-yellow-500 to-orange-500" />
 
-      <div className="mx-auto max-w-6xl px-4 pb-10 space-y-4">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-4">
         {/* Controls */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex rounded-xl border overflow-hidden">

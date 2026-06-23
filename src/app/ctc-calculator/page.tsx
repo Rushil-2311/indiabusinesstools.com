@@ -108,7 +108,7 @@ export default function CTCCalculatorPage() {
         gradient="from-indigo-600 to-blue-800"
       />
 
-      <div className="mx-auto max-w-5xl px-4 pb-10 grid md:grid-cols-2 gap-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
         {/* Inputs */}
         <Card>
           <CardHeader><CardTitle>CTC Details</CardTitle></CardHeader>

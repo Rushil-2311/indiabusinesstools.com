@@ -59,7 +59,7 @@ export default function LoanEligibilityCalculatorPage() {
     <div className="min-h-screen bg-background">
       <PageHeader title="Loan Eligibility Calculator" description="Find your maximum loan amount based on salary and FOIR" icon={CreditCard} gradient="from-cyan-600 to-blue-700" />
 
-      <div className="mx-auto max-w-5xl px-4 pb-10 grid md:grid-cols-2 gap-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
         {/* Inputs */}
         <Card>
           <CardHeader><CardTitle>Your Financial Profile</CardTitle></CardHeader>

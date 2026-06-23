@@ -60,7 +60,7 @@ export default function CompoundInterestCalculatorPage() {
         gradient="from-purple-600 to-violet-800"
       />
 
-      <div className="mx-auto max-w-5xl px-4 pb-10 grid md:grid-cols-2 gap-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
         {/* Inputs */}
         <Card>
           <CardHeader><CardTitle>Investment Details</CardTitle></CardHeader>
