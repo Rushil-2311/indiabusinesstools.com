@@ -30,6 +30,10 @@ import {
   FileStack,
   Archive,
   FilePen,
+  Hash,
+  Clock,
+  Code2,
+  KeyRound,
 } from "lucide-react";
 
 export const toolsData = [
@@ -296,6 +300,38 @@ export const toolsData = [
     gradient: "from-orange-600 to-red-700",
     badge: "New",
     icon: FilePen
+  },
+  {
+    name: "Number Base Converter",
+    slug: "number-base-converter",
+    description: "Convert numbers between binary, octal, decimal, and hexadecimal with bit visualization.",
+    gradient: "from-violet-500 to-indigo-600",
+    badge: "New",
+    icon: Hash
+  },
+  {
+    name: "Timestamp Converter",
+    slug: "timestamp-converter",
+    description: "Convert Unix epoch timestamps to human-readable dates and back, with timezone support.",
+    gradient: "from-blue-500 to-cyan-600",
+    badge: "New",
+    icon: Clock
+  },
+  {
+    name: "Regex Tester",
+    slug: "regex-tester",
+    description: "Test regular expressions with live match highlighting, flag toggles, and common Indian patterns.",
+    gradient: "from-emerald-500 to-teal-600",
+    badge: "New",
+    icon: Code2
+  },
+  {
+    name: "JWT Decoder",
+    slug: "jwt-decoder",
+    description: "Decode and inspect JSON Web Token headers, payloads, expiry, and algorithm — no secret needed.",
+    gradient: "from-amber-500 to-orange-600",
+    badge: "New",
+    icon: KeyRound
   },
 ];
 

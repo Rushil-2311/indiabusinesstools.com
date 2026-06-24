@@ -34,7 +34,18 @@ const CATEGORIES = [
   },
   {
     name: "Developer",
-    slugs: ["json-formatter", "image-converter", "qr-code-generator", "color-converter", "base64-tool", "markdown-converter"],
+    slugs: [
+      "json-formatter",
+      "image-converter",
+      "qr-code-generator",
+      "color-converter",
+      "base64-tool",
+      "markdown-converter",
+      "number-base-converter",
+      "timestamp-converter",
+      "regex-tester",
+      "jwt-decoder",
+    ],
   },
   {
     name: "Utility",
@@ -92,7 +103,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
+    <header ref={dropdownRef} className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -123,77 +134,13 @@ export function Header() {
               Home
             </Link>
 
-            {/* Tools mega-menu */}
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setToolsOpen((v) => !v)}
-                className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors outline-none"
-              >
-                Tools
-                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${toolsOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {toolsOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[520px] rounded-2xl border bg-background shadow-2xl shadow-black/10 ring-1 ring-black/5 overflow-hidden">
-                  {/* Search */}
-                  <div className="flex items-center gap-2 border-b px-4 py-3">
-                    <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-                    <input
-                      ref={searchRef}
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search tools…"
-                      className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-                    />
-                    {search && (
-                      <button onClick={() => setSearch("")} className="text-muted-foreground hover:text-foreground">
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Search results */}
-                  {filteredTools ? (
-                    <div className="p-2 max-h-72 overflow-y-auto">
-                      {filteredTools.length === 0 ? (
-                        <p className="text-center text-sm text-muted-foreground py-6">No tools found</p>
-                      ) : (
-                        filteredTools.map((tool) => (
-                          <Link
-                            key={tool.slug}
-                            href={`/${tool.slug}`}
-                            onClick={closeAll}
-                            className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
-                          >
-                            <div className={`flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br ${tool.gradient} text-white shrink-0`}>
-                              <tool.icon className="h-3.5 w-3.5" />
-                            </div>
-                            <span className="text-sm font-medium">{tool.name}</span>
-                          </Link>
-                        ))
-                      )}
-                    </div>
-                  ) : (
-                    /* Grouped categories — 2-column layout */
-                    <div className="grid grid-cols-2 divide-x">
-                      {/* Left: Financial */}
-                      <div className="p-3">
-                        <CategorySection
-                          category={CATEGORIES[0]}
-                          onClose={closeAll}
-                        />
-                      </div>
-                      {/* Right: Text, Developer, Utility */}
-                      <div className="p-3 space-y-1">
-                        {CATEGORIES.slice(1).map((cat) => (
-                          <CategorySection key={cat.name} category={cat} onClose={closeAll} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => setToolsOpen((v) => !v)}
+              className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors outline-none"
+            >
+              Tools
+              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${toolsOpen ? "rotate-180" : ""}`} />
+            </button>
 
             <Link href="/blog" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Blog
@@ -212,6 +159,61 @@ export function Header() {
           </button>
         </div>
       </div>
+
+      {/* Desktop mega-menu — floating card, separated from header */}
+      {toolsOpen && (
+        <div className="hidden md:block absolute top-full left-0 right-0 px-4 sm:px-6 lg:px-8 pt-2 pointer-events-none">
+          <div className="mx-auto max-w-7xl pointer-events-auto bg-background rounded-2xl border shadow-2xl shadow-black/10 ring-1 ring-black/5 overflow-hidden flex flex-col max-h-[calc(100vh-5rem)]">
+            {/* Search — pinned */}
+            <div className="flex items-center gap-2 border-b px-6 py-3 shrink-0">
+              <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+              <input
+                ref={searchRef}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search tools…"
+                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              />
+              {search && (
+                <button onClick={() => setSearch("")} className="text-muted-foreground hover:text-foreground">
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Scrollable content */}
+            <div className="overflow-y-auto">
+              {filteredTools ? (
+                <div className="px-4 py-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
+                  {filteredTools.length === 0 ? (
+                    <p className="col-span-full text-center text-sm text-muted-foreground py-8">No tools found</p>
+                  ) : (
+                    filteredTools.map((tool) => (
+                      <Link
+                        key={tool.slug}
+                        href={`/${tool.slug}`}
+                        onClick={closeAll}
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
+                      >
+                        <div className={`flex h-7 w-7 items-center justify-center rounded-md bg-linear-to-br ${tool.gradient} text-white shrink-0`}>
+                          <tool.icon className="h-3.5 w-3.5" />
+                        </div>
+                        <span className="text-sm font-medium">{tool.name}</span>
+                      </Link>
+                    ))
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-4 gap-6 px-6 py-6">
+                  {CATEGORIES.map((cat) => (
+                    <CategorySection key={cat.name} category={cat} onClose={closeAll} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobile nav */}
       {mobileOpen && (
@@ -251,7 +253,7 @@ export function Header() {
                             onClick={closeAll}
                             className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
                           >
-                            <div className={`flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br ${tool.gradient} text-white shrink-0`}>
+                            <div className={`flex h-6 w-6 items-center justify-center rounded-md bg-linear-to-br ${tool.gradient} text-white shrink-0`}>
                               <tool.icon className="h-3 w-3" />
                             </div>
                             <span className="text-sm font-medium">{tool.name}</span>
@@ -293,7 +295,7 @@ function CategorySection({
             onClick={onClose}
             className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-muted transition-colors group"
           >
-            <div className={`flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br ${tool.gradient} text-white shrink-0`}>
+            <div className={`flex h-6 w-6 items-center justify-center rounded-md bg-linear-to-br ${tool.gradient} text-white shrink-0`}>
               <tool.icon className="h-3 w-3" />
             </div>
             <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">{tool.name}</span>
