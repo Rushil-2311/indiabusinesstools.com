@@ -48,6 +48,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'pdf-tools',
     'zip-extractor',
     'pdf-editor',
+    'number-base-converter',
+    'timestamp-converter',
+    'regex-tester',
+    'jwt-decoder',
   ].map((slug) => ({
     url: `${BASE_URL}/${slug}`,
     lastModified: now,

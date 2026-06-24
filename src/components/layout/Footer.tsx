@@ -39,17 +39,29 @@ const FOOTER_CATEGORIES = [
     label: "Developer & Media",
     tools: [
       { name: "JSON Formatter", slug: "json-formatter" },
+      { name: "Base64 Tool", slug: "base64-tool" },
+      { name: "Number Base Converter", slug: "number-base-converter" },
+      { name: "Timestamp Converter", slug: "timestamp-converter" },
+      { name: "Regex Tester", slug: "regex-tester" },
+      { name: "JWT Decoder", slug: "jwt-decoder" },
+      { name: "Color Converter", slug: "color-converter" },
+      { name: "QR Code Generator", slug: "qr-code-generator" },
+      { name: "Markdown Converter", slug: "markdown-converter" },
+    ],
+  },
+  {
+    label: "Utility Tools",
+    tools: [
+      { name: "Word Counter", slug: "word-counter" },
+      { name: "Text Case Converter", slug: "text-case-converter" },
+      { name: "Age Calculator", slug: "age-calculator" },
+      { name: "Percentage Calculator", slug: "percentage-calculator" },
+      { name: "Unit Converter", slug: "unit-converter" },
       { name: "Image Converter", slug: "image-converter" },
       { name: "Image Compressor", slug: "image-compressor" },
-{ name: "QR Code Generator", slug: "qr-code-generator" },
       { name: "PDF Tools", slug: "pdf-tools" },
       { name: "PDF Editor", slug: "pdf-editor" },
       { name: "ZIP Extractor", slug: "zip-extractor" },
-      { name: "Color Converter", slug: "color-converter" },
-      { name: "Base64 Tool", slug: "base64-tool" },
-      { name: "Markdown Converter", slug: "markdown-converter" },
-      { name: "Word Counter", slug: "word-counter" },
-      { name: "Text Case Converter", slug: "text-case-converter" },
     ],
   },
 ];
@@ -120,7 +132,7 @@ export function Footer() {
         </div>
 
         {/* Tool categories */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-8 mb-12">
           {FOOTER_CATEGORIES.map((cat) => (
             <div key={cat.label}>
               <h3 className="font-display font-semibold text-sm mb-4 text-foreground">{cat.label}</h3>
