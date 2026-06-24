@@ -162,13 +162,19 @@ export default function SalarySlipGeneratorPage() {
   const divider: React.CSSProperties = { borderBottom: "1px solid #d1d5db", marginBottom: 10, paddingBottom: 6 };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div id="slip-page" className="min-h-screen bg-background">
       <style>{`
         @media print {
-          body * { visibility: hidden !important; }
-          #slip-preview, #slip-preview * { visibility: visible !important; }
-          #slip-preview { position: absolute; top: 0; left: 0; width: 100%; padding: 24px; background: white; }
+          @page { size: A4 portrait; margin: 0; }
           .no-print { display: none !important; }
+          #slip-page { min-height: 0 !important; background: white !important; }
+          #slip-layout { display: block !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+          #slip-preview { overflow: visible !important; padding: 14mm 14mm !important; }
+          #slip-preview > div {
+            border: none !important; border-radius: 0 !important;
+            max-width: 100% !important; min-width: 0 !important;
+            padding: 0 !important; margin: 0 !important; box-shadow: none !important;
+          }
         }
       `}</style>
 
@@ -176,10 +182,10 @@ export default function SalarySlipGeneratorPage() {
         <PageHeader title="Salary Slip Generator" description="Professional payslip with company logo — download as PDF" icon={ScrollText} gradient="from-violet-600 to-indigo-700" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 grid lg:grid-cols-[400px_1fr] gap-6 items-start">
+      <div id="slip-layout" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 grid lg:grid-cols-[400px_1fr] gap-6 items-start">
 
         {/* ── Form Panel ─────────────────────────────── */}
-        <div className="space-y-4 no-print">
+        <div id="slip-form" className="space-y-4 no-print">
 
           {/* Company */}
           <Card>
