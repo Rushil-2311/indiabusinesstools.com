@@ -20,12 +20,6 @@ function parseAmt(val: string) {
   return parseFloat(val.replace(/,/g, "")) || 0;
 }
 
-function formatAmt(val: string, set: (v: string) => void) {
-  return (e: React.ChangeEvent<HTMLInputElement>) => {
-    const num = e.target.value.replace(/[^0-9]/g, "");
-    set(num ? new Intl.NumberFormat("en-IN").format(parseInt(num)) : "");
-  };
-}
 
 function numToWords(num: number): string {
   const ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
@@ -159,13 +153,13 @@ export default function SalarySlipGeneratorPage() {
   const sl: React.CSSProperties = { fontFamily: "'Arial', 'Helvetica', sans-serif", fontSize: 11, color: "#111", lineHeight: 1.5 };
   const thStyle: React.CSSProperties = { fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" as const, letterSpacing: 0.5, paddingBottom: 2 };
   const tdVal: React.CSSProperties = { fontWeight: 600, color: "#111", fontSize: 11 };
-  const divider: React.CSSProperties = { borderBottom: "1px solid #d1d5db", marginBottom: 10, paddingBottom: 6 };
 
   return (
     <div id="slip-page" className="min-h-screen bg-background">
       <style>{`
         @media print {
           @page { size: A4 portrait; margin: 0; }
+          header, footer { display: none !important; }
           .no-print { display: none !important; }
           #slip-page { min-height: 0 !important; background: white !important; }
           #slip-layout { display: block !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
