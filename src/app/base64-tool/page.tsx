@@ -74,6 +74,7 @@ export default function Base64Tool() {
         description="Encode text to Base64 or decode Base64 strings back to plain text. Also supports file encoding."
         icon={Binary}
         gradient="from-slate-600 to-zinc-800"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "Base64 Tool" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 mb-16">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "Regex Tester — Test Regular Expressions Online",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <><ToolSchemas slug="regex-tester" name="Regex Tester" category="Developer Tools" categorySlug="developer" />{children}</>;
 }

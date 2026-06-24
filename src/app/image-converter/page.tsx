@@ -99,6 +99,7 @@ export default function ImageConverter() {
         description="Convert images between PNG, JPG, and WebP formats instantly in your browser. No upload to server."
         icon={ImageIcon}
         gradient="from-pink-500 to-rose-600"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "Image Converter" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 mb-16">

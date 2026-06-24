@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "SIP Calculator — Calculate Mutual Fund Returns & Corpus",
@@ -46,6 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="sip-calculator" name="SIP Calculator" category="Finance & Investments" categorySlug="finance" />
       {children}
     </>
   );

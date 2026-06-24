@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'Compound Interest Calculator',
@@ -28,6 +29,7 @@ export default function CompoundInterestLayout({ children }: { children: React.R
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="compound-interest-calculator" name="Compound Interest Calculator" category="Finance & Investments" categorySlug="finance" />
       {children}
     </>
   );

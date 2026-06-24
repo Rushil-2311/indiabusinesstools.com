@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -57,7 +60,7 @@ export default function LoanEligibilityCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title="Loan Eligibility Calculator" description="Find your maximum loan amount based on salary and FOIR" icon={CreditCard} gradient="from-cyan-600 to-blue-700" />
+      <PageHeader title="Loan Eligibility Calculator" description="Find your maximum loan amount based on salary and FOIR" icon={CreditCard} gradient="from-cyan-600 to-blue-700" breadcrumbs={[{ name: "Finance & Investments" }, { name: "Loan Eligibility Calculator" }]} />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
         {/* Inputs */}
@@ -154,7 +157,9 @@ export default function LoanEligibilityCalculatorPage() {
             </CardContent>
           </Card>
         </div>
+        <FaqSection faqs={faqs["loan-eligibility-calculator"]} />
       </div>
+      <RelatedTools currentSlug="loan-eligibility-calculator" />
     </div>
   );
 }

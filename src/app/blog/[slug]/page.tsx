@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, User, Tag } from 'lucide-react';
 import { blogPosts, ContentBlock } from '@/lib/blogData';
 import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { generateBreadcrumbSchema } from '@/lib/schema';
 import type { Metadata } from 'next';
 
 const BASE_URL = 'https://www.indiabusinesstools.com';
@@ -110,21 +111,53 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = blogPosts.find((p) => p.slug === slug);
   if (!post) notFound();
 
+  const wordCount = post.content.reduce((total, block) => {
+    if ('text' in block) return total + block.text.split(/\s+/).filter(Boolean).length;
+    if (block.type === 'bullets') return total + block.items.join(' ').split(/\s+/).filter(Boolean).length;
+    if (block.type === 'table') return total + [...block.headers, ...block.rows.flat()].join(' ').split(/\s+/).filter(Boolean).length;
+    return total;
+  }, 0);
+
+  const isoDate = new Date(post.date).toISOString();
+
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
     description: post.excerpt,
     author: { "@type": "Organization", name: post.author, url: BASE_URL },
-    publisher: { "@type": "Organization", name: "IndianBusinessTools", url: BASE_URL },
-    datePublished: post.date,
+    publisher: {
+      "@type": "Organization",
+      name: "IndianBusinessTools",
+      url: BASE_URL,
+      logo: { "@type": "ImageObject", url: `${BASE_URL}/favicon.svg` },
+    },
+    datePublished: isoDate,
+    dateModified: isoDate,
     url: `${BASE_URL}/blog/${post.slug}`,
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/blog/${post.slug}` },
     articleSection: post.category,
+    inLanguage: "en-IN",
+    wordCount,
+    image: {
+      "@type": "ImageObject",
+      url: `${BASE_URL}/og-image.png`,
+      width: 1200,
+      height: 630,
+    },
+    keywords: [post.category, "IndianBusinessTools", "India finance guide"],
   };
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: BASE_URL },
+    { name: "Blog", url: `${BASE_URL}/blog` },
+    { name: post.title, url: `${BASE_URL}/blog/${post.slug}` },
+  ]);
 
   return (
     <div className="min-h-screen bg-background">
       <JsonLd schema={articleSchema} />
+      <JsonLd schema={breadcrumbSchema} />
       {/* Hero */}
       <div className={`bg-linear-to-br ${post.gradient} py-20 px-4`}>
         <div className="mx-auto max-w-3xl">

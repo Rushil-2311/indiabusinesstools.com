@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'GST Invoice Generator',
@@ -28,6 +29,7 @@ export default function InvoiceGeneratorLayout({ children }: { children: React.R
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="invoice-generator" name="Invoice Generator" category="Tax & Payroll" categorySlug="tax" />
       {children}
     </>
   );

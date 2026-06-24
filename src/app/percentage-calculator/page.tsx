@@ -8,6 +8,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { formatNumber } from "@/lib/formatters";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 export default function PercentageCalculator() {
   const [t1X, setT1X] = useState("20");
@@ -37,6 +40,7 @@ export default function PercentageCalculator() {
         description="Solve complex percentage math instantly without formulas."
         icon={Percent}
         gradient="from-violet-500 to-purple-600"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "Percentage Calculator" }]}
       />
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6 mb-16">
@@ -206,7 +210,9 @@ export default function PercentageCalculator() {
             </Tabs>
           </CardContent>
         </Card>
+        <FaqSection faqs={faqs["percentage-calculator"]} />
       </div>
+      <RelatedTools currentSlug="percentage-calculator" />
     </>
   );
 }

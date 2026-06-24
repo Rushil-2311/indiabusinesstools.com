@@ -71,6 +71,7 @@ export default function QRCodeGenerator() {
         description="Generate QR codes for URLs, UPI payments, phone numbers, emails, and more. Free & instant."
         icon={QrCode}
         gradient="from-teal-500 to-emerald-600"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "QR Code Generator" }]}
       />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6 mb-16">

@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -60,7 +63,7 @@ export default function CAGRCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title="CAGR Calculator" description="Compound Annual Growth Rate for investments" icon={LineChart} gradient="from-lime-500 to-emerald-600" />
+      <PageHeader title="CAGR Calculator" description="Compound Annual Growth Rate for investments" icon={LineChart} gradient="from-lime-500 to-emerald-600" breadcrumbs={[{ name: "Finance & Investments" }, { name: "CAGR Calculator" }]} />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">
         {/* Mode toggle */}
@@ -186,7 +189,9 @@ export default function CAGRCalculatorPage() {
             )}
           </div>
         </div>
+        <FaqSection faqs={faqs["cagr-calculator"]} />
       </div>
+      <RelatedTools currentSlug="cagr-calculator" />
     </div>
   );
 }

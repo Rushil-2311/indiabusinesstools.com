@@ -141,7 +141,7 @@ export default function ColorConverterPage() {
         .color-range-hsl::-webkit-slider-thumb { background: #a855f7; }
         .color-range-hsl::-moz-range-thumb { background: #a855f7; }
       `}</style>
-      <PageHeader title="Color Picker & Converter" description="Convert HEX ↔ RGB ↔ HSL with palette preview" icon={Palette} gradient="from-fuchsia-500 to-pink-600" />
+      <PageHeader title="Color Picker & Converter" description="Convert HEX ↔ RGB ↔ HSL with palette preview" icon={Palette} gradient="from-fuchsia-500 to-pink-600" breadcrumbs={[{ name: "Developer Tools" }, { name: "Color Converter" }]} />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">
         <div className="grid md:grid-cols-2 gap-6">

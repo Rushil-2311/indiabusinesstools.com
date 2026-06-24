@@ -112,6 +112,7 @@ export default function InvoiceGeneratorPage() {
           description="Create professional GST invoices — download as PDF"
           icon={ClipboardList}
           gradient="from-gray-700 to-slate-900"
+          breadcrumbs={[{ name: "Tax & Payroll" }, { name: "Invoice Generator" }]}
         />
       </div>
 

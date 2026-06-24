@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "Word Counter — Count Words, Characters & Reading Time",
@@ -42,6 +43,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="word-counter" name="Word Counter" category="Utility Tools" categorySlug="utility" />
       {children}
     </>
   );

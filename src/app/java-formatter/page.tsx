@@ -131,6 +131,7 @@ export default function JavaFormatterPage() {
         description="Beautify and format Java source code — auto-indent, clean spacing"
         icon={Coffee}
         gradient="from-amber-600 to-orange-700"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "Java Formatter" }]}
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-4">

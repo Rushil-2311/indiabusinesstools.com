@@ -101,6 +101,7 @@ export default function XmlFormatterPage() {
         description="Beautify, format and minify XML — validate structure instantly"
         icon={Code}
         gradient="from-orange-500 to-red-500"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "XML Formatter" }]}
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-4">

@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 function fmt(n: number, decimals = 0) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: decimals }).format(n);
@@ -106,6 +109,7 @@ export default function CTCCalculatorPage() {
         description="Break down your CTC into monthly in-hand salary"
         icon={Briefcase}
         gradient="from-indigo-600 to-blue-800"
+        breadcrumbs={[{ name: "Tax & Payroll" }, { name: "Salary / CTC Calculator" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
@@ -253,7 +257,9 @@ export default function CTCCalculatorPage() {
           </Card>
           <p className="text-xs text-muted-foreground">* TDS is estimated. Actual deductions depend on employer, investments declared, and other factors.</p>
         </div>
+        <FaqSection faqs={faqs["ctc-calculator"]} />
       </div>
+      <RelatedTools currentSlug="ctc-calculator" />
     </div>
   );
 }

@@ -70,6 +70,7 @@ export default function SipCalculator() {
         description="Calculate the future value of your systematic investment plan with step-up options."
         icon={TrendingUp}
         gradient="from-blue-600 to-indigo-600"
+        breadcrumbs={[{ name: "Finance & Investments" }, { name: "SIP Calculator" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 mb-16">

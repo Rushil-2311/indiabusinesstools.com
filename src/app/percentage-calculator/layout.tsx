@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "Percentage Calculator — Solve Any Percentage Problem Instantly",
@@ -39,6 +40,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="percentage-calculator" name="Percentage Calculator" category="Utility Tools" categorySlug="utility" />
       {children}
     </>
   );

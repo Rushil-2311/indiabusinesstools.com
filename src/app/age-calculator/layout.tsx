@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "Age Calculator — Find Your Exact Age in Years, Months & Days",
@@ -39,6 +40,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="age-calculator" name="Age Calculator" category="Utility Tools" categorySlug="utility" />
       {children}
     </>
   );

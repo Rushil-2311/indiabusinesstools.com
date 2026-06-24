@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'Income Tax Calculator FY 2025-26',
@@ -22,12 +23,22 @@ const schema = {
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Any',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
+  provider: { '@type': 'Organization', name: 'IndianBusinessTools' },
+  featureList: [
+    'New tax regime FY 2025-26',
+    'Old tax regime with all deductions',
+    'Side-by-side regime comparison',
+    'Slab-wise tax breakdown',
+    'Standard deduction included',
+    'Surcharge and cess calculation',
+  ],
 };
 
 export default function IncomeTaxLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="income-tax-calculator" name="Income Tax Calculator" category="Tax & Payroll" categorySlug="tax" />
       {children}
     </>
   );

@@ -284,6 +284,7 @@ export default function PdfToolsPage() {
         description="Merge, split and compress PDF files — all in your browser, no uploads"
         icon={FileStack}
         gradient="from-red-600 to-rose-700"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "PDF Tools" }]}
       />
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">

@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 const BANK_PRESETS = [
   { name: "Custom", rate: 0 },
@@ -79,6 +82,7 @@ export default function FDCalculatorPage() {
         description="Calculate Fixed Deposit maturity with bank rate presets"
         icon={PiggyBank}
         gradient="from-green-500 to-emerald-700"
+        breadcrumbs={[{ name: "Finance & Investments" }, { name: "FD Calculator" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
@@ -252,7 +256,9 @@ export default function FDCalculatorPage() {
             </Card>
           )}
         </div>
+        <FaqSection faqs={faqs["fd-calculator"]} />
       </div>
+      <RelatedTools currentSlug="fd-calculator" />
     </div>
   );
 }

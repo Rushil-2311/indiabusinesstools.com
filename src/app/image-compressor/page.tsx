@@ -102,6 +102,7 @@ export default function ImageCompressorPage() {
         description="Compress and resize images instantly in your browser — JPG, PNG, WebP"
         icon={ImageDown}
         gradient="from-pink-500 to-rose-600"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "Image Compressor" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">

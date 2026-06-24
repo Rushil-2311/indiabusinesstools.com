@@ -867,6 +867,7 @@ export default function PdfEditorPage() {
         description="Draw, annotate, add text, erase content and watermark — 100% in your browser"
         icon={FilePen}
         gradient="from-orange-600 to-red-700"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "PDF Editor" }]}
       />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">
         <div className="flex rounded-xl border overflow-hidden">

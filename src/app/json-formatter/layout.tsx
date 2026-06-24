@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "JSON Formatter & Validator — Beautify & Minify JSON Online",
@@ -40,6 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="json-formatter" name="JSON Formatter" category="Developer Tools" categorySlug="developer" />
       {children}
     </>
   );

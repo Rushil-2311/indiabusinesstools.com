@@ -4,12 +4,64 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { toolsData } from "@/lib/data";
-import Image from 'next/image'
+import { JsonLd } from "@/components/seo/JsonLd";
+import Image from 'next/image';
 
+const BASE_URL = "https://www.indiabusinesstools.com";
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Free Business Tools for India",
+  description: "A comprehensive suite of free online tools for Indian businesses — finance calculators, tax utilities, developer tools, and more.",
+  url: BASE_URL,
+  numberOfItems: toolsData.length,
+  itemListElement: toolsData.map((tool, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: tool.name,
+    description: tool.description,
+    url: `${BASE_URL}/${tool.slug}`,
+  })),
+};
+
+const homeFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Are all tools on IndianBusinessTools free?",
+      acceptedAnswer: { "@type": "Answer", text: "Yes, all tools on IndianBusinessTools are 100% free with no sign-up, no subscription, and no hidden charges. All calculations run in your browser." },
+    },
+    {
+      "@type": "Question",
+      name: "Is my data safe when I use these tools?",
+      acceptedAnswer: { "@type": "Answer", text: "Yes. All calculations happen locally in your browser — no data is ever sent to our servers. Your financial and personal information stays private." },
+    },
+    {
+      "@type": "Question",
+      name: "Which GST calculator is best for India?",
+      acceptedAnswer: { "@type": "Answer", text: "Our GST Calculator supports all Indian tax slabs (5%, 12%, 18%, 28%) with add/remove GST and CGST+SGST breakdown, making it the most complete free GST tool for Indian businesses." },
+    },
+    {
+      "@type": "Question",
+      name: "How do I calculate SIP returns online?",
+      acceptedAnswer: { "@type": "Answer", text: "Use our free SIP Calculator — enter your monthly amount, expected annual return rate, and duration. It instantly shows your projected corpus, total investment, and wealth gained. Supports step-up SIP and inflation adjustment." },
+    },
+    {
+      "@type": "Question",
+      name: "Does IndianBusinessTools work on mobile?",
+      acceptedAnswer: { "@type": "Answer", text: "Yes, all tools are fully responsive and work perfectly on mobile phones and tablets. No app download required — just open in any browser." },
+    },
+  ],
+};
 
 export default function Home() {
   return (
     <>
+      <JsonLd schema={itemListSchema} />
+      <JsonLd schema={homeFaqSchema} />
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-background pt-24 pb-32">
         <div className="absolute inset-0 z-0 opacity-40">

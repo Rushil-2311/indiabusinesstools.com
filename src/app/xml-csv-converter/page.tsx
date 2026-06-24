@@ -133,6 +133,7 @@ export default function XmlCsvConverterPage() {
         description="Convert between XML and CSV instantly — paste text or upload a file"
         icon={FileSpreadsheet}
         gradient="from-emerald-500 to-teal-600"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "XML to CSV Converter" }]}
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-4">

@@ -10,6 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/formatters";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 export default function GstCalculator() {
   const [amount, setAmount] = useState<string>("10000");
@@ -44,6 +47,7 @@ export default function GstCalculator() {
         description="Quickly calculate Goods and Services Tax with standard Indian tax slabs."
         icon={Receipt}
         gradient="from-amber-500 to-orange-600"
+        breadcrumbs={[{ name: "Tax & Payroll" }, { name: "GST Calculator" }]}
       />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6 mb-16">
@@ -135,7 +139,9 @@ export default function GstCalculator() {
             </div>
           </div>
         </Card>
+        <FaqSection faqs={faqs["gst-calculator"]} />
       </div>
+      <RelatedTools currentSlug="gst-calculator" />
     </>
   );
 }

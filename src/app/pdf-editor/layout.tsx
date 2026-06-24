@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'PDF Editor — Draw, Annotate, Edit Text & Fill Forms Free Online',
@@ -34,5 +35,5 @@ const schema = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <><JsonLd schema={schema} />{children}</>;
+  return <><JsonLd schema={schema} /><ToolSchemas slug="pdf-editor" name="PDF Editor" category="Utility Tools" categorySlug="utility" />{children}</>;
 }

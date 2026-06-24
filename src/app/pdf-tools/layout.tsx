@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'PDF Tools — Merge, Split & Compress PDF Free Online',
@@ -25,5 +26,5 @@ const schema = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <><JsonLd schema={schema} />{children}</>;
+  return <><JsonLd schema={schema} /><ToolSchemas slug="pdf-tools" name="PDF Tools" category="Utility Tools" categorySlug="utility" />{children}</>;
 }

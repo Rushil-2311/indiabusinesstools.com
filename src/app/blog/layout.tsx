@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { generateBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Blog — Finance, Investment & Business Guides for India",
@@ -23,23 +24,33 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
 };
 
+const BASE_URL = "https://www.indiabusinesstools.com";
+
 const schema = {
   "@context": "https://schema.org",
   "@type": "Blog",
   name: "IndianBusinessTools Blog",
-  url: "https://www.indiabusinesstools.com/blog",
+  url: `${BASE_URL}/blog`,
   description: "Finance guides, investment tips, and business insights for Indian professionals.",
+  inLanguage: "en-IN",
   publisher: {
     "@type": "Organization",
     name: "IndianBusinessTools",
-    url: "https://www.indiabusinesstools.com",
+    url: BASE_URL,
+    logo: { "@type": "ImageObject", url: `${BASE_URL}/favicon.svg` },
   },
 };
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: "Home", url: BASE_URL },
+  { name: "Blog", url: `${BASE_URL}/blog` },
+]);
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <JsonLd schema={breadcrumbSchema} />
       {children}
     </>
   );

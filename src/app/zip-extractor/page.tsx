@@ -112,6 +112,7 @@ export default function ZipExtractorPage() {
         description="Extract and download files from ZIP archives — works entirely in your browser"
         icon={Archive}
         gradient="from-slate-600 to-gray-800"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "ZIP Extractor" }]}
       />
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "JWT Decoder — Decode JSON Web Tokens Online",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <><ToolSchemas slug="jwt-decoder" name="JWT Decoder" category="Developer Tools" categorySlug="developer" />{children}</>;
 }

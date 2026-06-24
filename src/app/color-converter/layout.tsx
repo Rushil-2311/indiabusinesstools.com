@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'Color Picker & Converter',
@@ -25,5 +26,5 @@ const schema = {
 };
 
 export default function ColorConverterLayout({ children }: { children: React.ReactNode }) {
-  return <><JsonLd schema={schema} />{children}</>;
+  return <><JsonLd schema={schema} /><ToolSchemas slug="color-converter" name="Color Converter" category="Developer Tools" categorySlug="developer" />{children}</>;
 }

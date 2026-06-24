@@ -101,6 +101,7 @@ export default function TextCaseConverter() {
         description="Convert your text to uppercase, lowercase, title case, and programming cases."
         icon={CaseSensitive}
         gradient="from-cyan-500 to-sky-600"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "Text Case Converter" }]}
       />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6 mb-16">

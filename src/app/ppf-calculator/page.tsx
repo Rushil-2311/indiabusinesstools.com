@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 const PPF_RATE = 7.1;
 
@@ -53,6 +56,7 @@ export default function PPFCalculatorPage() {
         description="Public Provident Fund returns at current 7.1% p.a."
         icon={Shield}
         gradient="from-sky-500 to-cyan-600"
+        breadcrumbs={[{ name: "Finance & Investments" }, { name: "PPF Calculator" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
@@ -175,7 +179,9 @@ export default function PPFCalculatorPage() {
             </CardContent>
           </Card>
         </div>
+        <FaqSection faqs={faqs["ppf-calculator"]} />
       </div>
+      <RelatedTools currentSlug="ppf-calculator" />
     </div>
   );
 }

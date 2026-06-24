@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'Unit Converter',
@@ -28,6 +29,7 @@ export default function UnitConverterLayout({ children }: { children: React.Reac
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="unit-converter" name="Unit Converter" category="Utility Tools" categorySlug="utility" />
       {children}
     </>
   );

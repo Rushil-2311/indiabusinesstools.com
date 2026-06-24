@@ -95,6 +95,7 @@ export default function RegexTester() {
         description="Test regular expressions against text with live match highlighting and common pattern shortcuts."
         icon={Code2}
         gradient="from-emerald-500 to-teal-600"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "Regex Tester" }]}
       />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6 mb-16">

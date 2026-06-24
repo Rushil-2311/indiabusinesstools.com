@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -123,6 +126,7 @@ export default function IncomeTaxCalculatorPage() {
         description="New vs Old Regime comparison — FY 2025-26"
         icon={FileSpreadsheet}
         gradient="from-red-500 to-rose-700"
+        breadcrumbs={[{ name: "Tax & Payroll" }, { name: "Income Tax Calculator" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">
@@ -272,7 +276,9 @@ export default function IncomeTaxCalculatorPage() {
         <p className="text-xs text-muted-foreground text-center">
           * This calculator is for indicative purposes. Consult a tax professional for filing. Surcharge not included.
         </p>
+        <FaqSection faqs={faqs["income-tax-calculator"]} />
       </div>
+      <RelatedTools currentSlug="income-tax-calculator" />
     </div>
   );
 }

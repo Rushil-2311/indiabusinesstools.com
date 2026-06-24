@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'CSV ↔ JSON Converter',
@@ -25,5 +26,5 @@ const schema = {
 };
 
 export default function CSVJSONLayout({ children }: { children: React.ReactNode }) {
-  return <><JsonLd schema={schema} />{children}</>;
+  return <><JsonLd schema={schema} /><ToolSchemas slug="csv-json-converter" name="CSV to JSON Converter" category="Developer Tools" categorySlug="developer" />{children}</>;
 }

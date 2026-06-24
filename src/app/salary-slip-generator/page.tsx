@@ -173,7 +173,7 @@ export default function SalarySlipGeneratorPage() {
       `}</style>
 
       <div className="no-print">
-        <PageHeader title="Salary Slip Generator" description="Professional payslip with company logo — download as PDF" icon={ScrollText} gradient="from-violet-600 to-indigo-700" />
+        <PageHeader title="Salary Slip Generator" description="Professional payslip with company logo — download as PDF" icon={ScrollText} gradient="from-violet-600 to-indigo-700" breadcrumbs={[{ name: "Tax & Payroll" }, { name: "Salary Slip Generator" }]} />
       </div>
 
       <div id="slip-layout" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 grid lg:grid-cols-[400px_1fr] gap-6 items-start">

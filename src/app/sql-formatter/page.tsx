@@ -74,6 +74,7 @@ export default function SqlFormatterPage() {
         description="Format and beautify SQL queries — MySQL, PostgreSQL, SQLite and more"
         icon={Database}
         gradient="from-blue-600 to-indigo-700"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "SQL Formatter" }]}
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-4">

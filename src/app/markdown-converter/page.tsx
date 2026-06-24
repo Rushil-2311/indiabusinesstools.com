@@ -143,6 +143,7 @@ export default function MarkdownConverter() {
         description="Write Markdown and export to HTML, PDF, or Word DOC. Live preview included."
         icon={FileText}
         gradient="from-violet-500 to-purple-700"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "Markdown Converter" }]}
       />
 
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 mb-16">

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "QR Code Generator — Free QR for URL, UPI, WhatsApp & Phone",
@@ -48,6 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="qr-code-generator" name="QR Code Generator" category="Utility Tools" categorySlug="utility" />
       {children}
     </>
   );

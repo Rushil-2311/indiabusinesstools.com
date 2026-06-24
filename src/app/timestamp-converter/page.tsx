@@ -106,6 +106,7 @@ export default function TimestampConverter() {
         description="Convert Unix epoch timestamps to human-readable dates and back, with timezone support."
         icon={Clock}
         gradient="from-blue-500 to-cyan-600"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "Timestamp Converter" }]}
       />
 
       <div className="mx-auto max-w-2xl px-4 sm:px-6 mb-16">

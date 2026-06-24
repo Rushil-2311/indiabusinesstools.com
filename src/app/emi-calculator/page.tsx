@@ -53,6 +53,7 @@ export default function EmiCalculator() {
         description="Calculate your Equated Monthly Installment for home, car, or personal loans."
         icon={Landmark}
         gradient="from-emerald-500 to-teal-600"
+        breadcrumbs={[{ name: "Finance & Investments" }, { name: "EMI Calculator" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 mb-16">

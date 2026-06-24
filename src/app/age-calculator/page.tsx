@@ -93,6 +93,7 @@ export default function AgeCalculator() {
         description="Find out your exact age in years, months, and days down to the hour."
         icon={CalendarDays}
         gradient="from-rose-500 to-pink-600"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "Age Calculator" }]}
       />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6 mb-16">

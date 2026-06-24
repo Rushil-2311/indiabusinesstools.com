@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -58,6 +61,7 @@ export default function CompoundInterestCalculatorPage() {
         description="See how compounding grows your money over time"
         icon={BarChart3}
         gradient="from-purple-600 to-violet-800"
+        breadcrumbs={[{ name: "Finance & Investments" }, { name: "Compound Interest Calculator" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10 grid md:grid-cols-2 gap-6">
@@ -185,7 +189,9 @@ export default function CompoundInterestCalculatorPage() {
             </CardContent>
           </Card>
         </div>
+        <FaqSection faqs={faqs["compound-interest-calculator"]} />
       </div>
+      <RelatedTools currentSlug="compound-interest-calculator" />
     </div>
   );
 }

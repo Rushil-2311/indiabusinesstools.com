@@ -135,6 +135,7 @@ export default function XmlJsonConverterPage() {
         description="Convert between XML and JSON instantly — paste text or upload a file"
         icon={FileCode}
         gradient="from-cyan-500 to-blue-600"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "XML to JSON Converter" }]}
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-4">

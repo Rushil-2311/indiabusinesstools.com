@@ -152,6 +152,7 @@ export default function UnitConverterPage() {
         description="Weight, Length, Area, Volume, Temperature & more"
         icon={Ruler}
         gradient="from-amber-400 to-orange-500"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "Unit Converter" }]}
       />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">

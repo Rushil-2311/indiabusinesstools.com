@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "GST Calculator — Add or Remove GST for All Tax Slabs",
@@ -47,6 +48,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="gst-calculator" name="GST Calculator" category="Tax & Payroll" categorySlug="tax" />
       {children}
     </>
   );

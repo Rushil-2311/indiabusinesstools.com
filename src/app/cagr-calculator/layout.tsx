@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'CAGR Calculator',
@@ -25,5 +26,5 @@ const schema = {
 };
 
 export default function CAGRLayout({ children }: { children: React.ReactNode }) {
-  return <><JsonLd schema={schema} />{children}</>;
+  return <><JsonLd schema={schema} /><ToolSchemas slug="cagr-calculator" name="CAGR Calculator" category="Finance & Investments" categorySlug="finance" />{children}</>;
 }

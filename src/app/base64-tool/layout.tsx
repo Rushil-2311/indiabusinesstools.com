@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "Base64 Encoder & Decoder — Encode & Decode Online Free",
@@ -41,6 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="base64-tool" name="Base64 Tool" category="Developer Tools" categorySlug="developer" />
       {children}
     </>
   );

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "Markdown Converter — MD to PDF, Word DOC & HTML",
@@ -40,6 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <JsonLd schema={schema} />
+      <ToolSchemas slug="markdown-converter" name="Markdown Converter" category="Developer Tools" categorySlug="developer" />
       {children}
     </>
   );

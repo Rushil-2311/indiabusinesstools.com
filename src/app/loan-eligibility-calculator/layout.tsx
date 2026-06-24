@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'Loan Eligibility Calculator',
@@ -25,5 +26,5 @@ const schema = {
 };
 
 export default function LoanEligibilityLayout({ children }: { children: React.ReactNode }) {
-  return <><JsonLd schema={schema} />{children}</>;
+  return <><JsonLd schema={schema} /><ToolSchemas slug="loan-eligibility-calculator" name="Loan Eligibility Calculator" category="Finance & Investments" categorySlug="finance" />{children}</>;
 }

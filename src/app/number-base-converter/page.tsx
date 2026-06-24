@@ -67,6 +67,7 @@ export default function NumberBaseConverter() {
         description="Convert numbers between binary, octal, decimal, and hexadecimal instantly."
         icon={Hash}
         gradient="from-violet-500 to-indigo-600"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "Number Base Converter" }]}
       />
 
       <div className="mx-auto max-w-2xl px-4 sm:px-6 mb-16">

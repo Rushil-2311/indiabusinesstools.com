@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'Salary Slip Generator',
@@ -25,5 +26,5 @@ const schema = {
 };
 
 export default function SalarySlipLayout({ children }: { children: React.ReactNode }) {
-  return <><JsonLd schema={schema} />{children}</>;
+  return <><JsonLd schema={schema} /><ToolSchemas slug="salary-slip-generator" name="Salary Slip Generator" category="Tax & Payroll" categorySlug="tax" />{children}</>;
 }

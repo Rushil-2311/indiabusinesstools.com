@@ -114,6 +114,34 @@ const websiteSchema = {
   },
 };
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "IndianBusinessTools",
+  alternateName: "Indian Business Tools",
+  url: BASE_URL,
+  logo: {
+    "@type": "ImageObject",
+    url: `${BASE_URL}/favicon.svg`,
+    width: 512,
+    height: 512,
+  },
+  description:
+    "Free online tools for Indian businesses and professionals. Calculate SIP, EMI, GST, generate invoices, format JSON, convert images, and 30+ more tools. No sign-up required.",
+  areaServed: {
+    "@type": "Country",
+    name: "India",
+  },
+  inLanguage: "en-IN",
+  knowsAbout: [
+    "GST Calculator",
+    "SIP Calculator",
+    "EMI Calculator",
+    "Income Tax Calculator",
+    "Indian Business Finance",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -123,6 +151,7 @@ export default function RootLayout({
     <html lang="en-IN">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <JsonLd schema={websiteSchema} />
+        <JsonLd schema={organizationSchema} />
         <AppShell>{children}</AppShell>
         {process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />

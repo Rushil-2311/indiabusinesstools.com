@@ -108,7 +108,7 @@ export default function CSVJSONConverterPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title="CSV ↔ JSON Converter" description="Convert between CSV and JSON instantly with table preview" icon={Table} gradient="from-yellow-500 to-orange-500" />
+      <PageHeader title="CSV ↔ JSON Converter" description="Convert between CSV and JSON instantly with table preview" icon={Table} gradient="from-yellow-500 to-orange-500" breadcrumbs={[{ name: "Developer Tools" }, { name: "CSV to JSON Converter" }]} />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-4">
         {/* Controls */}

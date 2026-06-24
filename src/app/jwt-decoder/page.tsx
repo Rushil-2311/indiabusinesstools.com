@@ -141,6 +141,7 @@ export default function JwtDecoder() {
         description="Decode and inspect JSON Web Token headers, payloads, and expiry status — no secret needed."
         icon={KeyRound}
         gradient="from-amber-500 to-orange-600"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "JWT Decoder" }]}
       />
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6 mb-16">

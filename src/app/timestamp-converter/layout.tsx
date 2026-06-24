@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: "Timestamp Converter — Unix Epoch to Date & Time",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <><ToolSchemas slug="timestamp-converter" name="Timestamp Converter" category="Developer Tools" categorySlug="developer" />{children}</>;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ToolSchemas } from "@/components/seo/ToolSchemas";
 
 export const metadata: Metadata = {
   title: 'XML ↔ JSON Converter — Free Online Tool',
@@ -25,5 +26,5 @@ const schema = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <><JsonLd schema={schema} />{children}</>;
+  return <><JsonLd schema={schema} /><ToolSchemas slug="xml-json-converter" name="XML to JSON Converter" category="Developer Tools" categorySlug="developer" />{children}</>;
 }

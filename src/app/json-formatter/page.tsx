@@ -14,6 +14,9 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Button } from "@/components/ui/button";
 import { syntaxHighlightJson } from "@/lib/calculators";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { faqs } from "@/lib/data";
 
 export default function JsonFormatter() {
   const [input, setInput] = useState(
@@ -63,6 +66,7 @@ export default function JsonFormatter() {
         description="Format, validate, beautify, and minify your JSON data."
         icon={Braces}
         gradient="from-slate-600 to-gray-800"
+        breadcrumbs={[{ name: "Developer Tools" }, { name: "JSON Formatter" }]}
       />
 
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 mb-16">
@@ -165,7 +169,9 @@ export default function JsonFormatter() {
             </div>
           </div>
         </div>
+        <FaqSection faqs={faqs["json-formatter"]} />
       </div>
+      <RelatedTools currentSlug="json-formatter" />
     </>
   );
 }

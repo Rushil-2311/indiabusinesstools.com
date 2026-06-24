@@ -62,6 +62,7 @@ export default function WordCounter() {
         description="Count words, characters, sentences, and get reading time estimates instantly."
         icon={AlignLeft}
         gradient="from-orange-500 to-amber-600"
+        breadcrumbs={[{ name: "Utility Tools" }, { name: "Word Counter" }]}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 mb-16">
