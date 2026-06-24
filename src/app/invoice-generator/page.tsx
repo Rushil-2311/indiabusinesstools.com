@@ -43,14 +43,14 @@ function numToWords(num: number): string {
 }
 
 export default function InvoiceGeneratorPage() {
-  const [sellerName, setSellerName] = useState("Your Business Name");
-  const [sellerAddress, setSellerAddress] = useState("123 Business Street, City");
+  const [sellerName, setSellerName] = useState("");
+  const [sellerAddress, setSellerAddress] = useState("");
   const [sellerGSTIN, setSellerGSTIN] = useState("");
   const [sellerState, setSellerState] = useState("Karnataka");
   const [sellerPhone, setSellerPhone] = useState("");
 
-  const [buyerName, setBuyerName] = useState("Client Name");
-  const [buyerAddress, setBuyerAddress] = useState("Client Address, City");
+  const [buyerName, setBuyerName] = useState("");
+  const [buyerAddress, setBuyerAddress] = useState("");
   const [buyerGSTIN, setBuyerGSTIN] = useState("");
   const [buyerState, setBuyerState] = useState("Karnataka");
 
@@ -60,13 +60,13 @@ export default function InvoiceGeneratorPage() {
   const [notes, setNotes] = useState("Thank you for your business!");
 
   const [items, setItems] = useState<LineItem[]>([
-    { description: "Service / Product", hsn: "", qty: "1", rate: "1000", gst: "18" },
+    { description: "", hsn: "", qty: "1", rate: "", gst: "18" },
   ]);
 
   const isIGST = sellerState !== buyerState;
 
   function addItem() {
-    setItems([...items, { description: "", hsn: "", qty: "1", rate: "0", gst: "18" }]);
+    setItems([...items, { description: "", hsn: "", qty: "1", rate: "", gst: "18" }]);
   }
 
   function removeItem(i: number) {
@@ -99,10 +99,41 @@ export default function InvoiceGeneratorPage() {
     <div className="min-h-screen bg-background">
       <style>{`
         @media print {
-          body * { visibility: hidden; }
-          #invoice-preview, #invoice-preview * { visibility: visible; }
-          #invoice-preview { position: absolute; left: 0; top: 0; width: 100%; }
+          /* Zero out page margins so browser removes date/URL headers */
+          @page { size: A4; margin: 0; }
+
+          /* Strip all min-heights — this is what causes blank extra pages */
+          * { min-height: 0 !important; }
+
+          /* Hide site header and footer */
+          header, footer { display: none !important; }
+
+          /* Hide form panels and buttons */
           .no-print { display: none !important; }
+
+          /* Show plain text values in table cells */
+          .print-only { display: block !important; }
+
+          /* Collapse the two-column grid so only the invoice shows */
+          #invoice-layout {
+            display: block !important;
+            padding: 0 !important;
+            max-width: 100% !important;
+          }
+
+          /* Clean invoice card */
+          #invoice-preview {
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+          }
+
+          /* Hide empty placeholder spans */
+          .invoice-placeholder { display: none !important; }
+        }
+
+        @media screen {
+          .print-only { display: none !important; }
         }
       `}</style>
 
@@ -116,21 +147,21 @@ export default function InvoiceGeneratorPage() {
         />
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 pb-8 grid lg:grid-cols-[400px_1fr] gap-6">
+      <div id="invoice-layout" className="mx-auto max-w-6xl px-4 pb-8 grid lg:grid-cols-[400px_1fr] gap-6">
         {/* Form */}
         <div className="space-y-4 no-print">
           <Card>
             <CardHeader className="pb-3"><CardTitle className="text-sm">Your Details (Seller)</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {[
-                { label: "Business Name", val: sellerName, set: setSellerName },
-                { label: "Address", val: sellerAddress, set: setSellerAddress },
-                { label: "GSTIN (optional)", val: sellerGSTIN, set: setSellerGSTIN },
-                { label: "Phone (optional)", val: sellerPhone, set: setSellerPhone },
+                { label: "Business Name", val: sellerName, set: setSellerName, placeholder: "e.g. Sharma Enterprises" },
+                { label: "Address", val: sellerAddress, set: setSellerAddress, placeholder: "Street, City, PIN" },
+                { label: "GSTIN (optional)", val: sellerGSTIN, set: setSellerGSTIN, placeholder: "22AAAAA0000A1Z5" },
+                { label: "Phone (optional)", val: sellerPhone, set: setSellerPhone, placeholder: "+91 98765 43210" },
               ].map((f) => (
                 <div key={f.label}>
                   <Label className="text-xs">{f.label}</Label>
-                  <Input value={f.val} onChange={(e) => f.set(e.target.value)} className="mt-1 h-8 text-sm" />
+                  <Input value={f.val} onChange={(e) => f.set(e.target.value)} placeholder={f.placeholder} className="mt-1 h-8 text-sm" />
                 </div>
               ))}
               <div>
@@ -147,13 +178,13 @@ export default function InvoiceGeneratorPage() {
             <CardHeader className="pb-3"><CardTitle className="text-sm">Client Details (Buyer)</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {[
-                { label: "Client Name", val: buyerName, set: setBuyerName },
-                { label: "Address", val: buyerAddress, set: setBuyerAddress },
-                { label: "GSTIN (optional)", val: buyerGSTIN, set: setBuyerGSTIN },
+                { label: "Client Name", val: buyerName, set: setBuyerName, placeholder: "e.g. Patel Trading Co." },
+                { label: "Address", val: buyerAddress, set: setBuyerAddress, placeholder: "Street, City, PIN" },
+                { label: "GSTIN (optional)", val: buyerGSTIN, set: setBuyerGSTIN, placeholder: "22BBBBB0000B1Z5" },
               ].map((f) => (
                 <div key={f.label}>
                   <Label className="text-xs">{f.label}</Label>
-                  <Input value={f.val} onChange={(e) => f.set(e.target.value)} className="mt-1 h-8 text-sm" />
+                  <Input value={f.val} onChange={(e) => f.set(e.target.value)} placeholder={f.placeholder} className="mt-1 h-8 text-sm" />
                 </div>
               ))}
               <div>
@@ -201,8 +232,12 @@ export default function InvoiceGeneratorPage() {
             {/* Header */}
             <div className="flex justify-between items-start border-b-2 border-gray-800 pb-4 mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{sellerName}</h2>
-                <p className="text-gray-600 mt-1 whitespace-pre-line">{sellerAddress}</p>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {sellerName || <span className="invoice-placeholder text-gray-300">Your Business Name</span>}
+                </h2>
+                <p className="text-gray-600 mt-1 whitespace-pre-line">
+                  {sellerAddress || <span className="invoice-placeholder text-gray-300">Business Address</span>}
+                </p>
                 {sellerGSTIN && <p className="text-gray-600">GSTIN: {sellerGSTIN}</p>}
                 {sellerPhone && <p className="text-gray-600">Ph: {sellerPhone}</p>}
                 <p className="text-gray-600">State: {sellerState}</p>
@@ -220,8 +255,12 @@ export default function InvoiceGeneratorPage() {
             {/* Bill To */}
             <div className="mb-6">
               <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Bill To</div>
-              <div className="font-semibold text-base">{buyerName}</div>
-              <p className="text-gray-600 whitespace-pre-line">{buyerAddress}</p>
+              <div className="font-semibold text-base">
+                {buyerName || <span className="invoice-placeholder text-gray-300">Client Name</span>}
+              </div>
+              <p className="text-gray-600 whitespace-pre-line">
+                {buyerAddress || <span className="invoice-placeholder text-gray-300">Client Address</span>}
+              </p>
               {buyerGSTIN && <p className="text-gray-600">GSTIN: {buyerGSTIN}</p>}
               <p className="text-gray-600">State: {buyerState}</p>
               {isIGST && (
@@ -257,25 +296,25 @@ export default function InvoiceGeneratorPage() {
                           placeholder="Description"
                         />
                       </div>
-                      <div className="print-only hidden">{item.description}</div>
+                      <div className="print-only">{item.description}</div>
                     </td>
                     <td className="px-3 py-2">
                       <div className="no-print">
                         <Input value={item.hsn} onChange={(e) => updateItem(i, "hsn", e.target.value)} className="h-7 text-xs w-20" placeholder="HSN" />
                       </div>
-                      <div className="print-only hidden">{item.hsn}</div>
+                      <div className="print-only">{item.hsn}</div>
                     </td>
                     <td className="px-3 py-2 text-right">
                       <div className="no-print">
                         <Input value={item.qty} onChange={(e) => updateItem(i, "qty", e.target.value)} className="h-7 text-xs w-16 text-right" />
                       </div>
-                      <div className="print-only hidden">{item.qty}</div>
+                      <div className="print-only">{item.qty}</div>
                     </td>
                     <td className="px-3 py-2 text-right">
                       <div className="no-print">
-                        <Input value={item.rate} onChange={(e) => updateItem(i, "rate", e.target.value)} className="h-7 text-xs w-24 text-right" />
+                        <Input value={item.rate} onChange={(e) => updateItem(i, "rate", e.target.value)} className="h-7 text-xs w-24 text-right" placeholder="0" />
                       </div>
-                      <div className="print-only hidden">{item.rate}</div>
+                      <div className="print-only">{item.rate}</div>
                     </td>
                     <td className="px-3 py-2 text-right">
                       <div className="no-print">
@@ -284,7 +323,7 @@ export default function InvoiceGeneratorPage() {
                           {GST_RATES.map((r) => <option key={r}>{r}</option>)}
                         </select>
                       </div>
-                      <div className="print-only hidden">{item.gst}%</div>
+                      <div className="print-only">{item.gst}%</div>
                     </td>
                     <td className="px-3 py-2 text-right font-medium">
                       ₹{fmt(lineCalcs[i]?.total ?? 0)}
