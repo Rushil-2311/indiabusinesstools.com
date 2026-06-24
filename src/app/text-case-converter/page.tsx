@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 export default function TextCaseConverter() {
   const [text, setText] = useState("ToolsKit is an amazing multi-tool application.");
   const [copied, setCopied] = useState(false);
+  const [activeCase, setActiveCase] = useState<string | null>(null);
+  const [originalText, setOriginalText] = useState<string | null>(null);
 
   const charCount = text.length;
   const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
@@ -24,54 +26,58 @@ export default function TextCaseConverter() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const convert = (type: string) => {
+  const applyConversion = (type: string, input: string): string => {
     switch (type) {
       case "upper":
-        setText(text.toUpperCase());
-        break;
+        return input.toUpperCase();
       case "lower":
-        setText(text.toLowerCase());
-        break;
+        return input.toLowerCase();
       case "title":
-        setText(
-          text
-            .toLowerCase()
-            .split(" ")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ")
-        );
-        break;
+        return input
+          .toLowerCase()
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
       case "sentence":
-        setText(text.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, (c) => c.toUpperCase()));
-        break;
+        return input.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, (c) => c.toUpperCase());
       case "camel":
-        setText(text.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase()));
-        break;
+        return input.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
       case "pascal": {
-        const camel = text.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
-        setText(camel.charAt(0).toUpperCase() + camel.slice(1));
-        break;
+        const camel = input.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+        return camel.charAt(0).toUpperCase() + camel.slice(1);
       }
       case "snake":
-        setText(text.toLowerCase().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, ""));
-        break;
+        return input.toLowerCase().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "");
       case "kebab":
-        setText(text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-zA-Z0-9-]/g, ""));
-        break;
+        return input.toLowerCase().replace(/\s+/g, "-").replace(/[^a-zA-Z0-9-]/g, "");
       case "alt":
-        setText(
-          text
-            .split("")
-            .map((c, i) => (i % 2 === 0 ? c.toLowerCase() : c.toUpperCase()))
-            .join("")
-        );
-        break;
+        return input
+          .split("")
+          .map((c, i) => (i % 2 === 0 ? c.toLowerCase() : c.toUpperCase()))
+          .join("");
       case "reverse":
-        setText(text.split("").reverse().join(""));
-        break;
-      case "clear":
-        setText("");
-        break;
+        return input.split("").reverse().join("");
+      default:
+        return input;
+    }
+  };
+
+  const convert = (type: string) => {
+    if (type === "clear") {
+      setText("");
+      setActiveCase(null);
+      setOriginalText(null);
+      return;
+    }
+
+    if (activeCase === type && originalText !== null) {
+      setText(originalText);
+      setActiveCase(null);
+      setOriginalText(null);
+    } else {
+      setOriginalText(text);
+      setText(applyConversion(type, text));
+      setActiveCase(type);
     }
   };
 
@@ -107,7 +113,11 @@ export default function TextCaseConverter() {
                 key={btn.type}
                 variant="outline"
                 size="sm"
-                className="bg-background hover:bg-cyan-50 hover:text-cyan-600 hover:border-cyan-200 transition-colors"
+                className={`transition-colors ${
+                  activeCase === btn.type
+                    ? "bg-cyan-100 text-cyan-700 border-cyan-400 hover:bg-cyan-50"
+                    : "bg-background hover:bg-cyan-50 hover:text-cyan-600 hover:border-cyan-200"
+                }`}
                 onClick={() => convert(btn.type)}
               >
                 {btn.label}
@@ -128,7 +138,11 @@ export default function TextCaseConverter() {
               className="w-full h-80 p-6 resize-y bg-background focus:outline-none focus:ring-inset focus:ring-2 focus:ring-cyan-500/50 text-base leading-relaxed"
               placeholder="Type or paste your text here..."
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+                setActiveCase(null);
+                setOriginalText(null);
+              }}
               spellCheck={false}
             />
 
