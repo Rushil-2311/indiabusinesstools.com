@@ -1,16 +1,18 @@
 "use client";
 import { useState, useRef } from "react";
-import { ScrollText, Printer, Upload, Plus, Trash2 } from "lucide-react";
+import { ScrollText, Download, Loader2, Upload, Plus, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
-
-const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-const SHORT_MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-
-type Row = { label: string; amount: string };
+import { ClassicTemplate } from "./ClassicTemplate";
+import { ModernTemplate } from "./ModernTemplate";
+import { CorporateTemplate } from "./CorporateTemplate";
+import { BoldTemplate } from "./BoldTemplate";
+import { MinimalTemplate } from "./MinimalTemplate";
+import { MONTHS } from "./types";
+import type { Row } from "./types";
 
 function fmtNum(n: number) {
   return new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
@@ -20,26 +22,8 @@ function parseAmt(val: string) {
   return parseFloat(val.replace(/,/g, "")) || 0;
 }
 
-
-function numToWords(num: number): string {
-  const ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-  const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
-  if (num === 0) return "Zero Rupees Only";
-  function h(n: number): string {
-    if (n < 20) return ones[n];
-    if (n < 100) return tens[Math.floor(n/10)] + (n%10 ? " "+ones[n%10] : "");
-    if (n < 1000) return ones[Math.floor(n/100)]+" Hundred"+(n%100 ? " "+h(n%100) : "");
-    if (n < 100000) return h(Math.floor(n/1000))+" Thousand"+(n%1000 ? " "+h(n%1000) : "");
-    if (n < 10000000) return h(Math.floor(n/100000))+" Lakh"+(n%100000 ? " "+h(n%100000) : "");
-    return h(Math.floor(n/10000000))+" Crore"+(n%10000000 ? " "+h(n%10000000) : "");
-  }
-  const intPart = Math.floor(num);
-  const dec = Math.round((num - intPart)*100);
-  return h(intPart)+" Rupees"+(dec>0 ? " and "+h(dec)+" Paise" : "")+" Only";
-}
-
 function updateRow(rows: Row[], i: number, field: keyof Row, val: string, set: (r: Row[]) => void) {
-  set(rows.map((r, idx) => idx===i ? {...r, [field]: val} : r));
+  set(rows.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
 }
 
 function updateAmt(rows: Row[], i: number, val: string, set: (r: Row[]) => void) {
@@ -47,8 +31,226 @@ function updateAmt(rows: Row[], i: number, val: string, set: (r: Row[]) => void)
   updateRow(rows, i, "amount", num ? new Intl.NumberFormat("en-IN").format(parseInt(num)) : "", set);
 }
 
+type TemplateId = "classic" | "modern" | "corporate" | "bold" | "minimal";
+
+const TEMPLATES: { id: TemplateId; name: string; thumbnail: React.ReactNode }[] = [
+  {
+    id: "classic",
+    name: "Classic",
+    thumbnail: (
+      <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 p-1.5 flex flex-col gap-1">
+        <div className="flex justify-between items-start mb-0.5">
+          <div className="h-2 bg-gray-800 rounded w-1/2" />
+          <div className="h-1.5 bg-gray-200 rounded w-1/4" />
+        </div>
+        <div className="h-px bg-gray-800 w-full" />
+        <div className="grid grid-cols-4 gap-0.5 mt-0.5">
+          {Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-1 bg-gray-100 rounded" />)}
+        </div>
+        <div className="flex gap-1 mt-1">
+          <div className="flex-1 space-y-0.5">
+            <div className="h-0.5 bg-gray-400 rounded" />
+            {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-1 bg-gray-100 rounded" />)}
+          </div>
+          <div className="flex-1 space-y-0.5">
+            <div className="h-0.5 bg-gray-400 rounded" />
+            {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-1 bg-gray-100 rounded" />)}
+          </div>
+        </div>
+        <div className="h-3 bg-gray-100 border border-gray-200 rounded mt-auto" />
+      </div>
+    ),
+  },
+  {
+    id: "modern",
+    name: "Modern",
+    thumbnail: (
+      <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 flex">
+        <div className="w-2/5 bg-slate-900 p-1 flex flex-col gap-1">
+          <div className="h-1.5 bg-slate-600 rounded w-3/4" />
+          <div className="h-0.5 bg-slate-700 rounded" />
+          <div className="h-1 bg-slate-700 rounded w-full mt-1" />
+          <div className="h-1 bg-slate-600 rounded w-5/6" />
+          <div className="h-0.5 bg-slate-700 rounded mt-1" />
+          <div className="h-2 bg-slate-800 rounded w-1/2" />
+          <div className="h-0.5 bg-slate-700 rounded mt-1" />
+          {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-1 bg-slate-700 rounded" />)}
+        </div>
+        <div className="flex-1 p-1 flex flex-col gap-0.5">
+          <div className="h-1.5 bg-gray-800 rounded w-3/4" />
+          <div className="h-1 bg-gray-200 rounded w-full" />
+          <div className="h-1 bg-gray-100 rounded w-5/6" />
+          <div className="h-1 bg-gray-100 rounded w-full" />
+          <div className="h-px bg-indigo-200 w-full mt-1" />
+          {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-1 bg-gray-100 rounded" />)}
+          <div className="h-2.5 bg-indigo-100 border border-indigo-200 rounded mt-auto" />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "corporate",
+    name: "Corporate",
+    thumbnail: (
+      <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 flex flex-col">
+        <div className="text-center p-1 border-b-2 border-blue-700">
+          <div className="h-1.5 bg-gray-800 rounded w-3/4 mx-auto" />
+          <div className="h-1 bg-gray-200 rounded w-1/2 mx-auto mt-0.5" />
+        </div>
+        <div className="h-2 bg-blue-800 w-full" />
+        <div className="p-1 flex gap-1 border-b border-gray-200">
+          <div className="flex-1 space-y-0.5">
+            {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-1 bg-gray-100 rounded" />)}
+          </div>
+          <div className="flex-1 space-y-0.5">
+            {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-1 bg-gray-100 rounded" />)}
+            <div className="h-3 bg-blue-50 border border-blue-100 rounded" />
+          </div>
+        </div>
+        <div className="p-1">
+          <div className="h-1.5 bg-blue-800 rounded mb-0.5" />
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="grid grid-cols-3 gap-0.5 mb-0.5">
+              {Array.from({ length: 3 }).map((_, j) => <div key={j} className={`h-1 rounded ${i % 2 === 0 ? "bg-blue-50" : "bg-white border border-gray-100"}`} />)}
+            </div>
+          ))}
+        </div>
+        <div className="h-3 bg-blue-800 mx-1 rounded mt-auto mb-1" />
+      </div>
+    ),
+  },
+  {
+    id: "bold",
+    name: "Bold",
+    thumbnail: (
+      <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 flex flex-col">
+        <div className="bg-gray-950 p-1.5 flex flex-col gap-1" style={{ height: "45%" }}>
+          <div className="h-1 bg-gray-600 rounded w-2/3" />
+          <div className="h-1.5 bg-gray-100 rounded w-1/2" />
+          <div className="flex justify-end mt-auto">
+            <div className="h-2.5 bg-amber-400 rounded w-1/3" />
+          </div>
+          <div className="flex gap-0.5">
+            {Array.from({ length: 3 }).map((_, i) => <div key={i} className="flex-1 h-2.5 bg-gray-800 rounded" />)}
+          </div>
+        </div>
+        <div className="p-1 flex-1 flex flex-col gap-0.5">
+          <div className="flex gap-1">
+            <div className="flex-1 space-y-0.5">
+              <div className="h-0.5 bg-amber-400 rounded" />
+              {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-1 bg-gray-100 rounded" />)}
+            </div>
+            <div className="flex-1 space-y-0.5">
+              <div className="h-0.5 bg-red-400 rounded" />
+              {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-1 bg-gray-100 rounded" />)}
+            </div>
+          </div>
+          <div className="h-3 bg-amber-50 border-2 border-amber-300 rounded mt-auto" />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "minimal",
+    name: "Minimal",
+    thumbnail: (
+      <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 p-1.5 flex flex-col gap-1">
+        <div className="flex justify-between items-end">
+          <div className="h-2 bg-gray-900 rounded w-2/5" />
+          <div className="h-1 bg-gray-300 rounded w-1/4" />
+        </div>
+        <div className="h-0.5 bg-gray-900 w-full" />
+        <div className="h-1 bg-gray-100 rounded w-full" />
+        <div className="h-px bg-gray-200 w-full" />
+        <div className="space-y-0.5">
+          <div className="grid grid-cols-4 gap-0.5">
+            {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-1 bg-gray-300 rounded" />)}
+          </div>
+          <div className="h-0.5 bg-gray-900 w-full" />
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="grid grid-cols-4 gap-0.5">
+              {Array.from({ length: 4 }).map((_, j) => <div key={j} className="h-1 bg-gray-100 rounded" />)}
+            </div>
+          ))}
+          <div className="h-0.5 bg-gray-900 w-full" />
+        </div>
+        <div className="flex justify-end mt-auto">
+          <div className="h-3.5 bg-gray-900 rounded w-1/3" />
+        </div>
+      </div>
+    ),
+  },
+];
+
 export default function SalarySlipGeneratorPage() {
   const logoRef = useRef<HTMLInputElement>(null);
+  const [template, setTemplate] = useState<TemplateId>("classic");
+  const [downloading, setDownloading] = useState(false);
+
+  async function downloadPDF() {
+    const wrapper = document.getElementById("slip-preview");
+    if (!wrapper) return;
+    const element = (wrapper.firstElementChild as HTMLElement | null) ?? wrapper;
+    setDownloading(true);
+
+    const allEls = [element, ...Array.from(element.querySelectorAll<HTMLElement>("*"))];
+    const savedStyles = allEls.map((e) => e.style.cssText);
+    allEls.forEach((e) => {
+      const cs = window.getComputedStyle(e);
+      const bg = cs.backgroundColor;
+      if (bg && bg !== "rgba(0, 0, 0, 0)") e.style.backgroundColor = bg;
+      e.style.color = cs.color;
+    });
+
+    try {
+      const [{ toPng }, { default: jsPDF }] = await Promise.all([
+        import("html-to-image"),
+        import("jspdf"),
+      ]);
+
+      const dataUrl = await toPng(element, { pixelRatio: 2, cacheBust: true });
+
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const i = new Image();
+        i.onload = () => resolve(i);
+        i.onerror = reject;
+        i.src = dataUrl;
+      });
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pdfW = pdf.internal.pageSize.getWidth();
+      const pdfH = pdf.internal.pageSize.getHeight();
+      const mmPerPx = pdfW / img.naturalWidth;
+      const scaledH = img.naturalHeight * mmPerPx;
+
+      if (scaledH <= pdfH) {
+        pdf.addImage(dataUrl, "PNG", 0, 0, pdfW, scaledH);
+      } else {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        canvas.getContext("2d")!.drawImage(img, 0, 0);
+        const pageHeightPx = Math.floor(pdfH / mmPerPx);
+        let offsetY = 0;
+        while (offsetY < canvas.height) {
+          const sliceH = Math.min(pageHeightPx, canvas.height - offsetY);
+          if (sliceH < 2) break;
+          if (offsetY > 0) pdf.addPage();
+          const pageCanvas = document.createElement("canvas");
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = sliceH;
+          pageCanvas.getContext("2d")!.drawImage(canvas, 0, offsetY, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+          pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", 0, 0, pdfW, sliceH * mmPerPx);
+          offsetY += pageHeightPx;
+        }
+      }
+
+      pdf.save(`salary-slip-${empName.replace(/\s+/g, "-") || "download"}.pdf`);
+    } finally {
+      allEls.forEach((e, i) => (e.style.cssText = savedStyles[i]));
+      setDownloading(false);
+    }
+  }
 
   // Company
   const [logo, setLogo] = useState("");
@@ -73,10 +275,11 @@ export default function SalarySlipGeneratorPage() {
   // Pay period
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
-  const [paidDays, setPaidDays] = useState(String(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()));
+  const [paidDays, setPaidDays] = useState(
+    String(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate())
+  );
   const [lopDays, setLopDays] = useState("0");
 
-  // Auto-derive total days from selected month/year
   const totalDays = new Date(year, month + 1, 0).getDate();
 
   function changeMonth(m: number) {
@@ -98,7 +301,6 @@ export default function SalarySlipGeneratorPage() {
     setLopDays(String(totalDays - capped));
   }
 
-  // Earnings (A)
   const [earnings, setEarnings] = useState<Row[]>([
     { label: "Basic", amount: "45,000" },
     { label: "House Rent Allowance (HRA)", amount: "18,000" },
@@ -107,12 +309,10 @@ export default function SalarySlipGeneratorPage() {
     { label: "Medical Allowance", amount: "1,250" },
   ]);
 
-  // Contributions (B) — PF/ESI type
   const [contributions, setContributions] = useState<Row[]>([
     { label: "PF Employee", amount: "5,400" },
   ]);
 
-  // Taxes & Deductions (C)
   const [deductions, setDeductions] = useState<Row[]>([
     { label: "Professional Tax", amount: "200" },
     { label: "Income Tax (TDS)", amount: "3,500" },
@@ -131,6 +331,15 @@ export default function SalarySlipGeneratorPage() {
   const totalC = deductions.reduce((s, r) => s + parseAmt(r.amount), 0);
   const netPay = totalA - totalB - totalC;
 
+  const templateProps = {
+    logo, companyName, companyAddr, companyGSTIN,
+    empName, empId, designation, department, doj, pan, uan, pfNumber,
+    bank, ifsc, accountNo, paymentMode,
+    month, year, paidDays, lopDays, totalDays,
+    earnings, contributions, deductions,
+    totalA, totalB, totalC, netPay,
+  };
+
   const RowEditor = ({ rows, set, accentColor }: { rows: Row[]; set: (r: Row[]) => void; accentColor: string }) => (
     <div className="space-y-2">
       {rows.map((row, i) => (
@@ -142,17 +351,15 @@ export default function SalarySlipGeneratorPage() {
           </button>
         </div>
       ))}
-      <button onClick={() => set([...rows, { label: "", amount: "0" }])}
-        className={`flex items-center gap-1 text-xs font-medium hover:underline`} style={{ color: accentColor }}>
+      <button
+        onClick={() => set([...rows, { label: "", amount: "0" }])}
+        className="flex items-center gap-1 text-xs font-medium hover:underline"
+        style={{ color: accentColor }}
+      >
         <Plus className="h-3 w-3" /> Add row
       </button>
     </div>
   );
-
-  // ── Preview styles (inline so they print correctly) ──────────────────
-  const sl: React.CSSProperties = { fontFamily: "'Arial', 'Helvetica', sans-serif", fontSize: 11, color: "#111", lineHeight: 1.5 };
-  const thStyle: React.CSSProperties = { fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" as const, letterSpacing: 0.5, paddingBottom: 2 };
-  const tdVal: React.CSSProperties = { fontWeight: 600, color: "#111", fontSize: 11 };
 
   return (
     <div id="slip-page" className="min-h-screen bg-background">
@@ -173,13 +380,40 @@ export default function SalarySlipGeneratorPage() {
       `}</style>
 
       <div className="no-print">
-        <PageHeader title="Salary Slip Generator" description="Professional payslip with company logo — download as PDF" icon={ScrollText} gradient="from-violet-600 to-indigo-700" breadcrumbs={[{ name: "Tax & Payroll" }, { name: "Salary Slip Generator" }]} />
+        <PageHeader
+          title="Salary Slip Generator"
+          description="Professional payslip with company logo — download as PDF"
+          icon={ScrollText}
+          gradient="from-violet-600 to-indigo-700"
+          breadcrumbs={[{ name: "Tax & Payroll" }, { name: "Salary Slip Generator" }]}
+        />
       </div>
 
       <div id="slip-layout" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 grid lg:grid-cols-[400px_1fr] gap-6 items-start">
 
         {/* ── Form Panel ─────────────────────────────── */}
         <div id="slip-form" className="space-y-4 no-print">
+
+          {/* Template Selector */}
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm">Template</CardTitle></CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-5 gap-2">
+                {TEMPLATES.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTemplate(t.id)}
+                    className={`group flex flex-col items-center gap-1 rounded-lg p-1 transition-all ${template === t.id ? "ring-2 ring-violet-600 bg-violet-50" : "hover:bg-muted"}`}
+                  >
+                    <div className="w-full">{t.thumbnail}</div>
+                    <span className={`text-[10px] font-medium ${template === t.id ? "text-violet-700" : "text-muted-foreground"}`}>
+                      {t.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Company */}
           <Card>
@@ -188,7 +422,10 @@ export default function SalarySlipGeneratorPage() {
               <div className="flex items-center gap-3">
                 {logo
                   ? <img src={logo} alt="logo" className="h-12 w-12 object-contain rounded border bg-white p-0.5" />
-                  : <div className="h-12 w-12 rounded border border-dashed border-muted-foreground/40 flex items-center justify-center text-muted-foreground"><Upload className="h-4 w-4" /></div>}
+                  : <div className="h-12 w-12 rounded border border-dashed border-muted-foreground/40 flex items-center justify-center text-muted-foreground">
+                      <Upload className="h-4 w-4" />
+                    </div>
+                }
                 <div className="space-y-1">
                   <button onClick={() => logoRef.current?.click()} className="text-xs px-3 py-1.5 border rounded-lg font-medium hover:bg-muted transition-colors block">
                     {logo ? "Change Logo" : "Upload Logo"}
@@ -238,12 +475,15 @@ export default function SalarySlipGeneratorPage() {
 
           {/* Pay Period */}
           <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm">Pay Period & Attendance</CardTitle></CardHeader>
+            <CardHeader className="pb-2"><CardTitle className="text-sm">Pay Period &amp; Attendance</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs">Month</Label>
-                <select value={month} onChange={(e) => changeMonth(+e.target.value)}
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-ring">
+                <select
+                  value={month}
+                  onChange={(e) => changeMonth(+e.target.value)}
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-ring"
+                >
                   {MONTHS.map((m, i) => <option key={m} value={i}>{m}</option>)}
                 </select>
               </div>
@@ -270,7 +510,8 @@ export default function SalarySlipGeneratorPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
-                Earnings <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">(A) = ₹{fmtNum(totalA)}</span>
+                Earnings
+                <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">(A) = ₹{fmtNum(totalA)}</span>
               </CardTitle>
             </CardHeader>
             <CardContent><RowEditor rows={earnings} set={setEarnings} accentColor="#16a34a" /></CardContent>
@@ -280,7 +521,8 @@ export default function SalarySlipGeneratorPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
-                Contributions <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">(B) = ₹{fmtNum(totalB)}</span>
+                Contributions
+                <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">(B) = ₹{fmtNum(totalB)}</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -293,181 +535,27 @@ export default function SalarySlipGeneratorPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
-                Taxes & Deductions <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">(C) = ₹{fmtNum(totalC)}</span>
+                Taxes &amp; Deductions
+                <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">(C) = ₹{fmtNum(totalC)}</span>
               </CardTitle>
             </CardHeader>
             <CardContent><RowEditor rows={deductions} set={setDeductions} accentColor="#dc2626" /></CardContent>
           </Card>
 
-          <Button onClick={() => window.print()} className="w-full bg-gray-900 hover:bg-gray-800 text-white">
-            <Printer className="h-4 w-4 mr-2" /> Download / Print PDF
+          <Button onClick={downloadPDF} disabled={downloading} className="w-full bg-gray-900 hover:bg-gray-800 text-white">
+            {downloading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+            {downloading ? "Generating PDF…" : "Download PDF"}
           </Button>
         </div>
 
         {/* ── Salary Slip Preview ─────────────────────── */}
         <div id="slip-preview" className="overflow-x-auto">
-          <div style={{ ...sl, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: 32, minWidth: 560, maxWidth: 700, margin: "0 auto" }}>
-
-            {/* Top: PAYSLIP heading + month */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-              <div style={{ fontSize: 20, fontWeight: 800, color: "#111", letterSpacing: -0.5 }}>
-                PAYSLIP &nbsp;<span style={{ color: "#4B5563" }}>{SHORT_MONTHS[month]} {year}</span>
-              </div>
-              {logo && <img src={logo} alt="logo" style={{ height: 48, objectFit: "contain" }} />}
-            </div>
-
-            {/* Company info */}
-            <div style={{ marginBottom: 2, fontWeight: 700, fontSize: 11 }}>{companyName}</div>
-            {companyAddr.split("\n").map((line, i) => (
-              <div key={i} style={{ fontSize: 10, color: "#555" }}>{line}</div>
-            ))}
-            {companyGSTIN && <div style={{ fontSize: 10, color: "#555" }}>GSTIN: {companyGSTIN}</div>}
-
-            <div style={{ borderBottom: "2px solid #111", margin: "12px 0" }} />
-
-            {/* Employee name large */}
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>{empName}</div>
-
-            {/* Employee detail grid */}
-            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 4 }}>
-              <tbody>
-                {[
-                  [
-                    { label: "Emp No", val: empId },
-                    { label: "Date Joined", val: doj },
-                    { label: "Department", val: department },
-                    { label: "Designation", val: designation },
-                  ],
-                  [
-                    { label: "Payment Mode", val: paymentMode },
-                    { label: "Bank", val: bank },
-                    { label: "Bank IFSC", val: ifsc || "NA" },
-                    { label: "Bank Account", val: accountNo ? "••••"+accountNo.slice(-4) : "NA" },
-                  ],
-                  [
-                    { label: "PAN", val: pan || "NA" },
-                    { label: "UAN", val: uan || "NA" },
-                    { label: "PF Number", val: pfNumber || "NA" },
-                    { label: "", val: "" },
-                  ],
-                ].map((row, ri) => (
-                  <tr key={ri} style={{ borderBottom: "1px solid #e5e7eb" }}>
-                    {row.map((cell, ci) => (
-                      <td key={ci} style={{ padding: "6px 8px 6px 0", width: "25%", verticalAlign: "top" }}>
-                        {cell.label && (
-                          <>
-                            <div style={thStyle}>{cell.label}</div>
-                            <div style={tdVal}>{cell.val || "—"}</div>
-                          </>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Salary Details heading */}
-            <div style={{ fontWeight: 800, fontSize: 11, letterSpacing: 1, marginTop: 16, marginBottom: 4, textTransform: "uppercase" as const }}>SALARY DETAILS</div>
-            <div style={{ borderBottom: "2px solid #111", marginBottom: 10 }} />
-
-            {/* Attendance row */}
-            <table style={{ width: "100%", marginBottom: 14 }}>
-              <tbody>
-                <tr>
-                  {[
-                    { label: "Actual Payable Days", val: paidDays },
-                    { label: "Total Working Days", val: String(totalDays) },
-                    { label: "Loss of Pay Days", val: lopDays },
-                    { label: "Days Payable", val: paidDays },
-                  ].map((c) => (
-                    <td key={c.label} style={{ width: "25%" }}>
-                      <div style={thStyle}>{c.label}</div>
-                      <div style={{ fontWeight: 700, fontSize: 13 }}>{c.val}</div>
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Earnings | Contributions + Deductions */}
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <tbody>
-                <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
-                  {/* LEFT: Earnings */}
-                  <td style={{ width: "48%", verticalAlign: "top", paddingRight: 20, borderRight: "1px solid #e5e7eb" }}>
-                    <div style={{ fontWeight: 800, fontSize: 10, letterSpacing: 0.8, marginBottom: 6, textTransform: "uppercase" as const }}>EARNINGS</div>
-                    {earnings.map((e, i) => (
-                      <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", borderBottom: "1px solid #f3f4f6" }}>
-                        <span style={{ color: "#374151" }}>{e.label}</span>
-                        <span style={{ fontWeight: 600 }}>{fmtNum(parseAmt(e.amount))}</span>
-                      </div>
-                    ))}
-                    <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", marginTop: 4, borderTop: "2px solid #111", fontWeight: 800 }}>
-                      <span>Total Earnings (A)</span>
-                      <span>{fmtNum(totalA)}</span>
-                    </div>
-                  </td>
-
-                  {/* RIGHT: Contributions + Deductions */}
-                  <td style={{ verticalAlign: "top", paddingLeft: 20 }}>
-                    <div style={{ fontWeight: 800, fontSize: 10, letterSpacing: 0.8, marginBottom: 6, textTransform: "uppercase" as const }}>CONTRIBUTIONS</div>
-                    {contributions.map((c, i) => (
-                      <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", borderBottom: "1px solid #f3f4f6" }}>
-                        <span style={{ color: "#374151" }}>{c.label}</span>
-                        <span style={{ fontWeight: 600 }}>{fmtNum(parseAmt(c.amount))}</span>
-                      </div>
-                    ))}
-                    <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", marginTop: 2, borderTop: "1px solid #d1d5db", fontWeight: 700, fontSize: 10 }}>
-                      <span>Total Contributions (B)</span>
-                      <span>{fmtNum(totalB)}</span>
-                    </div>
-
-                    <div style={{ fontWeight: 800, fontSize: 10, letterSpacing: 0.8, margin: "12px 0 6px", textTransform: "uppercase" as const }}>TAXES &amp; DEDUCTIONS</div>
-                    {deductions.map((d, i) => (
-                      <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", borderBottom: "1px solid #f3f4f6" }}>
-                        <span style={{ color: "#374151" }}>{d.label}</span>
-                        <span style={{ fontWeight: 600 }}>{fmtNum(parseAmt(d.amount))}</span>
-                      </div>
-                    ))}
-                    <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", marginTop: 2, borderTop: "1px solid #d1d5db", fontWeight: 700, fontSize: 10 }}>
-                      <span>Total Deductions (C)</span>
-                      <span>{fmtNum(totalC)}</span>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Net Pay row */}
-            <div style={{ marginTop: 12, background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 6, padding: "10px 14px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                  <div style={{ fontSize: 10, color: "#6b7280", fontWeight: 600, letterSpacing: 0.5 }}>NET SALARY PAYABLE (A - B - C)</div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "#111", marginTop: 2 }}>₹ {fmtNum(netPay)}</div>
-                </div>
-                <div style={{ fontSize: 10, color: "#6b7280", textAlign: "right" }}>
-                  <div>Gross (A): ₹ {fmtNum(totalA)}</div>
-                  <div>Contributions (B): ₹ {fmtNum(totalB)}</div>
-                  <div>Deductions (C): ₹ {fmtNum(totalC)}</div>
-                </div>
-              </div>
-              <div style={{ marginTop: 8, borderTop: "1px solid #e5e7eb", paddingTop: 6, display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 10, color: "#6b7280" }}>Net Salary in words</span>
-                <span style={{ fontSize: 10, fontStyle: "italic", color: "#374151" }}>{numToWords(netPay)}</span>
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div style={{ marginTop: 16, fontSize: 10, color: "#6b7280" }}>
-              <div><strong>**Note:</strong> All amounts displayed in this payslip are in INR.</div>
-            </div>
-            <div style={{ marginTop: 20, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-              <div style={{ fontSize: 9, color: "#9ca3af" }}>*This is a system generated salary slip and does not require signature.</div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ borderTop: "1px solid #9ca3af", paddingTop: 4, width: 140, fontSize: 9, color: "#6b7280" }}>Authorised Signatory</div>
-              </div>
-            </div>
+          <div style={{ border: "1px solid #e5e7eb", borderRadius: 8, minWidth: 560, maxWidth: 700, margin: "0 auto", overflow: "hidden" }}>
+            {template === "classic" && <ClassicTemplate {...templateProps} />}
+            {template === "modern" && <ModernTemplate {...templateProps} />}
+            {template === "corporate" && <CorporateTemplate {...templateProps} />}
+            {template === "bold" && <BoldTemplate {...templateProps} />}
+            {template === "minimal" && <MinimalTemplate {...templateProps} />}
           </div>
         </div>
       </div>
