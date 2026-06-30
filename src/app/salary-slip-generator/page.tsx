@@ -66,7 +66,7 @@ const TEMPLATES: { id: TemplateId; name: string; thumbnail: React.ReactNode }[] 
     name: "Modern",
     thumbnail: (
       <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 flex">
-        <div className="w-2/5 bg-slate-900 p-1 flex flex-col gap-1">
+        <div className="w-2/5 p-1 flex flex-col gap-1">
           <div className="h-1.5 bg-slate-600 rounded w-3/4" />
           <div className="h-0.5 bg-slate-700 rounded" />
           <div className="h-1 bg-slate-700 rounded w-full mt-1" />
@@ -93,7 +93,7 @@ const TEMPLATES: { id: TemplateId; name: string; thumbnail: React.ReactNode }[] 
     name: "Corporate",
     thumbnail: (
       <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 flex flex-col">
-        <div className="text-center p-1 border-b-2 border-blue-700">
+        <div className="text-center p-1 border-b-2">
           <div className="h-1.5 bg-gray-800 rounded w-3/4 mx-auto" />
           <div className="h-1 bg-gray-200 rounded w-1/2 mx-auto mt-0.5" />
         </div>
@@ -108,7 +108,7 @@ const TEMPLATES: { id: TemplateId; name: string; thumbnail: React.ReactNode }[] 
           </div>
         </div>
         <div className="p-1">
-          <div className="h-1.5 bg-blue-800 rounded mb-0.5" />
+          <div className="h-1.5 rounded mb-0.5" />
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="grid grid-cols-3 gap-0.5 mb-0.5">
               {Array.from({ length: 3 }).map((_, j) => <div key={j} className={`h-1 rounded ${i % 2 === 0 ? "bg-blue-50" : "bg-white border border-gray-100"}`} />)}
@@ -124,7 +124,7 @@ const TEMPLATES: { id: TemplateId; name: string; thumbnail: React.ReactNode }[] 
     name: "Bold",
     thumbnail: (
       <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 flex flex-col">
-        <div className="bg-gray-950 p-1.5 flex flex-col gap-1" style={{ height: "45%" }}>
+        <div className="p-1.5 flex flex-col gap-1" style={{ height: "45%" }}>
           <div className="h-1 bg-gray-600 rounded w-2/3" />
           <div className="h-1.5 bg-gray-100 rounded w-1/2" />
           <div className="flex justify-end mt-auto">
@@ -403,7 +403,7 @@ export default function SalarySlipGeneratorPage() {
                   <button
                     key={t.id}
                     onClick={() => setTemplate(t.id)}
-                    className={`group flex flex-col items-center gap-1 rounded-lg p-1 transition-all ${template === t.id ? "ring-2 ring-violet-600 bg-violet-50" : "hover:bg-muted"}`}
+                    className={`group flex flex-col items-center gap-1 rounded-lg p-1 transition-all ${template === t.id ? "ring-2 ring-violet-600 bg-violet-50" : "hover:bg-muted cursor-pointer"}`}
                   >
                     <div className="w-full">{t.thumbnail}</div>
                     <span className={`text-[10px] font-medium ${template === t.id ? "text-violet-700" : "text-muted-foreground"}`}>

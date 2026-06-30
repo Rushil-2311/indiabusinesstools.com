@@ -46,7 +46,7 @@ const TEMPLATES: { id: TemplateId; name: string; thumbnail: React.ReactNode }[] 
     name: "Modern",
     thumbnail: (
       <div className="rounded overflow-hidden aspect-[3/4] bg-white border border-gray-100 flex">
-        <div className="w-2/5 bg-slate-900 p-1 space-y-0.5">
+        <div className="w-2/5 p-1 space-y-0.5">
           <div className="h-1 bg-slate-600 rounded w-3/4" />
           <div className="h-1 bg-slate-700 rounded w-full" />
           <div className="h-1 bg-slate-700 rounded w-5/6" />
@@ -126,7 +126,7 @@ const TEMPLATES: { id: TemplateId; name: string; thumbnail: React.ReactNode }[] 
     id: "bold",
     name: "Bold",
     thumbnail: (
-      <div className="rounded overflow-hidden aspect-[3/4] bg-gray-950 flex flex-col">
+      <div className="rounded overflow-hidden aspect-[3/4] flex flex-col">
         <div className="p-1.5 flex justify-between items-start">
           <div className="space-y-0.5">
             <div className="h-1.5 bg-white rounded w-10" />
@@ -346,7 +346,7 @@ export default function InvoiceGeneratorPage() {
                     className={`rounded-lg border-2 p-1.5 transition-all ${
                       template === t.id
                         ? "border-blue-500 shadow-sm bg-blue-50/50"
-                        : "border-gray-200 hover:border-gray-400"
+                        : "border-gray-200 hover:border-gray-400 cursor-pointer"
                     }`}
                   >
                     {t.thumbnail}
