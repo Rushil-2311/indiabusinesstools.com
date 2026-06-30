@@ -1,17 +1,26 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
-  FilePen, Upload, RefreshCw, Download, Trash2, Undo2,
+  FilePen, Upload, RefreshCw, Download, Trash2, Undo2, Redo2,
   Type, Pen, Highlighter, Square, Circle, MoveRight, Eraser,
   ChevronLeft, ChevronRight,
+  Bold as BoldIcon, Italic as ItalicIcon, Underline as UnderlineIcon,
+  Strikethrough as StrikethroughIcon,
+  Heading1, Heading2, Heading3,
+  AlignLeft, AlignCenter, AlignRight,
+  List as ListIcon, ListOrdered,
 } from "lucide-react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TextAlign from "@tiptap/extension-text-align";
+import TiptapUnderline from "@tiptap/extension-underline";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 const SCALE = 1.5;
-type Tab = "draw" | "watermark";
+type Tab = "draw" | "watermark" | "edit";
 type Tool = "pen" | "highlight" | "text" | "rect" | "circle" | "arrow" | "eraser";
 
 type PenOp   = { type: "pen" | "highlight" | "eraser"; pts: [number, number][]; color: string; width: number };
@@ -852,10 +861,271 @@ function WatermarkTab() {
   );
 }
 
+// ── Edit Content Tab ───────────────────────────────────────────────────────────
+// User uploads PDF → LibreOffice on server converts to HTML → TipTap shows it
+// as editable text → user edits → server converts HTML back to PDF → download
+function EditContentTab() {
+  type EditView = "upload" | "converting" | "editing" | "exporting";
+  const [view, setView]           = useState<EditView>("upload");
+  const [fileName, setFileName]   = useState("");
+  const [error, setError]         = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const API_URL = process.env.NEXT_PUBLIC_PDF_API_URL || "http://localhost:3001";
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      TiptapUnderline,
+    ],
+    editorProps: {
+      attributes: {
+        class: "tiptap-edit outline-none min-h-96 px-10 py-8 text-sm text-gray-800 leading-relaxed",
+      },
+    },
+  });
+
+  async function handleFile(file: File) {
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      setError("Please upload a PDF file.");
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      setError("File size must be under 20 MB.");
+      return;
+    }
+    setError("");
+    setFileName(file.name);
+    setView("converting");
+    try {
+      const form = new FormData();
+      form.append("pdf", file, file.name);
+      const res = await fetch(`${API_URL}/convert`, { method: "POST", body: form });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error((data as { error?: string }).error || "Conversion failed");
+      }
+      const { html } = await res.json() as { html: string };
+      editor?.commands.setContent(html);
+      setView("editing");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Conversion failed. Try a different PDF.");
+      setView("upload");
+    }
+  }
+
+  async function handleExport() {
+    if (!editor) return;
+    setView("exporting");
+    try {
+      const html = editor.getHTML();
+      const res = await fetch(`${API_URL}/export`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html, fileName }),
+      });
+      if (!res.ok) throw new Error("Export failed");
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = fileName.replace(/\.pdf$/i, "-edited.pdf");
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Export failed. Please try again.");
+    }
+    setView("editing");
+  }
+
+  const TBtn = ({
+    onClick, active, disabled, title, children,
+  }: {
+    onClick: () => void; active?: boolean; disabled?: boolean;
+    title: string; children: React.ReactNode;
+  }) => (
+    <button
+      onClick={onClick} disabled={disabled} title={title}
+      className={`p-1.5 rounded transition-colors ${
+        active
+          ? "bg-foreground text-background"
+          : "text-muted-foreground hover:bg-muted"
+      } ${disabled ? "opacity-30 pointer-events-none" : ""}`}
+    >
+      {children}
+    </button>
+  );
+
+  const Sep = () => <div className="w-px h-4 bg-border mx-0.5 self-center" />;
+
+  if (view === "converting") return (
+    <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
+      <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+      <p className="font-medium">Converting PDF with LibreOffice…</p>
+      <p className="text-xs text-muted-foreground max-w-xs">
+        Your file is being processed on the server. This takes 10–30 seconds depending on file size.
+      </p>
+    </div>
+  );
+
+  if (view === "exporting") return (
+    <div className="flex flex-col items-center justify-center py-24 gap-4">
+      <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+      <p className="font-medium">Generating PDF…</p>
+      <p className="text-xs text-muted-foreground">LibreOffice is converting your edited content back to PDF.</p>
+    </div>
+  );
+
+  if (view === "upload") return (
+    <div className="space-y-4">
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <strong>Requires API server:</strong> This tab sends your PDF to a LibreOffice server to extract editable text.
+        Deploy the <code className="bg-amber-100 px-1 rounded text-xs">server/server.js</code> file to your
+        DigitalOcean Droplet and set <code className="bg-amber-100 px-1 rounded text-xs">NEXT_PUBLIC_PDF_API_URL</code> in <code className="bg-amber-100 px-1 rounded text-xs">.env.local</code>.
+      </div>
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+      )}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={(e) => { e.preventDefault(); setIsDragging(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
+        onClick={() => fileInputRef.current?.click()}
+        className={`border-2 border-dashed rounded-2xl p-14 text-center cursor-pointer transition-all ${
+          isDragging
+            ? "border-primary bg-primary/5"
+            : "border-muted-foreground/30 hover:border-muted-foreground/60 hover:bg-muted/20"
+        }`}
+      >
+        <Upload className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
+        <p className="font-medium text-muted-foreground">Drop PDF here or click to upload</p>
+        <p className="text-xs text-muted-foreground mt-2 max-w-sm mx-auto">
+          LibreOffice extracts the text so you can edit it. Works best on Word/text-based PDFs.
+          Scanned PDFs (photos of documents) will not work.
+        </p>
+        <input
+          ref={fileInputRef} type="file" accept=".pdf,application/pdf" className="hidden"
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
+        />
+      </div>
+      <p className="text-xs text-muted-foreground text-center">Max 20 MB · PDF is sent to your LibreOffice API server for conversion</p>
+    </div>
+  );
+
+  // ── Editing view ──────────────────────────────────────────────────────────────
+  return (
+    <div className="-mx-6 -mb-6">
+      <style>{`
+        .tiptap-edit p           { margin-bottom: 0.6rem; }
+        .tiptap-edit h1          { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .tiptap-edit h2          { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.6rem; }
+        .tiptap-edit h3          { font-size: 1rem;  font-weight: 600; margin-bottom: 0.5rem; }
+        .tiptap-edit ul          { padding-left: 1.5rem; margin-bottom: 0.6rem; list-style-type: disc; }
+        .tiptap-edit ol          { padding-left: 1.5rem; margin-bottom: 0.6rem; list-style-type: decimal; }
+        .tiptap-edit li          { margin-bottom: 0.2rem; }
+        .tiptap-edit strong      { font-weight: 700; }
+        .tiptap-edit em          { font-style: italic; }
+        .tiptap-edit u           { text-decoration: underline; }
+        .tiptap-edit s           { text-decoration: line-through; }
+        .tiptap-edit blockquote  { border-left: 3px solid #e5e7eb; padding-left: 1rem; color: #6b7280; margin: 0.75rem 0; }
+        .tiptap-edit table       { border-collapse: collapse; width: 100%; margin-bottom: 0.75rem; }
+        .tiptap-edit td,
+        .tiptap-edit th          { border: 1px solid #e5e7eb; padding: 0.4rem 0.6rem; }
+        .tiptap-edit th          { background: #f9fafb; font-weight: 600; }
+        .tiptap-edit img         { max-width: 100%; }
+      `}</style>
+
+      {/* Top bar: file name + export */}
+      <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/30">
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            onClick={() => setView("upload")}
+            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          >
+            <ChevronLeft className="h-3 w-3" /> New File
+          </button>
+          <span className="text-xs text-muted-foreground">·</span>
+          <span className="text-xs text-muted-foreground truncate">{fileName}</span>
+        </div>
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-semibold hover:opacity-90 transition-opacity shrink-0 ml-4"
+        >
+          <Download className="h-3 w-3" /> Export PDF
+        </button>
+      </div>
+
+      {/* Formatting toolbar */}
+      <div className="flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b bg-background">
+        <TBtn onClick={() => editor?.chain().focus().undo().run()} title="Undo" disabled={!editor?.can().undo()}>
+          <Undo2 className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().redo().run()} title="Redo" disabled={!editor?.can().redo()}>
+          <Redo2 className="h-3.5 w-3.5" />
+        </TBtn>
+        <Sep />
+        <TBtn onClick={() => editor?.chain().focus().toggleBold().run()} active={editor?.isActive("bold")} title="Bold (Ctrl+B)">
+          <BoldIcon className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().toggleItalic().run()} active={editor?.isActive("italic")} title="Italic (Ctrl+I)">
+          <ItalicIcon className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().toggleUnderline().run()} active={editor?.isActive("underline")} title="Underline (Ctrl+U)">
+          <UnderlineIcon className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().toggleStrike().run()} active={editor?.isActive("strike")} title="Strikethrough">
+          <StrikethroughIcon className="h-3.5 w-3.5" />
+        </TBtn>
+        <Sep />
+        <TBtn onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()} active={editor?.isActive("heading", { level: 1 })} title="Heading 1">
+          <Heading1 className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()} active={editor?.isActive("heading", { level: 2 })} title="Heading 2">
+          <Heading2 className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()} active={editor?.isActive("heading", { level: 3 })} title="Heading 3">
+          <Heading3 className="h-3.5 w-3.5" />
+        </TBtn>
+        <Sep />
+        <TBtn onClick={() => editor?.chain().focus().toggleBulletList().run()} active={editor?.isActive("bulletList")} title="Bullet List">
+          <ListIcon className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().toggleOrderedList().run()} active={editor?.isActive("orderedList")} title="Numbered List">
+          <ListOrdered className="h-3.5 w-3.5" />
+        </TBtn>
+        <Sep />
+        <TBtn onClick={() => editor?.chain().focus().setTextAlign("left").run()} active={editor?.isActive({ textAlign: "left" })} title="Align Left">
+          <AlignLeft className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().setTextAlign("center").run()} active={editor?.isActive({ textAlign: "center" })} title="Align Center">
+          <AlignCenter className="h-3.5 w-3.5" />
+        </TBtn>
+        <TBtn onClick={() => editor?.chain().focus().setTextAlign("right").run()} active={editor?.isActive({ textAlign: "right" })} title="Align Right">
+          <AlignRight className="h-3.5 w-3.5" />
+        </TBtn>
+      </div>
+
+      {error && (
+        <div className="px-4 py-2 bg-red-50 border-b border-red-200 text-xs text-red-700">{error}</div>
+      )}
+
+      {/* Document area — white page on gray background, like Google Docs */}
+      <div className="bg-gray-100 overflow-auto" style={{ minHeight: 520 }}>
+        <div className="mx-auto my-6 bg-white shadow" style={{ width: "min(794px, calc(100% - 2rem))" }}>
+          <EditorContent editor={editor} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Page ──────────────────────────────────────────────────────────────────
 const TABS: { val: Tab; label: string; desc: string }[] = [
   { val: "draw",      label: "Draw & Edit",  desc: "Pen, shapes, text, eraser, arrow" },
   { val: "watermark", label: "Watermark",    desc: "Stamp text across all pages" },
+  { val: "edit",      label: "Edit Content", desc: "Change text via LibreOffice server" },
 ];
 
 export default function PdfEditorPage() {
@@ -883,6 +1153,7 @@ export default function PdfEditorPage() {
           <CardContent className="pt-6">
             {tab === "draw"      && <DrawEditTab />}
             {tab === "watermark" && <WatermarkTab />}
+            {tab === "edit"      && <EditContentTab />}
           </CardContent>
         </Card>
         <p className="text-xs text-muted-foreground text-center">
