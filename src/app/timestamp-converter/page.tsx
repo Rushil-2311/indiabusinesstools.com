@@ -6,6 +6,9 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const TIMEZONES = [
   { label: "IST — India Standard Time", value: "Asia/Kolkata" },
@@ -198,6 +201,9 @@ export default function TimestampConverter() {
             )}
           </Card>
         </div>
+
+        <ToolDescription toolName="Timestamp Converter" data={toolDescriptions["timestamp-converter"]} />
+        <FaqSection faqs={faqs["timestamp-converter"]} />
       </div>
     </>
   );

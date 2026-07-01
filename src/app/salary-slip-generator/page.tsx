@@ -13,6 +13,9 @@ import { BoldTemplate } from "./BoldTemplate";
 import { MinimalTemplate } from "./MinimalTemplate";
 import { MONTHS } from "./types";
 import type { Row } from "./types";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 function fmtNum(n: number) {
   return new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
@@ -558,6 +561,9 @@ export default function SalarySlipGeneratorPage() {
             {template === "minimal" && <MinimalTemplate {...templateProps} />}
           </div>
         </div>
+
+        <ToolDescription toolName="Salary Slip Generator" data={toolDescriptions["salary-slip-generator"]} />
+        <FaqSection faqs={faqs["salary-slip-generator"]} />
       </div>
     </div>
   );

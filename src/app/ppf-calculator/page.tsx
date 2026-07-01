@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const PPF_RATE = 7.1;
 
@@ -179,6 +180,7 @@ export default function PPFCalculatorPage() {
             </CardContent>
           </Card>
         </div>
+        <ToolDescription toolName="PPF Calculator" data={toolDescriptions["ppf-calculator"]} />
         <FaqSection faqs={faqs["ppf-calculator"]} />
       </div>
       <RelatedTools currentSlug="ppf-calculator" />

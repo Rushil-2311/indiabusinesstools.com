@@ -4,6 +4,9 @@ import { Coffee, Copy, Check, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE = `public class BankAccount{private String owner;private double balance;public BankAccount(String owner,double initialBalance){this.owner=owner;this.balance=initialBalance;}public void deposit(double amount){if(amount<=0){throw new IllegalArgumentException("Deposit amount must be positive");}balance+=amount;}public boolean withdraw(double amount){if(amount<=0||amount>balance){return false;}balance-=amount;return true;}public double getBalance(){return balance;}@Override public String toString(){return "BankAccount{owner='"+owner+"', balance="+balance+"}";}}`;
 
@@ -194,6 +197,9 @@ export default function JavaFormatterPage() {
         </div>
 
         <p className="text-xs text-muted-foreground text-center">All formatting happens in your browser — your data never leaves your device.</p>
+
+        <ToolDescription toolName="Java Formatter" data={toolDescriptions["java-formatter"]} />
+        <FaqSection faqs={faqs["java-formatter"]} />
       </div>
     </div>
   );

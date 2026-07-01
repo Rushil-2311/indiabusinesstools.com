@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -189,6 +190,7 @@ export default function CAGRCalculatorPage() {
             )}
           </div>
         </div>
+        <ToolDescription toolName="CAGR Calculator" data={toolDescriptions["cagr-calculator"]} />
         <FaqSection faqs={faqs["cagr-calculator"]} />
       </div>
       <RelatedTools currentSlug="cagr-calculator" />

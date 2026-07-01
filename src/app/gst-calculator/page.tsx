@@ -11,8 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/formatters";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 export default function GstCalculator() {
   const [amount, setAmount] = useState<string>("10000");
@@ -139,6 +140,7 @@ export default function GstCalculator() {
             </div>
           </div>
         </Card>
+        <ToolDescription toolName="GST Calculator" data={toolDescriptions["gst-calculator"]} />
         <FaqSection faqs={faqs["gst-calculator"]} />
       </div>
       <RelatedTools currentSlug="gst-calculator" />

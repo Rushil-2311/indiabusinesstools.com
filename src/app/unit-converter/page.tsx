@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 type Unit = { label: string; factor: number; note?: string };
 type Category = { name: string; units: Unit[]; convert?: (val: number, from: Unit, to: Unit) => number };
@@ -259,6 +262,9 @@ export default function UnitConverterPage() {
             </div>
           </CardContent>
         </Card>
+
+        <ToolDescription toolName="Unit Converter" data={toolDescriptions["unit-converter"]} />
+        <FaqSection faqs={faqs["unit-converter"]} />
       </div>
     </div>
   );

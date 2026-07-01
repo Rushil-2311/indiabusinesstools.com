@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 // ── Color conversion helpers ──────────────────────────────────────────────────
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -306,6 +309,9 @@ export default function ColorConverterPage() {
             </Card>
           </div>
         </div>
+
+        <ToolDescription toolName="Color Converter" data={toolDescriptions["color-converter"]} />
+        <FaqSection faqs={faqs["color-converter"]} />
       </div>
     </div>
   );

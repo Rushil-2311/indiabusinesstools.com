@@ -15,8 +15,9 @@ import { AdSlot } from "@/components/shared/AdSlot";
 import { Button } from "@/components/ui/button";
 import { syntaxHighlightJson } from "@/lib/calculators";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 export default function JsonFormatter() {
   const [input, setInput] = useState(
@@ -169,6 +170,7 @@ export default function JsonFormatter() {
             </div>
           </div>
         </div>
+        <ToolDescription toolName="JSON Formatter" data={toolDescriptions["json-formatter"]} />
         <FaqSection faqs={faqs["json-formatter"]} />
       </div>
       <RelatedTools currentSlug="json-formatter" />

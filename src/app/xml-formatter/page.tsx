@@ -4,6 +4,9 @@ import { Code, Copy, Check, Download, Upload, Minimize2, Maximize2 } from "lucid
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE = `<?xml version="1.0" encoding="UTF-8"?><employees><employee><id>1</id><name>Priya Sharma</name><department>Engineering</department><salary>85000</salary></employee><employee><id>2</id><name>Rahul Verma</name><department>Marketing</department><salary>72000</salary></employee></employees>`;
 
@@ -180,6 +183,9 @@ export default function XmlFormatterPage() {
         </div>
 
         <p className="text-xs text-muted-foreground text-center">All formatting happens in your browser — your data never leaves your device.</p>
+
+        <ToolDescription toolName="XML Formatter" data={toolDescriptions["xml-formatter"]} />
+        <FaqSection faqs={faqs["xml-formatter"]} />
       </div>
     </div>
   );

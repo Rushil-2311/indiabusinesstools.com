@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -189,6 +190,7 @@ export default function CompoundInterestCalculatorPage() {
             </CardContent>
           </Card>
         </div>
+        <ToolDescription toolName="Compound Interest Calculator" data={toolDescriptions["compound-interest-calculator"]} />
         <FaqSection faqs={faqs["compound-interest-calculator"]} />
       </div>
       <RelatedTools currentSlug="compound-interest-calculator" />

@@ -28,7 +28,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 export default function EmiCalculator() {
   const [principal, setPrincipal] = useState(1000000);
   const [rate, setRate] = useState(8.5);
@@ -314,6 +315,8 @@ export default function EmiCalculator() {
             )}
           </div>
         </div>
+
+        <ToolDescription toolName="EMI Calculator" data={toolDescriptions["emi-calculator"]} />
 
         <div className="mt-20 max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold mb-6 text-center">

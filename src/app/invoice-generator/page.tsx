@@ -12,6 +12,9 @@ import { ModernTemplate } from "./ModernTemplate";
 import { MinimalTemplate } from "./MinimalTemplate";
 import { CorporateTemplate } from "./CorporateTemplate";
 import { BoldTemplate } from "./BoldTemplate";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const INDIAN_STATES = [
   "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana",
@@ -445,6 +448,9 @@ export default function InvoiceGeneratorPage() {
           {template === "corporate" && <CorporateTemplate {...templateProps} />}
           {template === "bold" && <BoldTemplate {...templateProps} />}
         </div>
+
+        <ToolDescription toolName="Invoice Generator" data={toolDescriptions["invoice-generator"]} />
+        <FaqSection faqs={faqs["invoice-generator"]} />
       </div>
     </div>
   );

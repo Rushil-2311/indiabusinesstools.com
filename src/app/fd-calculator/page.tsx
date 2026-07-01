@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const BANK_PRESETS = [
   { name: "Custom", rate: 0 },
@@ -256,6 +257,7 @@ export default function FDCalculatorPage() {
             </Card>
           )}
         </div>
+        <ToolDescription toolName="FD Calculator" data={toolDescriptions["fd-calculator"]} />
         <FaqSection faqs={faqs["fd-calculator"]} />
       </div>
       <RelatedTools currentSlug="fd-calculator" />

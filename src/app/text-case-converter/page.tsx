@@ -6,6 +6,9 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 export default function TextCaseConverter() {
   const [text, setText] = useState("ToolsKit is an amazing multi-tool application.");
@@ -178,6 +181,9 @@ export default function TextCaseConverter() {
             </div>
           </div>
         </Card>
+
+        <ToolDescription toolName="Text Case Converter" data={toolDescriptions["text-case-converter"]} />
+        <FaqSection faqs={faqs["text-case-converter"]} />
       </div>
     </>
   );

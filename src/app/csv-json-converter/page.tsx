@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE_CSV = `name,age,city,salary
 Priya Sharma,28,Mumbai,85000
@@ -216,6 +219,9 @@ export default function CSVJSONConverterPage() {
             </CardContent>
           </Card>
         )}
+
+        <ToolDescription toolName="CSV ↔ JSON Converter" data={toolDescriptions["csv-json-converter"]} />
+        <FaqSection faqs={faqs["csv-json-converter"]} />
       </div>
     </div>
   );

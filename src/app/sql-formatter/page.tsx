@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { format, type FormatOptionsWithLanguage } from "sql-formatter";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE = `SELECT e.id,e.name,e.salary,d.department_name FROM employees e LEFT JOIN departments d ON e.department_id=d.id WHERE e.salary>(SELECT AVG(salary) FROM employees) AND e.status='active' ORDER BY e.salary DESC LIMIT 10;`;
 
@@ -151,6 +154,9 @@ export default function SqlFormatterPage() {
         </div>
 
         <p className="text-xs text-muted-foreground text-center">All formatting happens in your browser — your data never leaves your device.</p>
+
+        <ToolDescription toolName="SQL Formatter" data={toolDescriptions["sql-formatter"]} />
+        <FaqSection faqs={faqs["sql-formatter"]} />
       </div>
     </div>
   );

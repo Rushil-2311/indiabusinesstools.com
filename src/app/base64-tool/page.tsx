@@ -5,6 +5,9 @@ import { Binary, Copy, Check, Trash2, ArrowLeftRight, Upload } from "lucide-reac
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 type Mode = "encode" | "decode";
 
@@ -181,6 +184,9 @@ export default function Base64Tool() {
             </Card>
           ))}
         </div>
+
+        <ToolDescription toolName="Base64 Tool" data={toolDescriptions["base64-tool"]} />
+        <FaqSection faqs={faqs["base64-tool"]} />
       </div>
     </>
   );

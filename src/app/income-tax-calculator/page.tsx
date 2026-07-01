@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -276,6 +277,7 @@ export default function IncomeTaxCalculatorPage() {
         <p className="text-xs text-muted-foreground text-center">
           * This calculator is for indicative purposes. Consult a tax professional for filing. Surcharge not included.
         </p>
+        <ToolDescription toolName="Income Tax Calculator" data={toolDescriptions["income-tax-calculator"]} />
         <FaqSection faqs={faqs["income-tax-calculator"]} />
       </div>
       <RelatedTools currentSlug="income-tax-calculator" />

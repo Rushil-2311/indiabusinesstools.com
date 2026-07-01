@@ -6,6 +6,9 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const BASES = [
   { label: "Binary", base: 2, color: "text-blue-600", dot: "bg-blue-500", prefix: "0b", placeholder: "e.g. 11111111" },
@@ -203,6 +206,9 @@ export default function NumberBaseConverter() {
             </table>
           </div>
         </Card>
+
+        <ToolDescription toolName="Number Base Converter" data={toolDescriptions["number-base-converter"]} />
+        <FaqSection faqs={faqs["number-base-converter"]} />
       </div>
     </>
   );

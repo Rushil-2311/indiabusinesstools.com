@@ -4,6 +4,9 @@ import { FileStack, Upload, Download, Trash2, RefreshCw, Scissors, Minimize2 } f
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 type Tab = "merge" | "split" | "compress";
 
@@ -311,6 +314,9 @@ export default function PdfToolsPage() {
         <p className="text-xs text-muted-foreground text-center">
           Powered by <strong>pdf-lib</strong> — your PDF files never leave your device.
         </p>
+
+        <ToolDescription toolName="PDF Tools" data={toolDescriptions["pdf-tools"]} />
+        <FaqSection faqs={faqs["pdf-tools"]} />
       </div>
     </div>
   );

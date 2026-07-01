@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { formatNumber } from "@/lib/formatters";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 export default function PercentageCalculator() {
   const [t1X, setT1X] = useState("20");
@@ -210,6 +211,7 @@ export default function PercentageCalculator() {
             </Tabs>
           </CardContent>
         </Card>
+        <ToolDescription toolName="Percentage Calculator" data={toolDescriptions["percentage-calculator"]} />
         <FaqSection faqs={faqs["percentage-calculator"]} />
       </div>
       <RelatedTools currentSlug="percentage-calculator" />

@@ -17,6 +17,9 @@ import TiptapUnderline from "@tiptap/extension-underline";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 const SCALE = 1.5;
@@ -1159,6 +1162,9 @@ export default function PdfEditorPage() {
         <p className="text-xs text-muted-foreground text-center">
           Powered by <strong>PDF.js</strong> + <strong>pdf-lib</strong> — your files are processed entirely in your browser and never leave your device.
         </p>
+
+        <ToolDescription toolName="PDF Editor" data={toolDescriptions["pdf-editor"]} />
+        <FaqSection faqs={faqs["pdf-editor"]} />
       </div>
     </div>
   );

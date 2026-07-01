@@ -4,6 +4,9 @@ import { FileCode, Copy, Check, Download, ArrowLeftRight, Upload } from "lucide-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE_XML = `<?xml version="1.0" encoding="UTF-8"?>
 <employees>
@@ -213,6 +216,9 @@ export default function XmlJsonConverterPage() {
         </div>
 
         <p className="text-xs text-muted-foreground text-center">All conversion happens in your browser — your data never leaves your device.</p>
+
+        <ToolDescription toolName="XML ↔ JSON Converter" data={toolDescriptions["xml-json-converter"]} />
+        <FaqSection faqs={faqs["xml-json-converter"]} />
       </div>
     </div>
   );

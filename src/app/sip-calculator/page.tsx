@@ -17,7 +17,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import {
   PieChart,
   Pie,
@@ -337,6 +338,8 @@ export default function SipCalculator() {
             </Card>
           </div>
         </div>
+
+        <ToolDescription toolName="SIP Calculator" data={toolDescriptions["sip-calculator"]} />
 
         {/* FAQs */}
         <div className="mt-20 max-w-3xl mx-auto">

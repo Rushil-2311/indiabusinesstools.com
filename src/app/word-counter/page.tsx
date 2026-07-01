@@ -5,6 +5,9 @@ import { AlignLeft, Copy, Check, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE =
   "India is one of the fastest-growing economies in the world. With a young population and a booming digital sector, Indian businesses are rapidly expanding across global markets. Technology, finance, and manufacturing are key pillars driving this growth.";
@@ -154,6 +157,9 @@ export default function WordCounter() {
             </Card>
           </div>
         </div>
+
+        <ToolDescription toolName="Word Counter" data={toolDescriptions["word-counter"]} />
+        <FaqSection faqs={faqs["word-counter"]} />
       </div>
     </>
   );

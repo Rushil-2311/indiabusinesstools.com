@@ -5,6 +5,9 @@ import { QrCode, Download, Copy, Check } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const PRESETS = [
   { label: "URL", value: "https://www.indiabusinesstools.com" },
@@ -176,6 +179,9 @@ export default function QRCodeGenerator() {
             </div>
           ))}
         </div>
+
+        <ToolDescription toolName="QR Code Generator" data={toolDescriptions["qr-code-generator"]} />
+        <FaqSection faqs={faqs["qr-code-generator"]} />
       </div>
     </>
   );

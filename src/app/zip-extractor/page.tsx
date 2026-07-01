@@ -3,6 +3,9 @@ import { useState, useRef } from "react";
 import { Archive, Upload, Download, FolderOpen, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 interface ZipEntry {
   name: string;
@@ -176,6 +179,9 @@ export default function ZipExtractorPage() {
         <p className="text-xs text-muted-foreground text-center">
           Powered by <strong>JSZip</strong> — your files never leave your device.
         </p>
+
+        <ToolDescription toolName="ZIP Extractor" data={toolDescriptions["zip-extractor"]} />
+        <FaqSection faqs={faqs["zip-extractor"]} />
       </div>
     </div>
   );

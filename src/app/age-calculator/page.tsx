@@ -17,6 +17,9 @@ import { AdSlot } from "@/components/shared/AdSlot";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 export default function AgeCalculator() {
   const [dob, setDob] = useState<string>("1995-05-15");
@@ -207,6 +210,9 @@ export default function AgeCalculator() {
             )}
           </div>
         </div>
+
+        <ToolDescription toolName="Age Calculator" data={toolDescriptions["age-calculator"]} />
+        <FaqSection faqs={faqs["age-calculator"]} />
       </div>
     </>
   );

@@ -5,6 +5,9 @@ import { ImageIcon, Download, Trash2, Upload, ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 type Format = "image/png" | "image/jpeg" | "image/webp";
 
@@ -234,6 +237,9 @@ export default function ImageConverter() {
             </div>
           ))}
         </div>
+
+        <ToolDescription toolName="Image Converter" data={toolDescriptions["image-converter"]} />
+        <FaqSection faqs={faqs["image-converter"]} />
       </div>
     </>
   );

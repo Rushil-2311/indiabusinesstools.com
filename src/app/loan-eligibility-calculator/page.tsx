@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
@@ -157,6 +158,7 @@ export default function LoanEligibilityCalculatorPage() {
             </CardContent>
           </Card>
         </div>
+        <ToolDescription toolName="Loan Eligibility Calculator" data={toolDescriptions["loan-eligibility-calculator"]} />
         <FaqSection faqs={faqs["loan-eligibility-calculator"]} />
       </div>
       <RelatedTools currentSlug="loan-eligibility-calculator" />

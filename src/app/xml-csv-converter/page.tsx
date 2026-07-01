@@ -3,6 +3,9 @@ import { useState, useMemo, useRef } from "react";
 import { FileSpreadsheet, Copy, Check, Download, ArrowLeftRight, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE_XML = `<?xml version="1.0" encoding="UTF-8"?>
 <data>
@@ -238,6 +241,9 @@ export default function XmlCsvConverterPage() {
         )}
 
         <p className="text-xs text-muted-foreground text-center">All conversion happens in your browser — your data never leaves your device.</p>
+
+        <ToolDescription toolName="XML ↔ CSV Converter" data={toolDescriptions["xml-csv-converter"]} />
+        <FaqSection faqs={faqs["xml-csv-converter"]} />
       </div>
     </div>
   );

@@ -4,6 +4,9 @@ import { ImageDown, Upload, Download, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 function fmtBytes(b: number) {
   if (b < 1024) return `${b} B`;
@@ -226,6 +229,9 @@ export default function ImageCompressorPage() {
         )}
 
         <p className="text-xs text-muted-foreground text-center">All processing happens in your browser using Canvas API — your images never leave your device.</p>
+
+        <ToolDescription toolName="Image Compressor" data={toolDescriptions["image-compressor"]} />
+        <FaqSection faqs={faqs["image-compressor"]} />
       </div>
     </div>
   );

@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { ToolDescription } from "@/components/shared/ToolDescription";
 import { RelatedTools } from "@/components/shared/RelatedTools";
-import { faqs } from "@/lib/data";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 function fmt(n: number, decimals = 0) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: decimals }).format(n);
@@ -257,6 +258,7 @@ export default function CTCCalculatorPage() {
           </Card>
           <p className="text-xs text-muted-foreground">* TDS is estimated. Actual deductions depend on employer, investments declared, and other factors.</p>
         </div>
+        <ToolDescription toolName="CTC Calculator" data={toolDescriptions["ctc-calculator"]} />
         <FaqSection faqs={faqs["ctc-calculator"]} />
       </div>
       <RelatedTools currentSlug="ctc-calculator" />

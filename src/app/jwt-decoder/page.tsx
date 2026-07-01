@@ -6,6 +6,9 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { AdSlot } from "@/components/shared/AdSlot";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE_JWT =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyIsIm5hbWUiOiJSb2hhbiBTaGFybWEiLCJlbWFpbCI6InJvaGFuQGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
@@ -274,6 +277,9 @@ export default function JwtDecoder() {
             </div>
           </>
         )}
+
+        <ToolDescription toolName="JWT Decoder" data={toolDescriptions["jwt-decoder"]} />
+        <FaqSection faqs={faqs["jwt-decoder"]} />
       </div>
     </>
   );

@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { FileText, Download, Copy, Check, Eye, Code } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
+import { ToolDescription } from "@/components/shared/ToolDescription";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { faqs, toolDescriptions } from "@/lib/data";
 
 const SAMPLE = `# Welcome to Markdown Converter
 
@@ -236,6 +239,9 @@ export default function MarkdownConverter() {
             </div>
           ))}
         </div>
+
+        <ToolDescription toolName="Markdown Converter" data={toolDescriptions["markdown-converter"]} />
+        <FaqSection faqs={faqs["markdown-converter"]} />
       </div>
     </>
   );
