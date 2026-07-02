@@ -1,1171 +1,816 @@
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react";
 import {
-  FilePen, Upload, RefreshCw, Download, Trash2, Undo2, Redo2,
-  Type, Pen, Highlighter, Square, Circle, MoveRight, Eraser,
-  ChevronLeft, ChevronRight,
-  Bold as BoldIcon, Italic as ItalicIcon, Underline as UnderlineIcon,
-  Strikethrough as StrikethroughIcon,
-  Heading1, Heading2, Heading3,
-  AlignLeft, AlignCenter, AlignRight,
-  List as ListIcon, ListOrdered,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
+import {
+  LayoutGrid,
+  Undo2,
+  Type,
+  FilePen,
+  PenLine,
+  Pencil,
+  Link2,
+  StickyNote,
+  Printer,
+  Search,
+  Download,
+  ChevronLeft,
+  ChevronRight,
+  Layers,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  RefreshCw,
+  ChevronDown,
+  Image as ImageIcon,
+  Highlighter,
 } from "lucide-react";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import TextAlign from "@tiptap/extension-text-align";
-import TiptapUnderline from "@tiptap/extension-underline";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { ToolDescription } from "@/components/shared/ToolDescription";
-import { FaqSection } from "@/components/shared/FaqSection";
-import { faqs, toolDescriptions } from "@/lib/data";
+import {
+  PdfCanvas,
+  type PdfCanvasHandle,
+} from "@/components/pdf-editor/PdfCanvas";
+import { OverlayLayer } from "@/components/pdf-editor/OverlayLayer";
+import { usePdfLoader, RENDER_SCALE } from "@/hooks/pdf-editor/usePdfLoader";
+import { useEditState } from "@/hooks/pdf-editor/useEditState";
+import { exportEditedPdf } from "@/utils/pdf-editor/export";
+import {
+  SYSTEM_FONTS,
+  GOOGLE_FONTS,
+  buildGoogleFontsUrl,
+} from "@/utils/pdf-editor/font";
+import type { EditableTextRun } from "@/types/pdf-editor/EditableTextRun";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-const SCALE = 1.5;
-type Tab = "draw" | "watermark" | "edit";
-type Tool = "pen" | "highlight" | "text" | "rect" | "circle" | "arrow" | "eraser";
-
-type PenOp   = { type: "pen" | "highlight" | "eraser"; pts: [number, number][]; color: string; width: number };
-type TextOp  = { type: "text";  x: number; y: number; text: string; color: string; size: number };
-type ShapeOp = { type: "rect" | "circle" | "arrow"; x1: number; y1: number; x2: number; y2: number; color: string; width: number };
-type DrawOp  = PenOp | TextOp | ShapeOp;
-
-// ── Canvas renderer ────────────────────────────────────────────────────────────
-function renderOp(ctx: CanvasRenderingContext2D, op: DrawOp) {
-  ctx.save();
-  if (op.type === "pen" || op.type === "highlight" || op.type === "eraser") {
-    ctx.globalAlpha = op.type === "highlight" ? 0.4 : 1;
-    ctx.strokeStyle  = op.type === "eraser" ? "#ffffff" : op.color;
-    ctx.fillStyle    = op.type === "eraser" ? "#ffffff" : op.color;
-    ctx.lineWidth    = op.width;
-    ctx.lineCap      = "round";
-    ctx.lineJoin     = "round";
-    if (op.pts.length === 1) {
-      ctx.beginPath();
-      ctx.arc(op.pts[0][0], op.pts[0][1], op.width / 2, 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      ctx.beginPath();
-      ctx.moveTo(op.pts[0][0], op.pts[0][1]);
-      for (let i = 1; i < op.pts.length; i++) ctx.lineTo(op.pts[i][0], op.pts[i][1]);
-      ctx.stroke();
-    }
-  } else if (op.type === "text") {
-    ctx.font         = `${op.size}px Arial, sans-serif`;
-    ctx.fillStyle    = op.color;
-    ctx.textBaseline = "top"; // y is the TOP of the text, not the baseline
-    op.text.split("\n").forEach((line, i) => ctx.fillText(line, op.x, op.y + i * op.size * 1.3));
-  } else if (op.type === "rect") {
-    ctx.strokeStyle = op.color;
-    ctx.lineWidth   = op.width;
-    ctx.strokeRect(Math.min(op.x1, op.x2), Math.min(op.y1, op.y2), Math.abs(op.x2 - op.x1), Math.abs(op.y2 - op.y1));
-  } else if (op.type === "circle") {
-    ctx.strokeStyle = op.color;
-    ctx.lineWidth   = op.width;
-    const cx = (op.x1 + op.x2) / 2, cy = (op.y1 + op.y2) / 2;
-    ctx.beginPath();
-    ctx.ellipse(cx, cy, Math.abs(op.x2 - op.x1) / 2, Math.abs(op.y2 - op.y1) / 2, 0, 0, Math.PI * 2);
-    ctx.stroke();
-  } else if (op.type === "arrow") {
-    ctx.strokeStyle = op.color;
-    ctx.fillStyle   = op.color;
-    ctx.lineWidth   = op.width;
-    ctx.beginPath(); ctx.moveTo(op.x1, op.y1); ctx.lineTo(op.x2, op.y2); ctx.stroke();
-    const a = Math.atan2(op.y2 - op.y1, op.x2 - op.x1);
-    const hl = 14 + op.width * 2;
-    ctx.beginPath();
-    ctx.moveTo(op.x2, op.y2);
-    ctx.lineTo(op.x2 - hl * Math.cos(a - Math.PI / 6), op.y2 - hl * Math.sin(a - Math.PI / 6));
-    ctx.lineTo(op.x2 - hl * Math.cos(a + Math.PI / 6), op.y2 - hl * Math.sin(a + Math.PI / 6));
-    ctx.closePath(); ctx.fill();
+function extractFontDisplayName(fontFamily: string): string {
+  const EMBEDDED_RE = /^[a-z]_d\d+_f\d+$/i;
+  const GENERIC = new Set([
+    "sans-serif",
+    "serif",
+    "monospace",
+    "cursive",
+    "fantasy",
+    "system-ui",
+  ]);
+  const parts = fontFamily.split(",").map((s) => s.trim().replace(/['"]/g, ""));
+  for (const p of parts) {
+    if (!EMBEDDED_RE.test(p) && !GENERIC.has(p.toLowerCase())) return p;
   }
-  ctx.restore();
+  return parts[0] || fontFamily;
 }
 
-// ── Draw & Edit Tab ────────────────────────────────────────────────────────────
-function DrawEditTab() {
-  const [file, setFile]             = useState<File | null>(null);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [allOps, setAllOps]         = useState<DrawOp[][]>([]);
-  const [tool, setTool]             = useState<Tool>("pen");
-  const [color, setColor]           = useState("#ef4444");
-  const [strokeWidth, setStrokeWidth] = useState(3);
-  const [fontSize, setFontSize]     = useState(18);
-  const [saving, setSaving]         = useState(false);
-  const [loading, setLoading]       = useState(false);
-  const [textEditor, setTextEditor] = useState<{
-    panelX: number; panelY: number;
-    canvasX: number; canvasY: number;
-    text: string;
-    color: string;
-    size: number;
-    editingIndex?: number;
-  } | null>(null);
-
-  const canvasRef       = useRef<HTMLCanvasElement>(null);
-  const bgCanvases      = useRef<HTMLCanvasElement[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pdfDocRef       = useRef<any>(null);
-  const allOpsRef       = useRef<DrawOp[][]>([]);
-  const isDrawing       = useRef(false);
-  const currentPts      = useRef<[number, number][]>([]);
-  const startPt         = useRef<[number, number]>([0, 0]);
-  const fileRef         = useRef<HTMLInputElement>(null);
-  const textareaRef     = useRef<HTMLTextAreaElement>(null);
-  const textEditorRef   = useRef<typeof textEditor>(null);
-  const textEditorDivRef = useRef<HTMLDivElement>(null);
-  const justCommitted   = useRef(false);
-  const currentPageRef  = useRef(0);
-
-  // Keep refs in sync
-  useEffect(() => { allOpsRef.current = allOps; }, [allOps]);
-  useEffect(() => { currentPageRef.current = currentPage; }, [currentPage]);
-  useEffect(() => { textEditorRef.current = textEditor; }, [textEditor]);
-
-  // Redraw: bg + committed ops + optional in-progress op (skips op being actively edited)
-  const redraw = useCallback((inProgressOp?: DrawOp) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    const bg = bgCanvases.current[currentPageRef.current];
-    if (bg) {
-      ctx.drawImage(bg, 0, 0);
-    } else {
-      ctx.fillStyle = "#f0f0f0";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-    const editingIdx = textEditorRef.current?.editingIndex;
-    const ops = allOpsRef.current[currentPageRef.current] ?? [];
-    for (let i = 0; i < ops.length; i++) {
-      if (editingIdx !== undefined && i === editingIdx) continue;
-      renderOp(ctx, ops[i]);
-    }
-    if (inProgressOp) renderOp(ctx, inProgressOp);
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function renderPage(pdfDoc: any, idx: number): Promise<HTMLCanvasElement> {
-    const page     = await pdfDoc.getPage(idx + 1);
-    const viewport = page.getViewport({ scale: SCALE });
-    const cvs      = document.createElement("canvas");
-    cvs.width  = viewport.width;
-    cvs.height = viewport.height;
-    await page.render({ canvasContext: cvs.getContext("2d")!, viewport }).promise;
-    return cvs;
-  }
-
-  async function loadPdf(f: File) {
-    setLoading(true);
-    setFile(f);
-    setAllOps([]);
-    setCurrentPage(0);
-    currentPageRef.current = 0;
-    bgCanvases.current = [];
-
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pdfjsLib = await import("pdfjs-dist") as any;
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
-      const pdfDoc = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise;
-      pdfDocRef.current = pdfDoc;
-
-      const n = pdfDoc.numPages;
-      setTotalPages(n);
-      const emptyOps = Array.from({ length: n }, (): DrawOp[] => []);
-      setAllOps(emptyOps);
-      allOpsRef.current = emptyOps;
-
-      // Render first page now
-      const first = await renderPage(pdfDoc, 0);
-      bgCanvases.current[0] = first;
-      const canvas = canvasRef.current!;
-      canvas.width  = first.width;
-      canvas.height = first.height;
-      redraw();
-
-      // Render remaining pages in background
-      for (let i = 1; i < n; i++) {
-        renderPage(pdfDoc, i).then(cvs => { bgCanvases.current[i] = cvs; });
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    if (f) loadPdf(f);
-    e.target.value = "";
-  }
-
-  // Switch page
-  useEffect(() => {
-    const bg = bgCanvases.current[currentPage];
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    if (bg) {
-      canvas.width  = bg.width;
-      canvas.height = bg.height;
-    }
-    redraw();
-  }, [currentPage, redraw]);
-
-  // Redraw when ops change
-  useEffect(() => { redraw(); }, [allOps, redraw]);
-
-  function getPos(e: React.PointerEvent<HTMLCanvasElement>): [number, number] {
-    const r = e.currentTarget.getBoundingClientRect();
-    return [e.clientX - r.left, e.clientY - r.top];
-  }
-
-  function findTextOpAt(x: number, y: number): { index: number; op: TextOp } | null {
-    const ops = allOpsRef.current[currentPageRef.current] ?? [];
-    for (let i = ops.length - 1; i >= 0; i--) {
-      const op = ops[i];
-      if (op.type !== "text") continue;
-      const tOp = op as TextOp;
-      const w = tOp.text.length * tOp.size * 0.55;
-      const h = tOp.size * 1.3; // textBaseline=top, so y is the top
-      if (x >= tOp.x - 6 && x <= tOp.x + w + 6 && y >= tOp.y - 6 && y <= tOp.y + h + 6) {
-        return { index: i, op: tOp };
-      }
-    }
-    return null;
-  }
-
-  function commitTextEditor(editor: NonNullable<typeof textEditor>) {
-    textEditorRef.current = null;
-    if (editor.text.trim()) {
-      const newOp: DrawOp = {
-        type: "text", x: editor.canvasX, y: editor.canvasY,
-        text: editor.text, color: editor.color, size: editor.size,
-      };
-      if (editor.editingIndex !== undefined) {
-        const idx = editor.editingIndex;
-        setAllOps(prev => {
-          const next = prev.map((p, i) => {
-            if (i !== currentPageRef.current) return p;
-            const updated = [...p]; updated[idx] = newOp; return updated;
-          });
-          allOpsRef.current = next; return next;
-        });
-      } else {
-        setAllOps(prev => {
-          const next = prev.map((p, i) => i === currentPageRef.current ? [...p, newOp] : p);
-          allOpsRef.current = next; return next;
-        });
-      }
-    }
-    setTextEditor(null);
-  }
-
-  function handleDragHandleMouseDown(e: React.MouseEvent) {
-    e.preventDefault();
-    const snap = textEditorRef.current;
-    if (!snap) return;
-    const { panelX, panelY, canvasX, canvasY } = snap;
-    const sx = e.clientX, sy = e.clientY;
-    function onMove(ev: MouseEvent) {
-      const dx = ev.clientX - sx, dy = ev.clientY - sy;
-      setTextEditor(prev => prev ? { ...prev, panelX: panelX + dx, panelY: panelY + dy, canvasX: canvasX + dx, canvasY: canvasY + dy } : null);
-    }
-    function onUp() { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); }
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-  }
-
-  function handlePointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
-    // Capture listener already committed/cleared the editor; swallow this click for text tool
-    if (justCommitted.current) {
-      justCommitted.current = false;
-      if (tool === "text") return;
-    }
-    if (tool === "text") {
-      const [x, y] = getPos(e);
-      const existing = findTextOpAt(x, y);
-      if (existing) {
-        setColor(existing.op.color);
-        setFontSize(existing.op.size);
-        // op.y is already the TOP of the text (textBaseline="top")
-        const panelY = Math.max(20, existing.op.y);
-        setTextEditor({
-          panelX: existing.op.x, panelY,
-          canvasX: existing.op.x, canvasY: panelY,
-          text: existing.op.text, color: existing.op.color,
-          size: existing.op.size, editingIndex: existing.index,
-        });
-      } else {
-        // panelY = top of the textarea = top of where the text will draw
-        const panelY = Math.max(20, y - fontSize);
-        setTextEditor({
-          panelX: x, panelY,
-          canvasX: x, canvasY: panelY, // canvasY === panelY (textBaseline=top)
-          text: "", color, size: fontSize,
-          editingIndex: undefined,
-        });
-      }
-      return;
-    }
-    isDrawing.current = true;
-    const pt = getPos(e);
-    startPt.current   = pt;
-    currentPts.current = [pt];
-    e.currentTarget.setPointerCapture(e.pointerId);
-  }
-
-  function handlePointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
-    if (!isDrawing.current) return;
-    const pt = getPos(e);
-    if (tool === "pen" || tool === "highlight" || tool === "eraser") {
-      currentPts.current.push(pt);
-      redraw({ type: tool, pts: currentPts.current, color, width: tool === "highlight" ? strokeWidth * 5 : strokeWidth });
-    } else {
-      const [x1, y1] = startPt.current;
-      redraw({ type: tool as "rect" | "circle" | "arrow", x1, y1, x2: pt[0], y2: pt[1], color, width: strokeWidth });
-    }
-  }
-
-  function handlePointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
-    if (!isDrawing.current) return;
-    isDrawing.current = false;
-    const pt = getPos(e);
-    let newOp: DrawOp;
-    if (tool === "pen" || tool === "highlight" || tool === "eraser") {
-      currentPts.current.push(pt);
-      newOp = { type: tool, pts: [...currentPts.current], color, width: tool === "highlight" ? strokeWidth * 5 : strokeWidth };
-    } else {
-      const [x1, y1] = startPt.current;
-      newOp = { type: tool as "rect" | "circle" | "arrow", x1, y1, x2: pt[0], y2: pt[1], color, width: strokeWidth };
-    }
-    commitOp(newOp);
-    currentPts.current = [];
-  }
-
-  function commitOp(op: DrawOp) {
-    setAllOps(prev => {
-      const next = prev.map((p, i) => i === currentPageRef.current ? [...p, op] : p);
-      allOpsRef.current = next;
-      return next;
-    });
-  }
-
-  // Redraw when textEditor opens/closes/moves so edited op hides correctly
-  useEffect(() => { redraw(); }, [textEditor, redraw]);
-
-  // Focus the textarea whenever a new editor session opens
-  useEffect(() => {
-    if (textEditor) {
-      const t = setTimeout(() => { textareaRef.current?.focus(); }, 0);
-      return () => clearTimeout(t);
-    }
-  }, [textEditor]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Window capture-phase listener: commit when user clicks outside the text-editor div.
-  // Capture fires BEFORE canvas onPointerDown, so we can set justCommitted first.
-  useEffect(() => {
-    if (!textEditor) return;
-    function onCapture(e: PointerEvent) {
-      if (textEditorDivRef.current && !textEditorDivRef.current.contains(e.target as Node)) {
-        const editor = textEditorRef.current;
-        if (editor) {
-          commitTextEditor(editor);
-          justCommitted.current = true;
-        }
-      }
-    }
-    window.addEventListener("pointerdown", onCapture, { capture: true });
-    return () => window.removeEventListener("pointerdown", onCapture, { capture: true });
-  }, [textEditor]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function undo() {
-    setAllOps(prev => {
-      const next = prev.map((p, i) => i === currentPage ? p.slice(0, -1) : p);
-      allOpsRef.current = next;
-      return next;
-    });
-  }
-
-  function clearPage() {
-    setAllOps(prev => {
-      const next = prev.map((p, i) => i === currentPage ? [] : p);
-      allOpsRef.current = next;
-      return next;
-    });
-  }
-
-  async function save() {
-    if (!file) return;
-    setSaving(true);
-    try {
-      // Ensure all pages rendered before saving
-      for (let i = 0; i < totalPages; i++) {
-        if (!bgCanvases.current[i]) {
-          bgCanvases.current[i] = await renderPage(pdfDocRef.current, i);
-        }
-      }
-
-      const { PDFDocument } = await import("pdf-lib");
-      const newDoc = await PDFDocument.create();
-
-      for (let i = 0; i < totalPages; i++) {
-        const bg = bgCanvases.current[i];
-        if (!bg) continue;
-        const comp = document.createElement("canvas");
-        comp.width  = bg.width;
-        comp.height = bg.height;
-        const ctx   = comp.getContext("2d")!;
-        ctx.drawImage(bg, 0, 0);
-        for (const op of allOpsRef.current[i] ?? []) renderOp(ctx, op);
-
-        const jpegData  = comp.toDataURL("image/jpeg", 0.92).split(",")[1];
-        const jpegBytes = Uint8Array.from(atob(jpegData), c => c.charCodeAt(0));
-        const img       = await newDoc.embedJpg(jpegBytes);
-        const pw = bg.width / SCALE, ph = bg.height / SCALE;
-        const page = newDoc.addPage([pw, ph]);
-        page.drawImage(img, { x: 0, y: 0, width: pw, height: ph });
-      }
-
-      const bytes = await newDoc.save();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const url = URL.createObjectURL(new Blob([bytes as any], { type: "application/pdf" }));
-      const a = document.createElement("a"); a.href = url; a.download = `edited-${file.name}`; a.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to save PDF.");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  const TOOLS: { val: Tool; icon: React.ElementType; label: string }[] = [
-    { val: "pen",       icon: Pen,         label: "Pen" },
-    { val: "highlight", icon: Highlighter,  label: "Highlight" },
-    { val: "text",      icon: Type,        label: "Text" },
-    { val: "rect",      icon: Square,      label: "Rectangle" },
-    { val: "circle",    icon: Circle,      label: "Circle / Oval" },
-    { val: "arrow",     icon: MoveRight,   label: "Arrow" },
-    { val: "eraser",    icon: Eraser,      label: "Eraser (cover content)" },
-  ];
-
-  const totalOps = allOps.reduce((s, p) => s + (p?.length ?? 0), 0);
-
+// ── Toolbar button ─────────────────────────────────────────────────────────────
+function ToolBtn({
+  icon,
+  label,
+  active,
+  onClick,
+  disabled,
+  chevron,
+}: {
+  icon: ReactNode;
+  label: string;
+  active?: boolean;
+  onClick?: () => void;
+  disabled?: boolean;
+  chevron?: boolean;
+}) {
   return (
-    <div className="space-y-4">
-      {!file ? (
-        <div
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type === "application/pdf") loadPdf(f); }}
-          onClick={() => fileRef.current?.click()}
-          className="border-2 border-dashed border-muted-foreground/30 rounded-2xl p-14 text-center cursor-pointer hover:border-muted-foreground/60 hover:bg-muted/20 transition-all"
-        >
-          <Upload className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-          <p className="font-medium text-muted-foreground">Drop PDF here or click to upload</p>
-          <p className="text-xs text-muted-foreground mt-1">Renders in your browser — files are never uploaded</p>
-          <input ref={fileRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFile} />
-        </div>
-      ) : (
-        <>
-          {/* Toolbar */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center rounded-xl border overflow-hidden">
-              {TOOLS.map((t) => (
-                <button key={t.val} onClick={() => setTool(t.val)} title={t.label}
-                  className={`flex items-center justify-center p-2.5 transition-colors ${tool === t.val ? "bg-foreground text-background" : "text-muted-foreground hover:bg-muted"}`}>
-                  <t.icon className="h-4 w-4" />
-                </button>
-              ))}
-            </div>
-
-            {/* Color */}
-            <input type="color" value={color} onChange={(e) => setColor(e.target.value)}
-              title="Color" className="h-9 w-9 rounded-lg border cursor-pointer p-0.5" />
-
-            {/* Size control */}
-            {tool !== "text" ? (
-              <div className="flex items-center gap-1.5">
-                <Label className="text-xs text-muted-foreground shrink-0">Size</Label>
-                <input type="range" min={1} max={24} value={strokeWidth}
-                  onChange={(e) => setStrokeWidth(parseInt(e.target.value))} className="w-20" />
-                <span className="text-xs text-muted-foreground w-4">{strokeWidth}</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1.5">
-                <Label className="text-xs text-muted-foreground shrink-0">Font</Label>
-                <input type="number" min={8} max={120} value={fontSize}
-                  onChange={(e) => setFontSize(parseInt(e.target.value) || 18)}
-                  className="w-16 rounded-md border border-input bg-background px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-ring" />
-              </div>
-            )}
-
-            <div className="flex items-center gap-1 ml-auto">
-              <button onClick={undo} disabled={!(allOps[currentPage]?.length)}
-                title="Undo last stroke" className="p-2 rounded-lg border text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors">
-                <Undo2 className="h-4 w-4" />
-              </button>
-              <button onClick={clearPage} disabled={!(allOps[currentPage]?.length)}
-                title="Clear this page" className="p-2 rounded-lg border text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors">
-                <Trash2 className="h-4 w-4" />
-              </button>
-              <button onClick={() => fileRef.current?.click()}
-                className="px-3 py-1.5 rounded-lg border text-xs text-muted-foreground hover:bg-muted transition-colors">
-                Change PDF
-              </button>
-              <button onClick={save} disabled={saving || totalOps === 0}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity">
-                {saving ? <><RefreshCw className="h-3 w-3 animate-spin" /> Saving…</> : <><Download className="h-3 w-3" /> Save PDF</>}
-              </button>
-            </div>
-            <input ref={fileRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFile} />
-          </div>
-
-          {/* Tool hint */}
-          {tool === "eraser" && (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-              <strong>Eraser tip:</strong> Paint white over existing text to cover it, then switch to the Text tool to type new content on top. This is how you replace text without a server.
-            </div>
-          )}
-          {tool === "text" && (
-            <div className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-800">
-              Click anywhere to add text. Click existing text to edit it. Drag the <strong>purple pill</strong> above the box to move it. Resize from the bottom-right corner. Click outside to save.
-            </div>
-          )}
-
-          {/* Canvas */}
-          <div className="overflow-auto rounded-xl border bg-gray-200 max-h-165 flex justify-center">
-            <div className="relative">
-              {loading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 rounded-xl">
-                  <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
-                  <span className="ml-2 text-sm text-muted-foreground">Loading PDF…</span>
-                </div>
-              )}
-              <canvas
-                ref={canvasRef}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                style={{
-                  cursor: tool === "text" ? "text" : tool === "eraser" ? "cell" : "crosshair",
-                  display: "block",
-                  touchAction: "none",
-                }}
-              />
-              {textEditor && (
-                /*
-                 * Flex-column wrapper: pill (20px) sits ABOVE the textarea.
-                 * The wrapper top = panelY - 20 so the textarea top edge lands
-                 * exactly at panelY — matching canvasY (textBaseline="top").
-                 */
-                <div
-                  ref={textEditorDivRef}
-                  style={{
-                    position: "absolute",
-                    left: textEditor.panelX,
-                    top: textEditor.panelY - 20,
-                    zIndex: 20,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  {/* Drag pill — 20 px tall, sits in the gap above the textarea */}
-                  <div
-                    onMouseDown={handleDragHandleMouseDown}
-                    style={{
-                      height: 16,
-                      marginBottom: 4,
-                      minWidth: 44,
-                      borderRadius: 8,
-                      background: "rgba(99,102,241,0.9)",
-                      cursor: "grab",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 4,
-                      userSelect: "none",
-                      alignSelf: "center",
-                    }}
-                  >
-                    {[0,1,2,3].map(i => (
-                      <span key={i} style={{ width: 3, height: 3, borderRadius: "50%", background: "white" }} />
-                    ))}
-                  </div>
-
-                  {/* Textarea — top edge at canvasY (= panelY) */}
-                  <textarea
-                    ref={textareaRef}
-                    value={textEditor.text}
-                    onChange={e => setTextEditor(prev => prev ? { ...prev, text: e.target.value } : null)}
-                    onKeyDown={e => {
-                      if (e.key === "Escape") {
-                        textEditorRef.current = null;
-                        setTextEditor(null);
-                      }
-                    }}
-                    style={{
-                      display: "block",
-                      fontSize: `${textEditor.size}px`,
-                      lineHeight: 1.3,
-                      color: textEditor.color,
-                      fontFamily: "Arial, sans-serif",
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1.5px dashed rgba(99,102,241,0.8)",
-                      outline: "none",
-                      resize: "both",
-                      overflow: "auto",
-                      minWidth: 100,
-                      minHeight: `${Math.round(textEditor.size * 1.8)}px`,
-                      padding: "0 4px", // no vertical padding so top aligns with canvasY
-                      boxSizing: "border-box",
-                    }}
-                    placeholder="Type here…"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Page navigation */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-3">
-              <button onClick={() => setCurrentPage((p) => Math.max(0, p - 1))} disabled={currentPage === 0}
-                className="p-1.5 rounded-lg border text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors">
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <span className="text-sm text-muted-foreground font-medium">Page {currentPage + 1} / {totalPages}</span>
-              <button onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))} disabled={currentPage === totalPages - 1}
-                className="p-1.5 rounded-lg border text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors">
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
-}
-
-// ── Watermark Tab ──────────────────────────────────────────────────────────────
-function WatermarkTab() {
-  const [file, setFile]               = useState<File | null>(null);
-  const [text, setText]               = useState("CONFIDENTIAL");
-  const [color, setColor]             = useState("#ef4444");
-  const [opacity, setOpacity]         = useState(20);
-  const [size, setSize]               = useState(60);
-  const [angle, setAngle]             = useState(45);
-  const [saving, setSaving]           = useState(false);
-  const [previewing, setPreviewing]   = useState(false);
-  const [previewPages, setPreviewPages] = useState<string[]>([]);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  function clearPreview() { setPreviewPages([]); }
-
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    if (f) { setFile(f); clearPreview(); }
-    e.target.value = "";
-  }
-
-  async function generatePreview() {
-    if (!file || !text.trim()) return;
-    setPreviewing(true);
-    setPreviewPages([]);
-    try {
-      const pdfjsLib = await import("pdfjs-dist") as any;
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
-
-      const pdfDoc   = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
-      const numPages = pdfDoc.numPages;
-
-      const hex = color.replace("#", "");
-      const r   = parseInt(hex.slice(0, 2), 16);
-      const g   = parseInt(hex.slice(2, 4), 16);
-      const b   = parseInt(hex.slice(4, 6), 16);
-
-      // Render pages one by one and stream them into state as they finish
-      for (let p = 1; p <= numPages; p++) {
-        const page     = await pdfDoc.getPage(p);
-        const viewport = page.getViewport({ scale: 1.5 });
-
-        const offscreen   = document.createElement("canvas");
-        offscreen.width   = viewport.width;
-        offscreen.height  = viewport.height;
-        const ctx = offscreen.getContext("2d")!;
-        await page.render({ canvasContext: ctx, viewport }).promise;
-
-        // Overlay watermark centred — matches pdf-lib positioning
-        const scaledSize = size * 1.5;
-        ctx.save();
-        ctx.globalAlpha  = opacity / 100;
-        ctx.fillStyle    = `rgb(${r},${g},${b})`;
-        ctx.font         = `bold ${scaledSize}px Helvetica, Arial, sans-serif`;
-        ctx.textAlign    = "center";
-        ctx.textBaseline = "middle";
-        ctx.translate(offscreen.width / 2, offscreen.height / 2);
-        ctx.rotate((-angle * Math.PI) / 180); // pdf-lib CCW → negate for canvas CW
-        ctx.fillText(text, 0, 0);
-        ctx.restore();
-
-        const dataUrl = offscreen.toDataURL("image/png");
-        setPreviewPages(prev => [...prev, dataUrl]);
-      }
-    } catch (e) {
-      console.error(e);
-      alert("Failed to generate preview.");
-    } finally {
-      setPreviewing(false);
-    }
-  }
-
-  async function save() {
-    if (!file || !text.trim()) return;
-    setSaving(true);
-    try {
-      const { PDFDocument, rgb, degrees, StandardFonts } = await import("pdf-lib");
-      const doc  = await PDFDocument.load(await file.arrayBuffer());
-      const font = await doc.embedFont(StandardFonts.HelveticaBold);
-      const hex  = color.replace("#", "");
-      const r = parseInt(hex.slice(0, 2), 16) / 255;
-      const g = parseInt(hex.slice(2, 4), 16) / 255;
-      const b = parseInt(hex.slice(4, 6), 16) / 255;
-
-      for (const page of doc.getPages()) {
-        const { width, height } = page.getSize();
-        const textWidth = font.widthOfTextAtSize(text, size);
-        page.drawText(text, {
-          x: width / 2 - textWidth / 2,
-          y: height / 2,
-          size, font,
-          color: rgb(r, g, b),
-          opacity: opacity / 100,
-          rotate: degrees(angle),
-        });
-      }
-
-      const bytes = await doc.save();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const url = URL.createObjectURL(new Blob([bytes as any], { type: "application/pdf" }));
-      const a = document.createElement("a"); a.href = url; a.download = `watermarked-${file.name}`; a.click();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      console.error(e);
-      alert("Failed to add watermark.");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  const hasPreview = previewPages.length > 0;
-
-  return (
-    <div className="flex flex-col lg:flex-row gap-6">
-
-      {/* ── Left: controls ─────────────────────────────────────── */}
-      <div className="lg:w-80 shrink-0 space-y-4">
-
-        {/* File picker */}
-        <div onClick={() => fileRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl text-center transition-all cursor-pointer ${!file ? "p-10 border-muted-foreground/30 hover:border-muted-foreground/60 hover:bg-muted/20" : "p-3 border-muted hover:bg-muted/10"}`}>
-          {file ? (
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium truncate">{file.name}</span>
-              <span className="text-xs underline text-muted-foreground ml-2 shrink-0">Change</span>
-            </div>
-          ) : (
-            <>
-              <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-              <p className="font-medium text-muted-foreground text-sm">Upload PDF to watermark</p>
-            </>
-          )}
-          <input ref={fileRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFile} />
-        </div>
-
-        {/* Settings */}
-        <div className="space-y-3">
-          <div>
-            <Label className="text-xs mb-1 block">Watermark Text</Label>
-            <input value={text} onChange={e => { setText(e.target.value); clearPreview(); }} placeholder="CONFIDENTIAL"
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-xs mb-1 block">Color</Label>
-              <input type="color" value={color} onChange={e => { setColor(e.target.value); clearPreview(); }}
-                className="h-9 w-full rounded-md border border-input cursor-pointer" />
-            </div>
-            <div>
-              <Label className="text-xs mb-1 block">Font size ({size}pt)</Label>
-              <input type="range" min={20} max={120} value={size} onChange={e => { setSize(parseInt(e.target.value)); clearPreview(); }} className="w-full mt-2" />
-            </div>
-            <div>
-              <Label className="text-xs mb-1 block">Opacity ({opacity}%)</Label>
-              <input type="range" min={5} max={80} value={opacity} onChange={e => { setOpacity(parseInt(e.target.value)); clearPreview(); }} className="w-full mt-2" />
-            </div>
-            <div>
-              <Label className="text-xs mb-1 block">Angle ({angle}°)</Label>
-              <input type="range" min={-90} max={90} value={angle} onChange={e => { setAngle(parseInt(e.target.value)); clearPreview(); }} className="w-full mt-2" />
-            </div>
-          </div>
-        </div>
-
-        {/* Preview button */}
-        <button onClick={generatePreview} disabled={!file || !text.trim() || previewing}
-          className="w-full py-2.5 rounded-xl border border-foreground/20 bg-muted text-foreground font-semibold text-sm hover:bg-muted/70 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
-          {previewing
-            ? <><RefreshCw className="h-4 w-4 animate-spin" /> Generating preview…</>
-            : hasPreview
-              ? <><RefreshCw className="h-4 w-4" /> Regenerate Preview</>
-              : "Preview Watermark"}
-        </button>
-
-        {/* Download — only unlocked after preview */}
-        {hasPreview && (
-          <button onClick={save} disabled={saving || previewing}
-            className="w-full py-2.5 rounded-xl bg-foreground text-background font-semibold text-sm hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2 transition-opacity">
-            {saving ? <><RefreshCw className="h-4 w-4 animate-spin" /> Adding watermark…</> : <><Download className="h-4 w-4" /> Download Watermarked PDF</>}
-          </button>
-        )}
-      </div>
-
-      {/* ── Right: all-pages preview ────────────────────────────── */}
-      {(hasPreview || previewing) && (
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-muted-foreground font-medium mb-3">
-            {previewing && previewPages.length === 0
-              ? "Rendering pages…"
-              : `Preview — ${previewPages.length} page${previewPages.length !== 1 ? "s" : ""}${previewing ? " (loading…)" : ""}`}
-          </p>
-          <div className="overflow-y-auto max-h-170 space-y-3 pr-1 rounded-xl">
-            {previewPages.map((url, i) => (
-              <div key={i} className="rounded-xl border overflow-hidden shadow-sm">
-                <div className="bg-muted/40 px-2 py-1 text-xs text-muted-foreground border-b">Page {i + 1}</div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`Page ${i + 1}`} className="w-full block" />
-              </div>
-            ))}
-            {previewing && (
-              <div className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground">
-                <RefreshCw className="h-4 w-4 animate-spin" />
-                Rendering page {previewPages.length + 1}…
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── Edit Content Tab ───────────────────────────────────────────────────────────
-// User uploads PDF → LibreOffice on server converts to HTML → TipTap shows it
-// as editable text → user edits → server converts HTML back to PDF → download
-function EditContentTab() {
-  type EditView = "upload" | "converting" | "editing" | "exporting";
-  const [view, setView]           = useState<EditView>("upload");
-  const [fileName, setFileName]   = useState("");
-  const [error, setError]         = useState("");
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const API_URL = process.env.NEXT_PUBLIC_PDF_API_URL || "http://localhost:3001";
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-      TiptapUnderline,
-    ],
-    editorProps: {
-      attributes: {
-        class: "tiptap-edit outline-none min-h-96 px-10 py-8 text-sm text-gray-800 leading-relaxed",
-      },
-    },
-  });
-
-  async function handleFile(file: File) {
-    if (!file.name.toLowerCase().endsWith(".pdf")) {
-      setError("Please upload a PDF file.");
-      return;
-    }
-    if (file.size > 20 * 1024 * 1024) {
-      setError("File size must be under 20 MB.");
-      return;
-    }
-    setError("");
-    setFileName(file.name);
-    setView("converting");
-    try {
-      const form = new FormData();
-      form.append("pdf", file, file.name);
-      const res = await fetch(`${API_URL}/convert`, { method: "POST", body: form });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({})) as { error?: string };
-        throw new Error((data as { error?: string }).error || "Conversion failed");
-      }
-      const { html } = await res.json() as { html: string };
-      editor?.commands.setContent(html);
-      setView("editing");
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Conversion failed. Try a different PDF.");
-      setView("upload");
-    }
-  }
-
-  async function handleExport() {
-    if (!editor) return;
-    setView("exporting");
-    try {
-      const html = editor.getHTML();
-      const res = await fetch(`${API_URL}/export`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ html, fileName }),
-      });
-      if (!res.ok) throw new Error("Export failed");
-      const blob = await res.blob();
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href     = url;
-      a.download = fileName.replace(/\.pdf$/i, "-edited.pdf");
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Export failed. Please try again.");
-    }
-    setView("editing");
-  }
-
-  const TBtn = ({
-    onClick, active, disabled, title, children,
-  }: {
-    onClick: () => void; active?: boolean; disabled?: boolean;
-    title: string; children: React.ReactNode;
-  }) => (
     <button
-      onClick={onClick} disabled={disabled} title={title}
-      className={`p-1.5 rounded transition-colors ${
+      onClick={onClick}
+      disabled={disabled}
+      className={`flex flex-col items-center justify-center gap-[3px] px-3 py-2 rounded-md text-[10px] font-medium transition-all min-w-[48px] shrink-0 ${
         active
-          ? "bg-foreground text-background"
-          : "text-muted-foreground hover:bg-muted"
-      } ${disabled ? "opacity-30 pointer-events-none" : ""}`}
+          ? "bg-rose-50 text-rose-600"
+          : disabled
+            ? "text-gray-300 cursor-not-allowed"
+            : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+      }`}
     >
-      {children}
+      <span
+        className={`flex items-center justify-center [&>svg]:h-[20px] [&>svg]:w-[20px] ${active ? "text-rose-500" : ""}`}
+      >
+        {icon}
+      </span>
+      <span className="flex items-center gap-0.5 whitespace-nowrap leading-none">
+        {label}
+        {chevron && <ChevronDown className="h-2.5 w-2.5 opacity-60" />}
+      </span>
     </button>
   );
+}
 
-  const Sep = () => <div className="w-px h-4 bg-border mx-0.5 self-center" />;
+const VSep = () => (
+  <div className="w-px bg-gray-200 self-stretch my-1.5 mx-0.5 shrink-0" />
+);
 
-  if (view === "converting") return (
-    <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
-      <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
-      <p className="font-medium">Converting PDF with LibreOffice…</p>
-      <p className="text-xs text-muted-foreground max-w-xs">
-        Your file is being processed on the server. This takes 10–30 seconds depending on file size.
-      </p>
-    </div>
+// ── Main editor component ──────────────────────────────────────────────────────
+function EditContentTab() {
+  type ActiveTool = "select" | "edit-text";
+
+  const [activeTool, setActiveTool] = useState<ActiveTool>("select");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [zoom, setZoom] = useState(1.0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [customSizes, setCustomSizes] = useState<
+    Record<string, { w: number; h: number }>
+  >({});
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const thumbRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const canvasRef = useRef<PdfCanvasHandle>(null);
+
+  const { state: pdf, pdfDocRef, loadFile, reset: resetPdf } = usePdfLoader();
+  const {
+    edits,
+    editsRef,
+    activeId,
+    hoveredId,
+    setHoveredId,
+    activeOverride,
+    activateRun,
+    updateActive,
+    commitRun,
+    deactivate,
+    reset: resetEdits,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useEditState();
+
+  const currentData = pdf.pages[currentPage];
+  const scaledW = currentData ? Math.round(currentData.width * zoom) : 794;
+  const scaledH = currentData ? Math.round(currentData.height * zoom) : 1122;
+
+  useEffect(() => {
+    if (pdf.status !== "ready") return;
+    thumbRefs.current[currentPage]?.scrollIntoView({
+      block: "nearest",
+      behavior: "smooth",
+    });
+  }, [currentPage, pdf.status]);
+
+  // PdfCanvas re-renders automatically when edits or activeId change (via its own useEffect).
+  // No manual redraw needed here.
+
+  useEffect(() => {
+    const id = "pdf-editor-gfonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = buildGoogleFontsUrl();
+    document.head.appendChild(link);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || activeId) return;
+      if (e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      }
+      if (e.key === "y" || (e.key === "z" && e.shiftKey)) {
+        e.preventDefault();
+        redo();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [activeId, undo, redo]);
+
+  function handleFile(file: File) {
+    resetEdits();
+    setCustomSizes({});
+    setCurrentPage(0);
+    setActiveTool("select");
+    loadFile(file);
+  }
+
+  const handleExport = useCallback(async () => {
+    if (!pdfDocRef.current) return;
+    setIsExporting(true);
+    try {
+      await exportEditedPdf(
+        pdfDocRef.current,
+        pdf.pages.map((p) => p.runs),
+        editsRef.current,
+        pdf.fileName,
+      );
+    } catch (err) {
+      console.error("[export]", err);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [pdfDocRef, pdf.pages, editsRef, pdf.fileName]);
+
+  const handleActivate = useCallback(
+    (run: EditableTextRun) => {
+      activateRun(run.id, {
+        text: run.originalText,
+        fontFamily: run.fontFamily,
+        fontWeight: run.fontWeight,
+        fontStyle: run.fontStyle,
+        fontSize: run.fontSize,
+        color: run.color || "#000000",
+      });
+    },
+    [activateRun],
   );
 
-  if (view === "exporting") return (
-    <div className="flex flex-col items-center justify-center py-24 gap-4">
-      <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
-      <p className="font-medium">Generating PDF…</p>
-      <p className="text-xs text-muted-foreground">LibreOffice is converting your edited content back to PDF.</p>
-    </div>
-  );
-
-  if (view === "upload") return (
-    <div className="space-y-4">
-      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-        <strong>Requires API server:</strong> This tab sends your PDF to a LibreOffice server to extract editable text.
-        Deploy the <code className="bg-amber-100 px-1 rounded text-xs">server/server.js</code> file to your
-        DigitalOcean Droplet and set <code className="bg-amber-100 px-1 rounded text-xs">NEXT_PUBLIC_PDF_API_URL</code> in <code className="bg-amber-100 px-1 rounded text-xs">.env.local</code>.
-      </div>
-      {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-      )}
-      <div
-        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={(e) => { e.preventDefault(); setIsDragging(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
-        onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-2xl p-14 text-center cursor-pointer transition-all ${
-          isDragging
-            ? "border-primary bg-primary/5"
-            : "border-muted-foreground/30 hover:border-muted-foreground/60 hover:bg-muted/20"
-        }`}
-      >
-        <Upload className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-        <p className="font-medium text-muted-foreground">Drop PDF here or click to upload</p>
-        <p className="text-xs text-muted-foreground mt-2 max-w-sm mx-auto">
-          LibreOffice extracts the text so you can edit it. Works best on Word/text-based PDFs.
-          Scanned PDFs (photos of documents) will not work.
+  // ── Loading ────────────────────────────────────────────────────────────────
+  if (pdf.status === "loading" || isExporting)
+    return (
+      <div className="flex flex-col items-center justify-center flex-1 gap-4 bg-white">
+        <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+        <p className="font-semibold text-gray-700">
+          {isExporting ? "Exporting PDF…" : "Loading PDF…"}
         </p>
-        <input
-          ref={fileInputRef} type="file" accept=".pdf,application/pdf" className="hidden"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
+      </div>
+    );
+
+  // ── Upload view ────────────────────────────────────────────────────────────
+  if (pdf.status !== "ready")
+    return (
+      <>
+        <PageHeader
+          title="PDF Editor"
+          description="Edit text directly on any PDF — preserves original layout and fonts"
+          icon={FilePen}
+          gradient="from-orange-600 to-red-700"
+          breadcrumbs={[{ name: "Utility Tools" }, { name: "PDF Editor" }]}
         />
-      </div>
-      <p className="text-xs text-muted-foreground text-center">Max 20 MB · PDF is sent to your LibreOffice API server for conversion</p>
-    </div>
-  );
-
-  // ── Editing view ──────────────────────────────────────────────────────────────
-  return (
-    <div className="-mx-6 -mb-6">
-      <style>{`
-        .tiptap-edit p           { margin-bottom: 0.6rem; }
-        .tiptap-edit h1          { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
-        .tiptap-edit h2          { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.6rem; }
-        .tiptap-edit h3          { font-size: 1rem;  font-weight: 600; margin-bottom: 0.5rem; }
-        .tiptap-edit ul          { padding-left: 1.5rem; margin-bottom: 0.6rem; list-style-type: disc; }
-        .tiptap-edit ol          { padding-left: 1.5rem; margin-bottom: 0.6rem; list-style-type: decimal; }
-        .tiptap-edit li          { margin-bottom: 0.2rem; }
-        .tiptap-edit strong      { font-weight: 700; }
-        .tiptap-edit em          { font-style: italic; }
-        .tiptap-edit u           { text-decoration: underline; }
-        .tiptap-edit s           { text-decoration: line-through; }
-        .tiptap-edit blockquote  { border-left: 3px solid #e5e7eb; padding-left: 1rem; color: #6b7280; margin: 0.75rem 0; }
-        .tiptap-edit table       { border-collapse: collapse; width: 100%; margin-bottom: 0.75rem; }
-        .tiptap-edit td,
-        .tiptap-edit th          { border: 1px solid #e5e7eb; padding: 0.4rem 0.6rem; }
-        .tiptap-edit th          { background: #f9fafb; font-weight: 600; }
-        .tiptap-edit img         { max-width: 100%; }
-      `}</style>
-
-      {/* Top bar: file name + export */}
-      <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/30">
-        <div className="flex items-center gap-2 min-w-0">
-          <button
-            onClick={() => setView("upload")}
-            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
-          >
-            <ChevronLeft className="h-3 w-3" /> New File
-          </button>
-          <span className="text-xs text-muted-foreground">·</span>
-          <span className="text-xs text-muted-foreground truncate">{fileName}</span>
+        <div className="flex-1 flex items-start justify-center py-8 px-4">
+          <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+                Edit your PDF
+              </h2>
+              <p className="text-gray-600 mb-7">
+                Upload a PDF file to start editing text directly on the page.
+              </p>
+              {[
+                "Edit text directly on any PDF page",
+                "Preserve original fonts and layout",
+                "Download your edited PDF instantly",
+              ].map((f) => (
+                <div key={f} className="flex items-center gap-3 mb-3.5">
+                  <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
+                    <svg
+                      className="w-3 h-3 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-gray-700 font-medium">{f}</span>
+                </div>
+              ))}
+            </div>
+            <div>
+              {pdf.error && (
+                <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {pdf.error}
+                </div>
+              )}
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  const f = e.dataTransfer.files[0];
+                  if (f) handleFile(f);
+                }}
+                onClick={() => fileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-2xl py-12 px-10 text-center cursor-pointer transition-all ${
+                  isDragging
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-300 hover:border-orange-400 hover:bg-orange-50/20"
+                }`}
+              >
+                <div className="flex justify-center mb-6">
+                  <div className="relative w-20 h-20">
+                    <div className="absolute inset-0 bg-orange-100 rounded-full" />
+                    <svg
+                      className="absolute inset-0 w-full h-full p-5 text-orange-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <p className="text-gray-700 font-semibold text-base mb-1">
+                  Drop PDF here
+                </p>
+                <p className="text-gray-400 text-sm mb-6">or</p>
+                <button
+                  type="button"
+                  className="bg-red-500 hover:bg-red-600 text-white font-semibold px-8 py-2.5 rounded-lg transition-colors text-sm"
+                >
+                  Upload PDF
+                </button>
+                <p className="text-xs text-gray-400 mt-5">Max 20 MB</p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleFile(f);
+                  e.target.value = "";
+                }}
+              />
+            </div>
+          </div>
         </div>
-        <button
-          onClick={handleExport}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-semibold hover:opacity-90 transition-opacity shrink-0 ml-4"
-        >
-          <Download className="h-3 w-3" /> Export PDF
-        </button>
+      </>
+    );
+
+  // ── Editing view ───────────────────────────────────────────────────────────
+  const editCount = Object.keys(edits).length;
+  const fontSizePt =
+    activeOverride?.fontSize != null
+      ? Math.round(activeOverride.fontSize / RENDER_SCALE)
+      : 12;
+
+  const currentFamily = activeOverride?.fontFamily ?? "";
+  const matchedSystem = SYSTEM_FONTS.find((f) => currentFamily === f.value);
+  const matchedGoogle = GOOGLE_FONTS.find((f) => currentFamily === f.value);
+  const matchedWebFont = matchedSystem ?? matchedGoogle ?? null;
+  const displayName = extractFontDisplayName(currentFamily);
+  const isEmbedded = !matchedWebFont && currentFamily !== "";
+
+  return (
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden bg-white">
+      {/* ── Row 1: Main toolbar ── */}
+      <div
+        className="bg-white border-b border-gray-200 flex items-stretch px-1 shrink-0"
+        style={{ minHeight: 56 }}
+      >
+        {/* Left tools */}
+        <div className="flex items-stretch gap-0">
+          <ToolBtn icon={<LayoutGrid />} label="Thumbnails" chevron disabled />
+          <VSep />
+          <ToolBtn
+            icon={<Undo2 />}
+            label="Undo"
+            disabled={!canUndo}
+            onClick={undo}
+          />
+          <ToolBtn
+            icon={
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21 7v6h-6" />
+                <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
+              </svg>
+            }
+            label="Redo"
+            disabled={!canRedo}
+            onClick={redo}
+          />
+          <VSep />
+          <ToolBtn icon={<Type />} label="Add text" disabled />
+          <ToolBtn
+            icon={<FilePen />}
+            label="Edit text"
+            active={activeTool === "edit-text"}
+            onClick={() => {
+              setActiveTool((t) =>
+                t === "edit-text" ? "select" : "edit-text",
+              );
+              deactivate();
+            }}
+          />
+          <VSep />
+          <ToolBtn icon={<PenLine />} label="Sign" disabled />
+          <ToolBtn icon={<Pencil />} label="Draw" disabled />
+          <ToolBtn
+            icon={
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            }
+            label="Line"
+            chevron
+            disabled
+          />
+          <VSep />
+          <ToolBtn icon={<Highlighter />} label="Highlight" disabled />
+          <ToolBtn icon={<ImageIcon />} label="Image" disabled />
+          <ToolBtn
+            icon={
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            }
+            label="Stamp"
+            disabled
+          />
+          <ToolBtn icon={<Link2 />} label="Link" disabled />
+          <ToolBtn icon={<StickyNote />} label="Note" disabled />
+        </div>
+
+        {/* Right tools */}
+        <div className="ml-auto flex items-stretch gap-0">
+          {editCount > 0 && (
+            <div className="self-center px-3 text-xs text-blue-600 font-semibold whitespace-nowrap">
+              {editCount} edit{editCount !== 1 ? "s" : ""}
+            </div>
+          )}
+          <VSep />
+          <ToolBtn icon={<Layers />} label="Pages" disabled />
+          <ToolBtn icon={<Printer />} label="Print" disabled />
+          <ToolBtn icon={<Search />} label="Search" disabled />
+          <VSep />
+          <div className="flex items-center gap-2 px-2">
+            <button
+              onClick={() => {
+                resetPdf();
+                resetEdits();
+                setCustomSizes({});
+                setCurrentPage(0);
+                setActiveTool("select");
+              }}
+              className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 px-2 py-1.5 rounded hover:bg-gray-100 transition-colors font-medium"
+            >
+              <ChevronLeft className="h-3.5 w-3.5" /> Back
+            </button>
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-colors shadow-sm"
+            >
+              <Download className="h-3.5 w-3.5" /> Done
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Formatting toolbar */}
-      <div className="flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b bg-background">
-        <TBtn onClick={() => editor?.chain().focus().undo().run()} title="Undo" disabled={!editor?.can().undo()}>
-          <Undo2 className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().redo().run()} title="Redo" disabled={!editor?.can().redo()}>
-          <Redo2 className="h-3.5 w-3.5" />
-        </TBtn>
-        <Sep />
-        <TBtn onClick={() => editor?.chain().focus().toggleBold().run()} active={editor?.isActive("bold")} title="Bold (Ctrl+B)">
-          <BoldIcon className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().toggleItalic().run()} active={editor?.isActive("italic")} title="Italic (Ctrl+I)">
-          <ItalicIcon className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().toggleUnderline().run()} active={editor?.isActive("underline")} title="Underline (Ctrl+U)">
-          <UnderlineIcon className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().toggleStrike().run()} active={editor?.isActive("strike")} title="Strikethrough">
-          <StrikethroughIcon className="h-3.5 w-3.5" />
-        </TBtn>
-        <Sep />
-        <TBtn onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()} active={editor?.isActive("heading", { level: 1 })} title="Heading 1">
-          <Heading1 className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()} active={editor?.isActive("heading", { level: 2 })} title="Heading 2">
-          <Heading2 className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()} active={editor?.isActive("heading", { level: 3 })} title="Heading 3">
-          <Heading3 className="h-3.5 w-3.5" />
-        </TBtn>
-        <Sep />
-        <TBtn onClick={() => editor?.chain().focus().toggleBulletList().run()} active={editor?.isActive("bulletList")} title="Bullet List">
-          <ListIcon className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().toggleOrderedList().run()} active={editor?.isActive("orderedList")} title="Numbered List">
-          <ListOrdered className="h-3.5 w-3.5" />
-        </TBtn>
-        <Sep />
-        <TBtn onClick={() => editor?.chain().focus().setTextAlign("left").run()} active={editor?.isActive({ textAlign: "left" })} title="Align Left">
-          <AlignLeft className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().setTextAlign("center").run()} active={editor?.isActive({ textAlign: "center" })} title="Align Center">
-          <AlignCenter className="h-3.5 w-3.5" />
-        </TBtn>
-        <TBtn onClick={() => editor?.chain().focus().setTextAlign("right").run()} active={editor?.isActive({ textAlign: "right" })} title="Align Right">
-          <AlignRight className="h-3.5 w-3.5" />
-        </TBtn>
-      </div>
+      {/* ── Row 2: Formatting toolbar (only in edit-text mode) ── */}
+      {activeTool === "edit-text" && activeOverride && activeId && (
+        <div className="bg-white border-b border-gray-200 flex items-center px-3 py-1.5 gap-1.5 shrink-0 overflow-x-auto">
+          {/* Text color */}
+          <div
+            className="flex flex-col items-center gap-0.5"
+            title="Text color"
+          >
+            <span
+              className="text-sm font-bold leading-none"
+              style={{ color: activeOverride.color ?? "#000000" }}
+            >
+              A
+            </span>
+            <input
+              type="color"
+              value={activeOverride.color ?? "#000000"}
+              onChange={(e) => updateActive({ color: e.target.value })}
+              className="h-3 w-8 rounded-sm border-0 cursor-pointer p-0 bg-transparent"
+              style={{ WebkitAppearance: "none", MozAppearance: "none" }}
+            />
+          </div>
 
-      {error && (
-        <div className="px-4 py-2 bg-red-50 border-b border-red-200 text-xs text-red-700">{error}</div>
+          <div className="w-px h-6 bg-gray-200 mx-1 shrink-0" />
+
+          {/* Font family */}
+          <select
+            value={matchedWebFont ? matchedWebFont.value : currentFamily}
+            onChange={(e) => updateActive({ fontFamily: e.target.value })}
+            className="text-xs border border-gray-300 rounded px-2 h-7 bg-white focus:outline-none focus:ring-1 focus:ring-blue-400 max-w-[180px]"
+            style={{ minWidth: 140 }}
+          >
+            {isEmbedded && (
+              <option value={currentFamily}>{displayName} (PDF)</option>
+            )}
+            <optgroup label="System Fonts">
+              {SYSTEM_FONTS.map((f) => (
+                <option key={f.value} value={f.value}>
+                  {f.label}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Google Fonts">
+              {GOOGLE_FONTS.map((f) => (
+                <option key={f.value} value={f.value}>
+                  {f.label}
+                </option>
+              ))}
+            </optgroup>
+          </select>
+
+          {/* Font size */}
+          <div className="flex items-center border border-gray-300 rounded h-7 overflow-hidden">
+            <input
+              type="number"
+              min={6}
+              max={200}
+              value={fontSizePt}
+              onChange={(e) => {
+                const v = parseInt(e.target.value);
+                if (v >= 6 && v <= 200)
+                  updateActive({ fontSize: v * RENDER_SCALE });
+              }}
+              className="w-10 text-xs text-center border-none outline-none px-1 h-full"
+            />
+            <div className="flex flex-col border-l border-gray-300">
+              <button
+                className="px-1 h-3.5 flex items-center justify-center hover:bg-gray-100 text-gray-500 text-[8px] leading-none"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  updateActive({
+                    fontSize: Math.min(200, fontSizePt + 1) * RENDER_SCALE,
+                  });
+                }}
+              >
+                ▲
+              </button>
+              <button
+                className="px-1 h-3.5 flex items-center justify-center hover:bg-gray-100 text-gray-500 border-t border-gray-200 text-[8px] leading-none"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  updateActive({
+                    fontSize: Math.max(6, fontSizePt - 1) * RENDER_SCALE,
+                  });
+                }}
+              >
+                ▼
+              </button>
+            </div>
+          </div>
+
+          <div className="w-px h-6 bg-gray-200 mx-1 shrink-0" />
+
+          {/* Bold */}
+          <button
+            onMouseDown={(e) => {
+              e.preventDefault();
+              updateActive({
+                fontWeight:
+                  activeOverride.fontWeight === "bold" ? "normal" : "bold",
+              });
+            }}
+            className={`h-7 w-7 rounded text-sm font-bold border transition-colors flex items-center justify-center ${
+              activeOverride.fontWeight === "bold"
+                ? "bg-blue-100 text-blue-700 border-blue-300"
+                : "border-gray-300 hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            B
+          </button>
+
+          {/* Italic */}
+          <button
+            onMouseDown={(e) => {
+              e.preventDefault();
+              updateActive({
+                fontStyle:
+                  activeOverride.fontStyle === "italic" ? "normal" : "italic",
+              });
+            }}
+            className={`h-7 w-7 rounded text-sm italic border transition-colors flex items-center justify-center ${
+              activeOverride.fontStyle === "italic"
+                ? "bg-blue-100 text-blue-700 border-blue-300"
+                : "border-gray-300 hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            I
+          </button>
+
+          <div className="w-px h-6 bg-gray-200 mx-1 shrink-0" />
+
+          {/* Text alignment */}
+          {(["left", "center", "right"] as const).map((align) => {
+            const Icon =
+              align === "left"
+                ? AlignLeft
+                : align === "center"
+                  ? AlignCenter
+                  : AlignRight;
+            const isActive = (activeOverride.textAlign ?? "left") === align;
+            return (
+              <button
+                key={align}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  updateActive({ textAlign: align });
+                }}
+                className={`h-7 w-7 rounded border transition-colors flex items-center justify-center ${
+                  isActive
+                    ? "bg-blue-100 text-blue-700 border-blue-300"
+                    : "border-gray-300 hover:bg-gray-100 text-gray-600"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+              </button>
+            );
+          })}
+        </div>
       )}
 
-      {/* Document area — white page on gray background, like Google Docs */}
-      <div className="bg-gray-100 overflow-auto" style={{ minHeight: 520 }}>
-        <div className="mx-auto my-6 bg-white shadow" style={{ width: "min(794px, calc(100% - 2rem))" }}>
-          <EditorContent editor={editor} />
+      {/* ── Body: sidebar + canvas ── */}
+      <div className="flex-1 flex min-h-0 overflow-hidden">
+        {/* Thumbnail sidebar */}
+        <div className="w-[130px] shrink-0 bg-gray-100 border-r border-gray-200 overflow-y-auto flex flex-col gap-3 p-2">
+          {pdf.pages.map((pg, i) => (
+            <div
+              key={i}
+              ref={(el) => {
+                thumbRefs.current[i] = el;
+              }}
+              onClick={() => setCurrentPage(i)}
+              className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                currentPage === i
+                  ? "border-red-500 shadow-md"
+                  : "border-transparent hover:border-gray-400"
+              }`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={pg.thumb}
+                alt={`Page ${i + 1}`}
+                className="w-full block"
+              />
+              <div className="flex justify-center py-1 bg-white">
+                <span
+                  className={`rounded-full text-[10px] font-bold px-2 py-0.5 leading-none ${
+                    currentPage === i
+                      ? "bg-red-500 text-white"
+                      : "bg-gray-200 text-gray-500"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Canvas scroll area */}
+        <div
+          className="flex-1 overflow-auto bg-[#7a7a7a]"
+          onClick={() => {
+            if (activeId) deactivate();
+          }}
+        >
+          {currentData && (
+            <div className="py-4 px-4" style={{ minWidth: scaledW + 32 }}>
+              {/* White PDF page */}
+              <div
+                className="relative shadow-2xl bg-white mx-auto"
+                style={{ width: scaledW, height: scaledH }}
+                onClick={() => {
+                  if (activeId) deactivate();
+                }}
+              >
+                <PdfCanvas
+                  ref={canvasRef}
+                  pdfDoc={pdfDocRef.current}
+                  pageIndex={currentPage}
+                  zoom={zoom}
+                  width={scaledW}
+                  height={scaledH}
+                  runs={currentData.runs}
+                  edits={edits}
+                  activeId={activeId}
+                />
+
+                {activeTool === "edit-text" && (
+                  <OverlayLayer
+                    runs={currentData.runs}
+                    zoom={zoom}
+                    width={scaledW}
+                    height={scaledH}
+                    activeId={activeId}
+                    hoveredId={hoveredId}
+                    edits={edits}
+                    customSizes={customSizes}
+                    onActivate={handleActivate}
+                    onMouseEnter={setHoveredId}
+                    onMouseLeave={() => setHoveredId(null)}
+                    onCommit={(id, text) => {
+                      // Pass current box width (RENDER_SCALE units) so canvas
+                      // can wrap the committed text at the same width.
+                      const w = customSizes[id]?.w;
+                      commitRun(id, text, w != null ? w / zoom : undefined);
+                    }}
+                    onResize={(id, w, h) =>
+                      setCustomSizes((prev) => ({ ...prev, [id]: { w, h } }))
+                    }
+                    onMove={(_id, x, y) => updateActive({ x, y })}
+                  />
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Floating page + zoom bar */}
+          <div className="sticky bottom-5 flex justify-center pointer-events-none z-30 pb-1">
+            <div className="pointer-events-auto inline-flex items-center gap-1 bg-gray-800/95 text-white rounded-full px-4 py-2 shadow-2xl backdrop-blur-sm">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                disabled={currentPage === 0}
+                className="p-1 rounded-full hover:bg-gray-700 disabled:opacity-30 transition-colors"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <span className="text-sm font-medium whitespace-nowrap px-1">
+                Page: {currentPage + 1} / {pdf.numPages}
+              </span>
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(pdf.numPages - 1, p + 1))
+                }
+                disabled={currentPage === pdf.numPages - 1}
+                className="p-1 rounded-full hover:bg-gray-700 disabled:opacity-30 transition-colors"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+              <div className="w-px h-5 bg-gray-600 mx-1" />
+              <button
+                onClick={() =>
+                  setZoom((z) =>
+                    Math.max(0.25, parseFloat((z - 0.25).toFixed(2))),
+                  )
+                }
+                className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-700 text-base font-bold transition-colors"
+              >
+                −
+              </button>
+              <span className="text-xs w-12 text-center font-medium">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                onClick={() =>
+                  setZoom((z) => Math.min(3, parseFloat((z + 0.25).toFixed(2))))
+                }
+                className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-700 text-base font-bold transition-colors"
+              >
+                +
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// ── Main Page ──────────────────────────────────────────────────────────────────
-const TABS: { val: Tab; label: string; desc: string }[] = [
-  { val: "draw",      label: "Draw & Edit",  desc: "Pen, shapes, text, eraser, arrow" },
-  { val: "watermark", label: "Watermark",    desc: "Stamp text across all pages" },
-  { val: "edit",      label: "Edit Content", desc: "Change text via LibreOffice server" },
-];
-
 export default function PdfEditorPage() {
-  const [tab, setTab] = useState<Tab>("draw");
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader
-        title="PDF Editor"
-        description="Draw, annotate, add text, erase content and watermark — 100% in your browser"
-        icon={FilePen}
-        gradient="from-orange-600 to-red-700"
-        breadcrumbs={[{ name: "Utility Tools" }, { name: "PDF Editor" }]}
-      />
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 space-y-6">
-        <div className="flex rounded-xl border overflow-hidden">
-          {TABS.map(t => (
-            <button key={t.val} onClick={() => setTab(t.val)}
-              className={`flex-1 flex flex-col items-center justify-center py-3 px-2 text-sm font-medium transition-colors ${tab === t.val ? "bg-foreground text-background" : "text-muted-foreground hover:bg-muted"}`}>
-              <span>{t.label}</span>
-              <span className={`text-xs hidden sm:block mt-0.5 ${tab === t.val ? "text-background/70" : "text-muted-foreground/70"}`}>{t.desc}</span>
-            </button>
-          ))}
-        </div>
-        <Card>
-          <CardContent className="pt-6">
-            {tab === "draw"      && <DrawEditTab />}
-            {tab === "watermark" && <WatermarkTab />}
-            {tab === "edit"      && <EditContentTab />}
-          </CardContent>
-        </Card>
-        <p className="text-xs text-muted-foreground text-center">
-          Powered by <strong>PDF.js</strong> + <strong>pdf-lib</strong> — your files are processed entirely in your browser and never leave your device.
-        </p>
-
-        <ToolDescription toolName="PDF Editor" data={toolDescriptions["pdf-editor"]} />
-        <FaqSection faqs={faqs["pdf-editor"]} />
-      </div>
+    // Height = full viewport minus the sticky 64px site header (h-16).
+    // overflow-hidden prevents the outer page from growing a scrollbar —
+    // all scrolling happens inside the canvas area (overflow-auto).
+    <div
+      className="flex flex-col bg-white overflow-hidden"
+      style={{ height: "calc(100vh - 64px)" }}
+    >
+      <EditContentTab />
     </div>
   );
 }

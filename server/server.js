@@ -13,6 +13,7 @@ const multer  = require("multer");
 const { exec } = require("child_process");
 const fs   = require("fs");
 const path = require("path");
+const os   = require("os");
 const cors = require("cors");
 
 const app = express();
@@ -172,6 +173,68 @@ app.post("/export", async (req, res) => {
     cleanup(tmpHtml, tmpPdf);
     console.error("[/export]", err.message);
     res.status(500).json({ error: err.message || "Export failed" });
+  }
+});
+
+// ── POST /render-pdf ──────────────────────────────────────────────────────────
+// Receives base64 JPEG page images, converts each to a single-page PDF with
+// LibreOffice, then merges them all into one PDF and streams it back.
+app.post("/render-pdf", async (req, res) => {
+  const { images, fileName } = req.body;
+  if (!Array.isArray(images) || images.length === 0) {
+    return res.status(400).json({ error: "No images provided" });
+  }
+
+  const id     = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const tmpDir = path.join(os.tmpdir(), `rpdf_${id}`);
+
+  try {
+    fs.mkdirSync(tmpDir, { recursive: true });
+
+    // Write each base64 JPEG to disk
+    const jpgPaths = images.map((b64, i) => {
+      const p = path.join(tmpDir, `page${String(i).padStart(4, "0")}.jpg`);
+      fs.writeFileSync(p, Buffer.from(b64, "base64"));
+      return p;
+    });
+
+    // Convert each JPEG → PDF via LibreOffice
+    const pdfPaths = [];
+    for (const jpgPath of jpgPaths) {
+      await runCmd(`libreoffice --headless --convert-to pdf --outdir "${tmpDir}" "${jpgPath}"`, 30_000);
+      const pdfPath = jpgPath.replace(".jpg", ".pdf");
+      if (fs.existsSync(pdfPath)) pdfPaths.push(pdfPath);
+    }
+    if (!pdfPaths.length) throw new Error("LibreOffice produced no PDF output");
+
+    let outputPath = pdfPaths[0];
+    if (pdfPaths.length > 1) {
+      outputPath = path.join(tmpDir, "merged.pdf");
+      // Try pdfunite (poppler-utils), then ghostscript
+      try {
+        await runCmd(`pdfunite ${pdfPaths.join(" ")} "${outputPath}"`);
+      } catch {
+        try {
+          await runCmd(`gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="${outputPath}" ${pdfPaths.join(" ")}`);
+        } catch {
+          outputPath = pdfPaths[0]; // fallback: return first page only
+        }
+      }
+    }
+
+    const outName = ((fileName || "document").replace(/\.pdf$/i, "") + "-edited.pdf")
+      .replace(/[^\w.\-]/g, "_");
+
+    res.setHeader("Content-Disposition", `attachment; filename="${outName}"`);
+    res.setHeader("Content-Type", "application/pdf");
+    const stream = fs.createReadStream(outputPath);
+    stream.pipe(res);
+    stream.on("close", () => setTimeout(() => cleanup(tmpDir), 8_000));
+    stream.on("error", e => { cleanup(tmpDir); console.error("[/render-pdf stream]", e.message); });
+  } catch (err) {
+    cleanup(tmpDir);
+    console.error("[/render-pdf]", err.message);
+    res.status(500).json({ error: err.message || "PDF creation failed" });
   }
 });
 
