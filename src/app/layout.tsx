@@ -4,6 +4,8 @@ import "./globals.css";
 import { AppShell } from "@/components/layout/AppShell";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -156,6 +158,8 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         )}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
