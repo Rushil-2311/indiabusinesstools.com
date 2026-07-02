@@ -111,20 +111,29 @@ export function Header() {
             <div className="transition-all duration-300 group-hover:-translate-y-0.5 group-hover:drop-shadow-lg">
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <linearGradient id="ibt-header" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FF6200" />
-                    <stop offset="1" stopColor="#138808" />
+                  <linearGradient id="ibt-bg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#1A56DB"/>
+                    <stop offset="1" stopColor="#0A2466"/>
                   </linearGradient>
                 </defs>
-                <rect width="40" height="40" rx="10" fill="url(#ibt-header)" />
-                <rect x="0" y="13" width="40" height="2.5" fill="white" fillOpacity="0.25" />
-                <rect x="0" y="24.5" width="40" height="2.5" fill="white" fillOpacity="0.25" />
-                <text x="20" y="28" fontSize="20" fontFamily="system-ui, Arial, sans-serif" fontWeight="700" fill="white" textAnchor="middle">&#8377;</text>
+                {/* Background */}
+                <rect width="40" height="40" rx="10" fill="url(#ibt-bg)"/>
+                {/* Bar 1 short */}
+                <rect x="6"  y="25" width="7" height="10" rx="2" fill="white" fillOpacity="0.92"/>
+                {/* Bar 2 medium */}
+                <rect x="16" y="18" width="7" height="17" rx="2" fill="white" fillOpacity="0.92"/>
+                {/* Bar 3 tall */}
+                <rect x="27" y="10" width="7" height="25" rx="2" fill="white" fillOpacity="0.92"/>
+                {/* Saffron trend line */}
+                <polyline points="9.5,24 19.5,17 30.5,9" stroke="#FF8000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                {/* Green peak dot */}
+                <circle cx="30.5" cy="9" r="3.5" fill="#138808"/>
+                <circle cx="30.5" cy="9" r="1.8" fill="white"/>
               </svg>
             </div>
             <div className="flex flex-col leading-none">
-              <span className="font-display text-base font-bold text-foreground tracking-tight">Indian</span>
-              <span className="font-display text-base font-bold tracking-tight bg-linear-to-r from-orange-600 to-green-700 bg-clip-text text-transparent">BusinessTools</span>
+              <span className="font-display text-base font-bold text-foreground tracking-tight">India</span>
+              <span className="font-display text-base font-bold tracking-tight bg-linear-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">BusinessTools</span>
             </div>
           </Link>
 

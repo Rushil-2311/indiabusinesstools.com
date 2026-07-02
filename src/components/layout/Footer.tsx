@@ -77,40 +77,68 @@ export function Footer() {
   return (
     <footer className="bg-card border-t pt-14 pb-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
         {/* Top row: Brand + Company */}
         <div className="flex flex-col sm:flex-row justify-between gap-8 pb-10 mb-10 border-b">
           {/* Brand */}
           <div className="max-w-sm">
-            <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group">
-              <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2.5 mb-4 group"
+            >
+             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <linearGradient id="ibt-footer" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FF6200" />
-                    <stop offset="1" stopColor="#138808" />
+                  <linearGradient id="ibt-bg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#1A56DB"/>
+                    <stop offset="1" stopColor="#0A2466"/>
                   </linearGradient>
                 </defs>
-                <rect width="40" height="40" rx="10" fill="url(#ibt-footer)" />
-                <rect x="0" y="13" width="40" height="2.5" fill="white" fillOpacity="0.25" />
-                <rect x="0" y="24.5" width="40" height="2.5" fill="white" fillOpacity="0.25" />
-                <text x="20" y="28" fontSize="20" fontFamily="system-ui, Arial, sans-serif" fontWeight="700" fill="white" textAnchor="middle">&#8377;</text>
+                {/* Background */}
+                <rect width="40" height="40" rx="10" fill="url(#ibt-bg)"/>
+                {/* Bar 1 short */}
+                <rect x="6"  y="25" width="7" height="10" rx="2" fill="white" fillOpacity="0.92"/>
+                {/* Bar 2 medium */}
+                <rect x="16" y="18" width="7" height="17" rx="2" fill="white" fillOpacity="0.92"/>
+                {/* Bar 3 tall */}
+                <rect x="27" y="10" width="7" height="25" rx="2" fill="white" fillOpacity="0.92"/>
+                {/* Saffron trend line */}
+                <polyline points="9.5,24 19.5,17 30.5,9" stroke="#FF8000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                {/* Green peak dot */}
+                <circle cx="30.5" cy="9" r="3.5" fill="#138808"/>
+                <circle cx="30.5" cy="9" r="1.8" fill="white"/>
               </svg>
               <div className="flex flex-col leading-none">
-                <span className="font-display text-sm font-bold text-foreground tracking-tight">Indian</span>
-                <span className="font-display text-sm font-bold tracking-tight bg-linear-to-r from-orange-600 to-green-700 bg-clip-text text-transparent">BusinessTools</span>
+                <span className="font-display text-base font-bold text-foreground tracking-tight">
+                  India
+                </span>
+                <span className="font-display text-base font-bold tracking-tight bg-linear-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                  BusinessTools
+                </span>
               </div>
             </Link>
             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
-              Every Tool You Need. One Place. Free Forever. Designed to make your daily calculations and formatting tasks effortless.
+              Every Tool You Need. One Place. Free Forever. Designed to make
+              your daily calculations and formatting tasks effortless.
             </p>
             <div className="flex gap-4">
-              <a href="#" aria-label="Twitter" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#"
+                aria-label="Twitter"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" aria-label="GitHub" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#"
+                aria-label="GitHub"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" aria-label="Email" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#"
+                aria-label="Email"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Mail className="h-5 w-5" />
               </a>
             </div>
@@ -118,11 +146,16 @@ export function Footer() {
 
           {/* Company */}
           <div className="shrink-0">
-            <h3 className="font-display font-semibold text-sm mb-4 text-foreground">Company</h3>
+            <h3 className="font-display font-semibold text-sm mb-4 text-foreground">
+              Company
+            </h3>
             <ul className="space-y-2.5">
               {COMPANY_LINKS.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Link
+                    href={l.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
                     {l.name}
                   </Link>
                 </li>
@@ -135,7 +168,9 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-8 mb-12">
           {FOOTER_CATEGORIES.map((cat) => (
             <div key={cat.label}>
-              <h3 className="font-display font-semibold text-sm mb-4 text-foreground">{cat.label}</h3>
+              <h3 className="font-display font-semibold text-sm mb-4 text-foreground">
+                {cat.label}
+              </h3>
               <ul className="space-y-2.5">
                 {cat.tools.map((tool) => (
                   <li key={tool.slug}>
@@ -155,7 +190,8 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t pt-8 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} IndianBusinessTools. All rights reserved.
+            © {new Date().getFullYear()} IndianBusinessTools. All rights
+            reserved.
           </p>
           <p className="text-sm text-muted-foreground">
             Built with ❤️ for the community.

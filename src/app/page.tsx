@@ -63,7 +63,7 @@ export default function Home() {
       <JsonLd schema={itemListSchema} />
       <JsonLd schema={homeFaqSchema} />
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-background pt-24 pb-32">
+      <section className="relative overflow-hidden bg-background pt-24">
         <div className="absolute inset-0 z-0 opacity-40">
           <Image
             src={`/images/hero-bg.png`}

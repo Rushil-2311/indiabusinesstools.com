@@ -1,0 +1,29 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iconBg" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#1A56DB"/>
+      <stop offset="100%" stop-color="#0A2466"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="200" rx="44" fill="url(#iconBg)"/>
+
+  <!-- Saffron top stripe -->
+  <rect x="0" y="0" width="200" height="10" rx="0" fill="#FF8000" opacity="0.75"/>
+  <rect x="0" y="0" width="200" height="10" rx="44" fill="#FF8000" opacity="0.75"/>
+
+  <!-- Ascending bars -->
+  <rect x="32"  y="118" width="38" height="50" rx="9" fill="white" opacity="0.92"/>
+  <rect x="81"  y="88"  width="38" height="80" rx="9" fill="white" opacity="0.92"/>
+  <rect x="130" y="58"  width="38" height="110" rx="9" fill="white" opacity="0.92"/>
+
+  <!-- Saffron trend line -->
+  <polyline points="51,116  100,86  149,56"
+            stroke="#FF8000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+            fill="none"/>
+
+  <!-- Green peak dot -->
+  <circle cx="149" cy="56" r="14" fill="#138808"/>
+  <circle cx="149" cy="56" r="7"  fill="white"/>
+</svg>

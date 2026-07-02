@@ -1,0 +1,58 @@
+<svg width="320" height="64" viewBox="0 0 320 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Icon background gradient -->
+    <linearGradient id="iconBg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A56DB"/>
+      <stop offset="100%" stop-color="#0A2466"/>
+    </linearGradient>
+    <!-- Wordmark gradient for "Tools" -->
+    <linearGradient id="wordGrad" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#FF8000"/>
+      <stop offset="100%" stop-color="#138808"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ── Icon Mark (64×64) ─────────────────────────── -->
+  <rect width="64" height="64" rx="14" fill="url(#iconBg)"/>
+
+  <!-- Subtle saffron accent stripe at top (Indian flag reference) -->
+  <rect x="0" y="0" width="64" height="4" rx="0" fill="#FF8000" opacity="0.7"/>
+  <rect x="0" y="0" width="64" height="4" rx="14" fill="#FF8000" opacity="0.7"/>
+
+  <!-- Ascending bars (white) -->
+  <rect x="10" y="40" width="11" height="14" rx="3"  fill="white" opacity="0.92"/>
+  <rect x="26" y="28" width="11" height="26" rx="3"  fill="white" opacity="0.92"/>
+  <rect x="42" y="16" width="11" height="38" rx="3"  fill="white" opacity="0.92"/>
+
+  <!-- Saffron trend line connecting bar tops -->
+  <polyline points="15.5,39  31.5,27  47.5,15"
+            stroke="#FF8000" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round"
+            fill="none"/>
+
+  <!-- Green peak dot (growth indicator) -->
+  <circle cx="47.5" cy="15" r="5"   fill="#138808"/>
+  <circle cx="47.5" cy="15" r="2.5" fill="white"/>
+
+  <!-- ── Wordmark ────────────────────────────────────── -->
+  <!-- "India" -->
+  <text x="80" y="27"
+        font-family="'Outfit','Inter',system-ui,-apple-system,sans-serif"
+        font-size="18" font-weight="800" letter-spacing="-0.5"
+        fill="#0A1628">India</text>
+
+  <!-- "Business" -->
+  <text x="80" y="52"
+        font-family="'Outfit','Inter',system-ui,-apple-system,sans-serif"
+        font-size="18" font-weight="700" letter-spacing="-0.5"
+        fill="#0A1628">Business</text>
+
+  <!-- "Tools" (blue accent) -->
+  <text x="189" y="52"
+        font-family="'Outfit','Inter',system-ui,-apple-system,sans-serif"
+        font-size="18" font-weight="800" letter-spacing="-0.5"
+        fill="#1A56DB"> Tools</text>
+
+  <!-- Saffron underline accent below "India" -->
+  <rect x="80" y="31" width="50" height="2.5" rx="1.25" fill="#FF8000" opacity="0.8"/>
+</svg>
